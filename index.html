@@ -7,122 +7,134 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#111318">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23c94a5a'/%3E%3Ccircle cx='50' cy='45' r='22' fill='%23fff'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#0f1115">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%234f7cff'/%3E%3Ccircle cx='50' cy='45' r='22' fill='%23fff'/%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 :root{
-  --bg:#f4f2ee; --card:#ffffff; --text:#1c1b1a; --text-dim:#6b6b6b;
-  --border:#e4e0d8; --accent:#c94a5a; --accent-soft:#fbe7ea; --nav-bg:#ffffff;
-  --shadow:0 1px 3px rgba(0,0,0,.08);
+  --bg:#f2f3f7; --card:#ffffff; --card2:#f7f8fb; --text:#14151a; --text-dim:#6d7078;
+  --border:#e6e7ee; --accent:#4f7cff; --accent-soft:#e8edff; --nav-bg:#ffffff;
+  --shadow:0 2px 10px rgba(20,20,40,.06);
   --safe-top:env(safe-area-inset-top,0px); --safe-bottom:env(safe-area-inset-bottom,0px);
+  --radius:20px;
 }
 html[data-theme="dark"]{
-  --bg:#111318; --card:#1c1f26; --text:#f2f1ee; --text-dim:#9aa0a6;
-  --border:#2b2f38; --accent-soft:#2c1e22; --nav-bg:#161920;
-  --shadow:0 1px 3px rgba(0,0,0,.4);
+  --bg:#0f1115; --card:#1a1c23; --card2:#20222a; --text:#f1f2f6; --text-dim:#8b8e98;
+  --border:#292b34; --accent-soft:#1c2440; --nav-bg:#14161c;
+  --shadow:0 2px 14px rgba(0,0,0,.5);
 }
-html[data-accent="ao"]{--accent:#3465a4;}
-html[data-accent="matcha"]{--accent:#548a56;}
+html[data-accent="ao"]{--accent:#4f7cff;}
+html[data-accent="torii"]{--accent:#e0566b;}
+html[data-accent="matcha"]{--accent:#4f9d5a;}
 html[data-accent="sakura"]{--accent:#e08aa0;}
-html[data-accent="torii"]{--accent:#c94a5a;}
-html[data-theme="dark"][data-accent="ao"]{--accent-soft:#182634;}
-html[data-theme="dark"][data-accent="matcha"]{--accent-soft:#1b2a1c;}
-html[data-theme="dark"][data-accent="sakura"]{--accent-soft:#2e2129;}
+html[data-theme="dark"][data-accent="torii"]{--accent-soft:#331b21;}
+html[data-theme="dark"][data-accent="matcha"]{--accent-soft:#17281a;}
+html[data-theme="dark"][data-accent="sakura"]{--accent-soft:#2c2028;}
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
 html,body{height:100%;}
 body{margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; overscroll-behavior-y:none; -webkit-text-size-adjust:100%;}
 #app{display:flex; flex-direction:column; min-height:100dvh;}
 header.topbar{
-  position:sticky; top:0; z-index:30; background:var(--nav-bg);
-  padding:max(12px, calc(var(--safe-top) + 8px)) 14px 12px;
-  border-bottom:1px solid var(--border);
-  display:flex; align-items:center; gap:8px; min-height:34px;
+  position:sticky; top:0; z-index:30; background:var(--bg);
+  padding:max(14px, calc(var(--safe-top) + 10px)) 18px 4px;
 }
-header.topbar h1{font-size:18px; margin:0; flex:1; font-weight:700; text-align:center; padding-right:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-header.topbar button.back{background:none; border:none; color:var(--accent); font-size:16px; font-weight:600; padding:6px 4px; flex:0 0 auto; min-width:64px; text-align:left;}
-header.topbar .spacer{flex:0 0 auto; min-width:64px;}
-main{flex:1; padding:12px 14px calc(104px + var(--safe-bottom)); max-width:640px; margin:0 auto; width:100%;}
-.search-bar{margin-bottom:12px; position:sticky; top:0; z-index:5;}
-.search-bar input{width:100%; padding:11px 14px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--text); font-size:16px;}
-.search-bar input::placeholder{color:var(--text-dim);}
-.section-title{font-size:13px; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:.04em; margin:18px 4px 8px;}
-.card{background:var(--card); border-radius:16px; padding:14px 15px; margin-bottom:10px; box-shadow:var(--shadow); border:1px solid var(--border);}
-.card .row-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
-.card h3{margin:0; font-size:16px; font-weight:700; line-height:1.3; word-break:break-word;}
-.card .sub{color:var(--text-dim); font-size:13px; margin-top:3px;}
+header.topbar h1{font-size:26px; margin:0; font-weight:800; letter-spacing:-.01em;}
+header.topbar .subtitle{color:var(--text-dim); font-size:14px; margin-top:3px; font-weight:500;}
+main{flex:1; padding:10px 16px calc(112px + var(--safe-bottom)); max-width:640px; margin:0 auto; width:100%;}
+
+.stats-row{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:14px 0 6px;}
+.stat-box{background:var(--card2); border-radius:16px; padding:14px 8px; text-align:center;}
+.stat-box .stat-label{font-size:12px; color:var(--text-dim); font-weight:600;}
+.stat-box .stat-value{font-size:16px; font-weight:800; margin-top:4px; line-height:1.2;}
+
+.toolbar{display:flex; gap:8px; margin:14px 0 12px; flex-wrap:wrap;}
+.toolbar input[type=search]{flex:1 1 140px; padding:11px 14px; border-radius:14px; border:1px solid var(--border); background:var(--card); color:var(--text); font-size:15px; min-width:0;}
+.toolbar input::placeholder{color:var(--text-dim);}
+.dropdown{position:relative; flex:0 0 auto;}
+.dropdown select{
+  appearance:none; -webkit-appearance:none; border:1px solid var(--border); background:var(--card);
+  color:var(--text); font-size:14px; font-weight:600; padding:11px 30px 11px 14px; border-radius:14px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236d7078'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 12px center; max-width:150px;
+}
+
+.card{background:var(--card); border-radius:var(--radius); padding:16px 17px; margin-bottom:12px; box-shadow:var(--shadow); position:relative; cursor:pointer;}
+.card:active{transform:scale(.99);}
+.card .row-top{display:flex; justify-content:space-between; align-items:center; gap:10px;}
+.card .row-top-left{display:flex; align-items:center; gap:9px; min-width:0;}
+.chip{font-size:12px; font-weight:800; padding:5px 11px; border-radius:10px; background:var(--accent); color:#fff; flex:0 0 auto;}
+.card h3{margin:0; font-size:17px; font-weight:800; line-height:1.3; word-break:break-word; min-width:0;}
+.card .sub{color:var(--text-dim); font-size:13px; margin-top:2px; font-weight:500;}
+.date-chevron{display:flex; align-items:center; gap:4px; color:var(--text-dim); font-size:13px; font-weight:600; flex:0 0 auto; white-space:nowrap;}
+.date-chevron .chev{font-size:16px; color:var(--text-dim); opacity:.6;}
 .badge{font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; background:var(--accent-soft); color:var(--accent); white-space:nowrap; flex:0 0 auto;}
-.card .note{font-size:14px; color:var(--text); margin-top:9px; line-height:1.45;}
-.card .meta-line{font-size:13px; color:var(--text-dim); margin-top:4px;}
-.maps-row{display:flex; gap:8px; margin-top:11px; flex-wrap:wrap;}
-.maps-btn{display:inline-flex; align-items:center; gap:6px; background:var(--accent); color:#fff; border:none; padding:9px 14px; border-radius:10px; font-size:13px; font-weight:600; text-decoration:none;}
-.maps-btn.secondary{background:var(--accent-soft); color:var(--accent);}
-.card-actions{display:flex; justify-content:flex-end; align-items:center; margin-top:9px; gap:10px;}
-.edit-btn{background:none; border:none; color:var(--text-dim); font-size:13px; padding:6px 4px;}
+.bullets{margin-top:11px; display:flex; flex-direction:column; gap:7px;}
+.bullet{display:flex; gap:9px; font-size:14.5px; color:var(--text); line-height:1.4; align-items:flex-start;}
+.bullet .ic{flex:0 0 auto; font-size:15px; margin-top:1px;}
+.bullet.dim{color:var(--text-dim); font-size:13.5px;}
+.hotel-pill{display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--card2); border-radius:14px; padding:10px 12px; margin-top:12px;}
+.hotel-pill .htxt{font-size:13.5px; font-weight:600; display:flex; align-items:center; gap:8px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.maps-row{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;}
+.maps-btn{display:inline-flex; align-items:center; gap:6px; background:var(--accent); color:#fff; border:none; padding:9px 14px; border-radius:12px; font-size:13px; font-weight:700; text-decoration:none; flex:0 0 auto;}
+.maps-btn.small{padding:7px 12px; font-size:12.5px; border-radius:10px;}
 .status-select{
-  appearance:none; -webkit-appearance:none; border:1px solid var(--border); background:var(--accent-soft);
-  color:var(--accent); font-size:13px; font-weight:700; padding:7px 26px 7px 12px; border-radius:20px;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23c94a5a'/%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:right 10px center; flex:0 0 auto; max-width:58%;
+  appearance:none; -webkit-appearance:none; border:none; background:var(--accent-soft);
+  color:var(--accent); font-size:12.5px; font-weight:800; padding:7px 26px 7px 12px; border-radius:20px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234f7cff'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 10px center; flex:0 0 auto; max-width:130px;
 }
-html[data-theme="dark"] .status-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23f2f1ee'/%3E%3C/svg%3E");}
-.grid-menu{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px;}
-.grid-item{background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px 12px; text-align:center; box-shadow:var(--shadow);}
-.grid-item .emoji{font-size:28px; display:block; margin-bottom:6px;}
-.grid-item .label{font-size:14px; font-weight:600;}
-.fab{position:fixed; right:18px; bottom:calc(80px + var(--safe-bottom)); width:50px; height:50px; border-radius:50%; background:var(--accent); color:#fff; font-size:24px; line-height:50px; border:none; box-shadow:0 4px 12px rgba(0,0,0,.3); z-index:15;}
+.section-head{font-size:13px; font-weight:800; color:var(--text-dim); text-transform:uppercase; letter-spacing:.05em; margin:20px 4px 10px;}
+.empty-state{text-align:center; color:var(--text-dim); padding:50px 20px; font-size:14px;}
+.fab{position:fixed; right:18px; bottom:calc(84px + var(--safe-bottom)); width:52px; height:52px; border-radius:50%; background:var(--accent); color:#fff; font-size:25px; border:none; box-shadow:0 6px 16px rgba(79,124,255,.4); z-index:15;}
+
 nav.tabbar{
-  position:fixed; bottom:0; left:0; right:0; display:flex; background:var(--nav-bg);
-  border-top:1px solid var(--border); padding:6px 2px calc(4px + var(--safe-bottom)); z-index:25;
+  position:fixed; bottom:0; left:0; right:0; z-index:25; background:var(--nav-bg);
+  border-top:1px solid var(--border); padding:8px 0 calc(6px + var(--safe-bottom));
+  display:flex; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
 }
-nav.tabbar button{flex:1; background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--text-dim); font-size:10.5px; padding:5px 0; min-width:0;}
-nav.tabbar button .ic{font-size:20px;}
+nav.tabbar::-webkit-scrollbar{display:none;}
+nav.tabbar button{flex:0 0 auto; min-width:66px; background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text-dim); font-size:10.5px; padding:4px 8px; font-weight:600;}
+nav.tabbar button .ic{font-size:21px;}
 nav.tabbar button.active{color:var(--accent);}
-.empty-state{text-align:center; color:var(--text-dim); padding:40px 20px; font-size:14px;}
+
 .theme-options,.accent-options{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;}
-.pill{padding:10px 16px; border-radius:20px; border:1px solid var(--border); background:var(--card); font-size:14px; font-weight:600; color:var(--text);}
+.pill{padding:10px 16px; border-radius:20px; border:1px solid var(--border); background:var(--card); font-size:14px; font-weight:700; color:var(--text);}
 .pill.active{background:var(--accent); color:#fff; border-color:var(--accent);}
 .swatch{width:40px; height:40px; border-radius:50%; border:3px solid transparent;}
 .swatch.active{border-color:var(--text);}
-.settings-group{margin-bottom:24px;}
-.settings-group h4{margin:0 0 4px; font-size:13px; text-transform:uppercase; color:var(--text-dim); letter-spacing:.03em;}
-.settings-btn{width:100%; text-align:left; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px 16px; font-size:15px; font-weight:600; color:var(--text); margin-top:8px; display:flex; justify-content:space-between; align-items:center;}
-.settings-btn.danger{color:#c0392b;}
+.settings-group{margin-bottom:26px;}
+.settings-group h4{margin:0 0 4px; font-size:13px; text-transform:uppercase; color:var(--text-dim); letter-spacing:.03em; font-weight:800;}
+.settings-btn{width:100%; text-align:left; background:var(--card); border:none; border-radius:16px; padding:15px 16px; font-size:15px; font-weight:700; color:var(--text); margin-top:8px; display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow);}
+.settings-btn.danger{color:#e0566b;}
 .settings-btn .arrow{color:var(--text-dim); font-weight:400;}
 input[type=file]{display:none;}
 .modal-overlay{position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:40; display:flex; align-items:flex-end;}
-.modal{background:var(--card); width:100%; max-height:88vh; overflow-y:auto; border-radius:20px 20px 0 0; padding:18px 18px calc(24px + var(--safe-bottom));}
-.modal h2{margin:0 0 14px; font-size:18px;}
-.field{margin-bottom:12px;}
-.field label{display:block; font-size:12px; color:var(--text-dim); margin-bottom:4px; font-weight:600;}
-.field input,.field textarea,.field select{width:100%; padding:11px 12px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:16px; font-family:inherit;}
-.field textarea{min-height:60px; resize:vertical;}
-.modal-actions{display:flex; gap:10px; margin-top:16px;}
-.modal-actions button{flex:1; padding:13px; border-radius:12px; border:none; font-size:15px; font-weight:700;}
+.modal{background:var(--card); width:100%; max-height:88vh; overflow-y:auto; border-radius:24px 24px 0 0; padding:20px 20px calc(26px + var(--safe-bottom));}
+.modal h2{margin:0 0 16px; font-size:19px; font-weight:800;}
+.field{margin-bottom:13px;}
+.field label{display:block; font-size:12px; color:var(--text-dim); margin-bottom:5px; font-weight:700;}
+.field input,.field textarea,.field select{width:100%; padding:12px 13px; border-radius:12px; border:1px solid var(--border); background:var(--card2); color:var(--text); font-size:16px; font-family:inherit;}
+.field textarea{min-height:64px; resize:vertical;}
+.modal-actions{display:flex; gap:10px; margin-top:18px;}
+.modal-actions button{flex:1; padding:14px; border-radius:14px; border:none; font-size:15px; font-weight:800;}
 .btn-save{background:var(--accent); color:#fff;}
-.btn-cancel{background:var(--border); color:var(--text);}
-.btn-delete{background:#c0392b; color:#fff;}
-.toast{position:fixed; bottom:calc(100px + var(--safe-bottom)); left:50%; transform:translateX(-50%); background:var(--text); color:var(--bg); padding:10px 18px; border-radius:20px; font-size:13px; z-index:50; opacity:0; transition:opacity .3s; max-width:85vw; text-align:center;}
+.btn-cancel{background:var(--card2); color:var(--text);}
+.btn-delete{background:#e0566b; color:#fff;}
+.toast{position:fixed; bottom:calc(100px + var(--safe-bottom)); left:50%; transform:translateX(-50%); background:var(--text); color:var(--bg); padding:11px 20px; border-radius:20px; font-size:13px; z-index:50; opacity:0; transition:opacity .3s; max-width:85vw; text-align:center; font-weight:600;}
 .toast.show{opacity:1;}
 a{color:var(--accent);}
+.maps-group-title{font-size:14px; font-weight:800; margin:18px 4px 8px; display:flex; align-items:center; gap:6px;}
 </style>
 </head>
 <body>
 <div id="app">
   <header class="topbar">
-    <button class="back" id="backBtn" style="visibility:hidden">‹ Indietro</button>
-    <h1 id="pageTitle">Giappone 26/27</h1>
-    <span class="spacer" id="rightSpacer"></span>
+    <h1 id="pageTitle">Itinerario</h1>
+    <div class="subtitle" id="pageSubtitle"></div>
   </header>
   <main id="main"></main>
   <button class="fab" id="fabAdd" style="display:none">+</button>
-  <nav class="tabbar">
-    <button data-tab="1. Itinerario"><span class="ic">🗺️</span>Itinerario</button>
-    <button data-tab="6. Attrazioni"><span class="ic">⛩️</span>Attrazioni</button>
-    <button data-tab="8. Cibo e Ristoranti"><span class="ic">🍜</span>Cibo</button>
-    <button data-tab="more"><span class="ic">☰</span>Altro</button>
-    <button data-tab="settings"><span class="ic">⚙️</span>Impostazioni</button>
-  </nav>
+  <nav class="tabbar" id="tabbar"></nav>
 </div>
 <div id="modalRoot"></div>
 <div class="toast" id="toast"></div>
@@ -132,30 +144,44 @@ const DEFAULT_DATA = {"1. Itinerario":{"headers":["Data","Giorno","Città","Atti
 
 const SHEET_ORDER = ["1. Itinerario","2. Hotel e Alloggi","3. Trasporti","4. App","5. Valigia","6. Attrazioni","7. Guida","8. Cibo e Ristoranti","9. Shopping","10. Emergenze","11. Budget"];
 const VALIGIA_STATUS = ["Da preparare","Da comprare","In valigia","Fatto"];
+const MESI_IT = ["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
+const GIORNI_IT = ["dom","lun","mar","mer","gio","ven","sab"];
+
+const EMOJI_MAP = {
+ "Città":"📍","Categoria":"🏷️","Note":"📝","Note e Suggerimenti":"📝","Note per il Giappone":"🎒",
+ "Note / Categoria":"📝","Note / Conferma":"📝","Costo Stimato":"💰","Durata":"⏱️","Mezzo / Vettore":"🚆",
+ "Nome Hotel / Ryokan":"🏨","Quartiere":"🧭","Articolo Mirato / Note":"🛍️","Dettagli Operativi":"📋",
+ "Numero / Riferimento":"☎️","Funzione Principale":"⚙️","Urgenza Configurazione":"⏳","Urgenza":"⏳",
+ "Spesa Effettiva Revolut":"💸","Differenza":"📊","Budget Previsto (Yen)":"💴","Pernottamento":"🏨",
+ "Spostamento":"🚉","App":"📱","Contatto / Servizio":"🚨"
+};
+const SECTION_EMOJI = {
+ "1. Itinerario":"🗺️","2. Hotel e Alloggi":"🏨","3. Trasporti":"🚄","4. App":"📱","5. Valigia":"🧳",
+ "6. Attrazioni":"⛩️","7. Guida":"📖","8. Cibo e Ristoranti":"🍜","9. Shopping":"🛍️","10. Emergenze":"🚨","11. Budget":"💴"
+};
 
 const META = {
- "1. Itinerario":{icon:"🗺️",label:"Itinerario",title:"Attività Principali",sub:["Giorno","Data","Città"],badge:null,notes:[],maps:[],search:["Città","Attività Principali","Spostamento"],extra:["Pernottamento","Spostamento"]},
- "2. Hotel e Alloggi":{icon:"🏨",label:"Hotel e Alloggi",title:"Nome Hotel / Ryokan",titleFallback:"Città",sub:["Data","Città","Notte"],badge:null,notes:["Note / Conferma"],maps:[{f:"Link Google Maps",l:"Maps"}],search:["Città","Nome Hotel / Ryokan"],extra:[]},
- "3. Trasporti":{icon:"🚄",label:"Trasporti",title:"Tratta / Servizio",sub:["Mezzo / Vettore"],badge:"Costo Stimato",notes:[],maps:[{f:"Link Maps Partenza",l:"Partenza"},{f:"Link Maps Arrivo",l:"Arrivo"}],search:["Tratta / Servizio","Mezzo / Vettore"],extra:["Durata"]},
- "4. App":{icon:"📱",label:"App",title:"App",sub:["Categoria"],badge:"Urgenza Configurazione",notes:["Funzione Principale","Note"],maps:[],search:["App","Categoria"],extra:[]},
- "5. Valigia":{icon:"🧳",label:"Valigia",title:"Articolo",sub:["Categoria"],badge:null,toggle:"Messo in Valigia?",notes:["Note per il Giappone"],maps:[],search:["Articolo","Categoria"],extra:["Urgenza"]},
- "6. Attrazioni":{icon:"⛩️",label:"Attrazioni",title:"Attrazione",titleFallback:"Città",sub:["Città","Categoria"],badge:"Urgenza",notes:["Note"],maps:[{f:"Link Google Maps",l:"Maps"}],search:["Città","Attrazione","Categoria"],extra:[]},
- "7. Guida":{icon:"📖",label:"Guida",title:"Argomento",sub:[],badge:null,notes:["Dettagli Operativi"],maps:[],search:["Argomento"],extra:[]},
- "8. Cibo e Ristoranti":{icon:"🍜",label:"Cibo e Ristoranti",title:"Specialità / Piatto",titleFallback:"Città",sub:["Città","Categoria"],badge:null,notes:["Note e Suggerimenti"],maps:[{f:"Link Google Maps",l:"Maps"}],search:["Città","Specialità / Piatto","Categoria"],extra:[]},
- "9. Shopping":{icon:"🛍️",label:"Shopping",title:"Brand / Negozio",titleFallback:"Quartiere",sub:["Città","Quartiere","Categoria"],badge:null,notes:["Articolo Mirato / Note"],maps:[{f:"Link Google Maps",l:"Maps"}],search:["Città","Quartiere","Brand / Negozio"],extra:[]},
- "10. Emergenze":{icon:"🚨",label:"Emergenze",title:"Contatto / Servizio",sub:["Numero / Riferimento"],badge:null,notes:["Dettagli Operativi"],maps:[],search:["Contatto / Servizio"],extra:[]},
- "11. Budget":{icon:"💴",label:"Budget",title:"Data",sub:["Giorno"],badge:"Budget Previsto (Yen)",notes:["Note / Categoria"],maps:[],search:["Data","Giorno"],extra:["Spesa Effettiva Revolut","Differenza"]},
+ "1. Itinerario":{label:"Itinerario",title:"Attività Principali",badge:null,search:["Città","Attività Principali","Spostamento"]},
+ "2. Hotel e Alloggi":{label:"Alloggi",title:"Nome Hotel / Ryokan",titleFallback:"Città",sub:["Città","Notte"],notes:["Note / Conferma"],maps:[{f:"Link Google Maps",l:"Maps"}],search:["Città","Nome Hotel / Ryokan"],cityField:"Città"},
+ "3. Trasporti":{label:"Trasporti",title:"Tratta / Servizio",sub:["Mezzo / Vettore"],badge:"Costo Stimato",notes:[],maps:[{f:"Link Maps Partenza",l:"Partenza"},{f:"Link Maps Arrivo",l:"Arrivo"}],search:["Tratta / Servizio","Mezzo / Vettore"],extra:["Durata"]},
+ "4. App":{label:"App",title:"App",sub:["Categoria"],badge:"Urgenza Configurazione",notes:["Funzione Principale","Note"],maps:[],search:["App","Categoria"]},
+ "5. Valigia":{label:"Valigia",title:"Articolo",sub:["Categoria"],toggle:"Messo in Valigia?",notes:["Note per il Giappone"],maps:[],search:["Articolo","Categoria"],extra:["Urgenza"]},
+ "6. Attrazioni":{label:"Attrazioni",title:"Attrazione",titleFallback:"Città",sub:["Città","Categoria"],badge:"Urgenza",notes:["Note"],maps:[{f:"Link Google Maps",l:"Maps"}],search:["Città","Attrazione","Categoria"],cityField:"Città"},
+ "7. Guida":{label:"Guida",title:"Argomento",sub:[],badge:null,notes:["Dettagli Operativi"],maps:[],search:["Argomento"]},
+ "8. Cibo e Ristoranti":{label:"Cibo",title:"Specialità / Piatto",titleFallback:"Città",sub:["Città","Categoria"],badge:null,notes:["Note e Suggerimenti"],maps:[{f:"Link Google Maps",l:"Maps"}],search:["Città","Specialità / Piatto","Categoria"],cityField:"Città"},
+ "9. Shopping":{label:"Shopping",title:"Brand / Negozio",titleFallback:"Quartiere",sub:["Città","Quartiere","Categoria"],badge:null,notes:["Articolo Mirato / Note"],maps:[{f:"Link Google Maps",l:"Maps"}],search:["Città","Quartiere","Brand / Negozio"],cityField:"Città"},
+ "10. Emergenze":{label:"Emergenze",title:"Contatto / Servizio",sub:["Numero / Riferimento"],badge:null,notes:["Dettagli Operativi"],maps:[],search:["Contatto / Servizio"]},
+ "11. Budget":{label:"Budget",title:"Data",sub:["Giorno"],badge:"Budget Previsto (Yen)",notes:["Note / Categoria"],maps:[],search:["Data","Giorno"],extra:["Spesa Effettiva Revolut","Differenza"]},
 };
-const MORE_KEYS = ["2. Hotel e Alloggi","3. Trasporti","9. Shopping","4. App","5. Valigia","7. Guida","10. Emergenze","11. Budget"];
-const PRIMARY_KEYS = ["1. Itinerario","6. Attrazioni","8. Cibo e Ristoranti"];
+const TAB_ORDER = ["1. Itinerario","mappa","6. Attrazioni","8. Cibo e Ristoranti","2. Hotel e Alloggi","3. Trasporti","9. Shopping","4. App","5. Valigia","7. Guida","10. Emergenze","11. Budget","settings"];
 
-let STATE = { data:null, settings:null, view:"1. Itinerario", searchTerm:"" };
+let STATE = { data:null, settings:null, view:"1. Itinerario", searchTerm:"", cityFilter:"" };
 
 function loadState(){
   let d = localStorage.getItem("ggwtDB");
   STATE.data = d ? JSON.parse(d) : JSON.parse(JSON.stringify(DEFAULT_DATA));
   let s = localStorage.getItem("ggwtSettings");
-  STATE.settings = s ? JSON.parse(s) : {theme:"auto", accent:"torii"};
+  STATE.settings = s ? JSON.parse(s) : {theme:"auto", accent:"ao"};
   applyTheme();
 }
 function saveData(){ localStorage.setItem("ggwtDB", JSON.stringify(STATE.data)); }
@@ -172,59 +198,110 @@ function toast(msg){
 }
 function isMapsUrl(v){ return v && /^https?:\/\//.test(v.trim()); }
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function emojiFor(field){ return EMOJI_MAP[field] || "•"; }
+
+function parseDate(str){
+  if(!str) return null;
+  const m = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(!m) return null;
+  return new Date(+m[1], +m[2]-1, +m[3]);
+}
+function fmtShort(str){
+  const d = parseDate(str); if(!d) return str;
+  return `${GIORNI_IT[d.getDay()]} ${d.getDate()} ${MESI_IT[d.getMonth()]}`;
+}
+function fmtDayMonth(str){
+  const d = parseDate(str); if(!d) return str;
+  return `${d.getDate()} ${MESI_IT[d.getMonth()]}`;
+}
+
+function buildTabbar(){
+  const nav = document.getElementById("tabbar");
+  nav.innerHTML="";
+  TAB_ORDER.forEach(key=>{
+    const btn=document.createElement("button");
+    btn.dataset.tab=key;
+    let icon, label;
+    if(key==="mappa"){ icon="🗺️📍"; label="Mappa"; }
+    else if(key==="settings"){ icon="⚙️"; label="Impostazioni"; }
+    else { icon=SECTION_EMOJI[key]; label=META[key].label; }
+    btn.innerHTML=`<span class="ic">${icon}</span>${label}`;
+    btn.onclick=()=>{ STATE.view=key; STATE.searchTerm=""; STATE.cityFilter=""; render(); };
+    nav.appendChild(btn);
+  });
+}
 
 function render(){
   const main = document.getElementById("main");
   const title = document.getElementById("pageTitle");
-  const back = document.getElementById("backBtn");
+  const subtitle = document.getElementById("pageSubtitle");
   const fab = document.getElementById("fabAdd");
-  document.querySelectorAll("nav.tabbar button").forEach(b=>b.classList.remove("active"));
-  main.innerHTML=""; fab.style.display="none"; back.style.visibility="hidden";
-
-  if(STATE.view==="more"){
-    title.textContent="Altro";
-    document.querySelector('[data-tab="more"]').classList.add("active");
-    const grid = document.createElement("div"); grid.className="grid-menu";
-    MORE_KEYS.forEach(k=>{
-      const m=META[k];
-      const it=document.createElement("div"); it.className="grid-item";
-      it.innerHTML=`<span class="emoji">${m.icon}</span><span class="label">${m.label}</span>`;
-      it.onclick=()=>{ STATE.view=k; STATE.searchTerm=""; render(); };
-      grid.appendChild(it);
-    });
-    main.appendChild(grid);
-    return;
-  }
+  document.querySelectorAll("nav.tabbar button").forEach(b=>{
+    b.classList.toggle("active", b.dataset.tab===STATE.view);
+  });
+  main.innerHTML=""; fab.style.display="none"; subtitle.textContent="";
 
   if(STATE.view==="settings"){
-    title.textContent="Impostazioni";
-    document.querySelector('[data-tab="settings"]').classList.add("active");
+    title.textContent="⚙️ Impostazioni";
     main.appendChild(renderSettings());
+    return;
+  }
+  if(STATE.view==="mappa"){
+    title.textContent="🗺️ Mappa rapida";
+    subtitle.textContent="Tutti i luoghi con link Google Maps";
+    main.appendChild(renderMappa());
     return;
   }
 
   const key = STATE.view;
   const meta = META[key];
-  title.textContent = meta.label;
-  if(PRIMARY_KEYS.includes(key)){
-    document.querySelector(`[data-tab="${key}"]`)?.classList.add("active");
-  } else {
-    document.querySelector('[data-tab="more"]').classList.add("active");
-    back.style.visibility="visible";
-    back.onclick=()=>{ STATE.view="more"; render(); };
+  title.textContent = `${SECTION_EMOJI[key]} ${meta.label}`;
+
+  if(key==="1. Itinerario"){
+    main.appendChild(renderItinerarioStats());
   }
   fab.style.display="block";
   fab.onclick=()=>openEditModal(key,null);
 
   const wrap = document.createElement("div");
-  const sb = document.createElement("div"); sb.className="search-bar";
-  sb.innerHTML = `<input type="search" placeholder="Cerca in ${meta.label}..." value="${escapeHtml(STATE.searchTerm||"")}">`;
-  sb.querySelector("input").oninput = (e)=>{ STATE.searchTerm = e.target.value; renderList(key, listContainer); };
-  wrap.appendChild(sb);
+  const toolbar = document.createElement("div"); toolbar.className="toolbar";
+  toolbar.innerHTML = `<input type="search" placeholder="🔎 Cerca in ${meta.label}..." value="${escapeHtml(STATE.searchTerm||"")}">`;
+  toolbar.querySelector("input").oninput = (e)=>{ STATE.searchTerm = e.target.value; renderList(key, listContainer); };
+
+  if(meta.cityField){
+    const cities = Array.from(new Set((STATE.data[key].rows||[]).map(r=>r[meta.cityField]).filter(v=>v))).sort();
+    const dd = document.createElement("div"); dd.className="dropdown";
+    dd.innerHTML = `<select><option value="">🌆 Tutte le città</option>${cities.map(c=>`<option value="${escapeHtml(c)}" ${STATE.cityFilter===c?'selected':''}>${escapeHtml(c)}</option>`).join("")}</select>`;
+    dd.querySelector("select").onchange=(e)=>{ STATE.cityFilter=e.target.value; renderList(key, listContainer); };
+    toolbar.appendChild(dd);
+  }
+  wrap.appendChild(toolbar);
   const listContainer = document.createElement("div");
   wrap.appendChild(listContainer);
   main.appendChild(wrap);
   renderList(key, listContainer);
+}
+
+function renderItinerarioStats(){
+  const rows = STATE.data["1. Itinerario"].rows;
+  const cities = new Set();
+  rows.forEach(r=>{
+    (r["Città"]||"").split("/").forEach(c=>{ c=c.trim(); if(c && c!=="Partenza" && c!=="-") cities.add(c); });
+  });
+  const firstDate = rows[0]?.Data, lastDate = rows[rows.length-1]?.Data;
+  document.getElementById("pageSubtitle").textContent =
+    firstDate && lastDate ? `Giappone ${fmtDayMonth(firstDate)} – ${fmtDayMonth(lastDate)}` : "";
+  const box = document.createElement("div"); box.className="stats-row";
+  box.innerHTML = `
+    <div class="stat-box"><div class="stat-label">Durata</div><div class="stat-value">${rows.length} giorni</div></div>
+    <div class="stat-box"><div class="stat-label">Tappe</div><div class="stat-value">${cities.size} città</div></div>
+    <div class="stat-box"><div class="stat-label">Periodo</div><div class="stat-value">${firstDate?fmtDayMonth(firstDate):""} – ${lastDate?fmtDayMonth(lastDate):""}</div></div>`;
+  return box;
+}
+
+function getHotelForDate(dateStr){
+  const hotelRows = STATE.data["2. Hotel e Alloggi"]?.rows || [];
+  return hotelRows.find(h=>h["Data"]===dateStr);
 }
 
 function renderList(key, container){
@@ -233,55 +310,108 @@ function renderList(key, container){
   const term = (STATE.searchTerm||"").toLowerCase().trim();
   const filtered = [];
   rows.forEach((r, idx)=>{
-    if(!term || (meta.search||[]).some(f => (r[f]||"").toLowerCase().includes(term))) filtered.push({r, idx});
+    const matchesSearch = !term || (meta.search||[]).some(f => (r[f]||"").toLowerCase().includes(term));
+    const matchesCity = !STATE.cityFilter || (meta.cityField && r[meta.cityField]===STATE.cityFilter);
+    if(matchesSearch && (!meta.cityField || !STATE.cityFilter || matchesCity)) filtered.push({r, idx});
   });
 
   container.innerHTML="";
   if(filtered.length===0){
-    container.innerHTML = `<div class="empty-state">Nessun elemento. Tocca + per aggiungerne uno.</div>`;
+    container.innerHTML = `<div class="empty-state">🔍 Nessun elemento trovato.<br>Tocca + per aggiungerne uno.</div>`;
     return;
   }
   filtered.forEach(({r, idx})=>{
-    container.appendChild(renderCard(key, meta, r, idx));
+    container.appendChild(key==="1. Itinerario" ? renderItinerarioCard(r, idx) : renderCard(key, meta, r, idx));
   });
+}
+
+function renderItinerarioCard(r, idx){
+  const card = document.createElement("div"); card.className="card";
+  card.onclick=()=>openEditModal("1. Itinerario", idx);
+  const top = document.createElement("div"); top.className="row-top";
+  const left = document.createElement("div"); left.className="row-top-left";
+  const chip = document.createElement("span"); chip.className="chip"; chip.textContent = "G"+(idx+1);
+  const titleWrap = document.createElement("div");
+  titleWrap.innerHTML = `<h3>${escapeHtml(r["Città"]||"—")}</h3>`;
+  left.appendChild(chip); left.appendChild(titleWrap);
+  top.appendChild(left);
+  const dc = document.createElement("div"); dc.className="date-chevron";
+  dc.innerHTML = `${escapeHtml(fmtShort(r["Data"]))} <span class="chev">›</span>`;
+  top.appendChild(dc);
+  card.appendChild(top);
+
+  const bullets = document.createElement("div"); bullets.className="bullets";
+  const acts = (r["Attività Principali"]||"").split(/,|;/).map(s=>s.trim()).filter(Boolean);
+  const icons = ["☀️","🏙️","🌙","✨"];
+  acts.slice(0,4).forEach((a,i)=>{
+    const b=document.createElement("div"); b.className="bullet";
+    b.innerHTML = `<span class="ic">${icons[i%icons.length]}</span><span>${escapeHtml(a)}</span>`;
+    bullets.appendChild(b);
+  });
+  if(r["Spostamento"] && r["Spostamento"]!=="-"){
+    const b=document.createElement("div"); b.className="bullet dim";
+    b.innerHTML = `<span class="ic">🚉</span><span>${escapeHtml(r["Spostamento"])}</span>`;
+    bullets.appendChild(b);
+  }
+  card.appendChild(bullets);
+
+  const hotel = getHotelForDate(r["Data"]);
+  const hotelName = hotel && hotel["Nome Hotel / Ryokan"] ? hotel["Nome Hotel / Ryokan"] : (r["Pernottamento"] && r["Pernottamento"]!=="-" ? r["Pernottamento"] : null);
+  if(hotelName){
+    const pill = document.createElement("div"); pill.className="hotel-pill";
+    pill.innerHTML = `<span class="htxt">🏨 ${escapeHtml(hotelName)}</span>`;
+    const link = hotel && hotel["Link Google Maps"];
+    if(isMapsUrl(link)){
+      const a=document.createElement("a"); a.className="maps-btn small"; a.href=link; a.target="_blank"; a.rel="noopener"; a.onclick=(e)=>e.stopPropagation();
+      a.innerHTML="📍 Maps";
+      pill.appendChild(a);
+    }
+    card.appendChild(pill);
+  }
+  return card;
 }
 
 function renderCard(key, meta, r, idx){
   const card = document.createElement("div"); card.className="card";
+  card.onclick=(e)=>{ if(e.target.closest("select")||e.target.closest("a")) return; openEditModal(key, idx); };
   let titleVal = r[meta.title] || (meta.titleFallback ? r[meta.titleFallback] : "") || "(senza titolo)";
   let subParts = (meta.sub||[]).map(f=>r[f]).filter(v=>v);
 
   const top = document.createElement("div"); top.className="row-top";
-  const left = document.createElement("div");
-  left.innerHTML = `<h3>${escapeHtml(titleVal)}</h3>` + (subParts.length? `<div class="sub">${escapeHtml(subParts.join(" · "))}</div>`:"");
+  const left = document.createElement("div"); left.className="row-top-left"; left.style.minWidth="0";
+  const titleWrap = document.createElement("div"); titleWrap.style.minWidth="0";
+  titleWrap.innerHTML = `<h3>${escapeHtml(titleVal)}</h3>` + (subParts.length? `<div class="sub">${escapeHtml(subParts.join(" · "))}</div>`:"");
+  left.appendChild(titleWrap);
   top.appendChild(left);
 
   if(meta.toggle){
     const sel = document.createElement("select"); sel.className="status-select";
-    VALIGIA_STATUS.forEach(opt=>{
+    let opts = VALIGIA_STATUS.includes(r[meta.toggle]) ? VALIGIA_STATUS : [r[meta.toggle]||"Da preparare", ...VALIGIA_STATUS];
+    opts.forEach(opt=>{
       const o=document.createElement("option"); o.value=opt; o.textContent=opt;
       if((r[meta.toggle]||"Da preparare")===opt) o.selected=true;
       sel.appendChild(o);
     });
-    if(!VALIGIA_STATUS.includes(r[meta.toggle])){
-      const o=document.createElement("option"); o.value=r[meta.toggle]; o.textContent=r[meta.toggle]; o.selected=true;
-      sel.insertBefore(o, sel.firstChild);
-    }
     sel.onclick=(e)=>e.stopPropagation();
     sel.onchange=(e)=>{ r[meta.toggle]=e.target.value; saveData(); };
     top.appendChild(sel);
   } else if(meta.badge && r[meta.badge]){
-    const b=document.createElement("span"); b.className="badge"; b.textContent=r[meta.badge];
+    const b=document.createElement("span"); b.className="badge"; b.textContent=`${emojiFor(meta.badge)} ${r[meta.badge]}`;
     top.appendChild(b);
+  } else {
+    const chev=document.createElement("span"); chev.className="date-chevron"; chev.innerHTML=`<span class="chev">›</span>`;
+    top.appendChild(chev);
   }
   card.appendChild(top);
 
+  const bullets = document.createElement("div"); bullets.className="bullets";
   (meta.notes||[]).forEach(f=>{
-    if(r[f]) { const p=document.createElement("div"); p.className="note"; p.textContent=r[f]; card.appendChild(p); }
+    if(r[f]) { const b=document.createElement("div"); b.className="bullet"; b.innerHTML=`<span class="ic">${emojiFor(f)}</span><span>${escapeHtml(r[f])}</span>`; bullets.appendChild(b); }
   });
   (meta.extra||[]).forEach(f=>{
-    if(r[f]){ const p=document.createElement("div"); p.className="meta-line"; p.textContent = f+": "+r[f]; card.appendChild(p); }
+    if(r[f]){ const b=document.createElement("div"); b.className="bullet dim"; b.innerHTML=`<span class="ic">${emojiFor(f)}</span><span>${f}: ${escapeHtml(r[f])}</span>`; bullets.appendChild(b); }
   });
+  if(bullets.children.length) card.appendChild(bullets);
 
   const mapsRow = document.createElement("div"); mapsRow.className="maps-row";
   (meta.maps||[]).forEach(m=>{
@@ -293,13 +423,46 @@ function renderCard(key, meta, r, idx){
     }
   });
   if(mapsRow.children.length) card.appendChild(mapsRow);
-
-  const actions = document.createElement("div"); actions.className="card-actions";
-  const editBtn=document.createElement("button"); editBtn.className="edit-btn"; editBtn.textContent="Modifica ✎";
-  editBtn.onclick=()=>openEditModal(key, idx);
-  actions.appendChild(editBtn);
-  card.appendChild(actions);
   return card;
+}
+
+function renderMappa(){
+  const wrap = document.createElement("div");
+  const groups = [];
+  SHEET_ORDER.forEach(key=>{
+    const meta = META[key];
+    if(!meta.maps || !meta.maps.length) return;
+    const rows = STATE.data[key].rows;
+    const items = [];
+    rows.forEach(r=>{
+      meta.maps.forEach(m=>{
+        const url = r[m.f];
+        if(isMapsUrl(url)){
+          let t = r[meta.title] || (meta.titleFallback?r[meta.titleFallback]:"") || "—";
+          if(meta.maps.length>1) t += ` (${m.l})`;
+          items.push({title:t, sub:(meta.sub||[]).map(f=>r[f]).filter(Boolean).join(" · "), url});
+        }
+      });
+    });
+    if(items.length) groups.push({key, meta, items});
+  });
+
+  if(groups.length===0){
+    wrap.innerHTML = `<div class="empty-state">📍 Nessun link Google Maps ancora inserito.<br>Aggiungili tramite l'Excel o dal modulo di modifica di ogni sezione.</div>`;
+    return wrap;
+  }
+  groups.forEach(g=>{
+    const h = document.createElement("div"); h.className="maps-group-title";
+    h.innerHTML = `${SECTION_EMOJI[g.key]} ${g.meta.label}`;
+    wrap.appendChild(h);
+    g.items.forEach(it=>{
+      const card = document.createElement("div"); card.className="card"; card.style.cursor="default";
+      card.innerHTML = `<div class="row-top"><div class="row-top-left"><div><h3>${escapeHtml(it.title)}</h3>${it.sub?`<div class="sub">${escapeHtml(it.sub)}</div>`:""}</div></div></div>
+        <div class="maps-row"><a class="maps-btn" href="${it.url}" target="_blank" rel="noopener">📍 Apri in Maps</a></div>`;
+      wrap.appendChild(card);
+    });
+  });
+  return wrap;
 }
 
 function openEditModal(key, idx){
@@ -314,24 +477,24 @@ function openEditModal(key, idx){
     const val = row[h] || "";
     if(meta.toggle && h===meta.toggle){
       const opts = VALIGIA_STATUS.includes(val) ? VALIGIA_STATUS : [val, ...VALIGIA_STATUS];
-      return `<div class="field"><label>${escapeHtml(h)}</label><select data-field="${escapeHtml(h)}">${opts.map(o=>`<option value="${escapeHtml(o)}" ${o===val?'selected':''}>${escapeHtml(o)}</option>`).join("")}</select></div>`;
+      return `<div class="field"><label>${emojiFor(h)} ${escapeHtml(h)}</label><select data-field="${escapeHtml(h)}">${opts.map(o=>`<option value="${escapeHtml(o)}" ${o===val?'selected':''}>${escapeHtml(o)}</option>`).join("")}</select></div>`;
     }
     const isLink = /link|maps/i.test(h);
     const isDate = /^data$/i.test(h);
     const type = isLink ? "url" : isDate ? "date" : "text";
     const long = /note|dettagli|articolo mirato|attività/i.test(h);
     if(long){
-      return `<div class="field"><label>${escapeHtml(h)}</label><textarea data-field="${escapeHtml(h)}">${escapeHtml(val)}</textarea></div>`;
+      return `<div class="field"><label>${emojiFor(h)} ${escapeHtml(h)}</label><textarea data-field="${escapeHtml(h)}">${escapeHtml(val)}</textarea></div>`;
     }
-    return `<div class="field"><label>${escapeHtml(h)}</label><input type="${type}" data-field="${escapeHtml(h)}" value="${escapeHtml(val)}" placeholder="${isLink?'https://maps.app.goo.gl/...':''}"></div>`;
+    return `<div class="field"><label>${emojiFor(h)} ${escapeHtml(h)}</label><input type="${type}" data-field="${escapeHtml(h)}" value="${escapeHtml(val)}" placeholder="${isLink?'https://maps.app.goo.gl/...':''}"></div>`;
   }).join("");
-  modal.innerHTML = `<h2>${idx!==null?"Modifica elemento":"Nuovo elemento"} — ${meta.label}</h2>
+  modal.innerHTML = `<h2>${idx!==null?"✎ Modifica":"➕ Nuovo"} — ${SECTION_EMOJI[key]} ${meta.label}</h2>
     <div id="fieldsHolder">${fieldsHtml}</div>
     <div class="modal-actions">
       <button class="btn-cancel" id="cancelBtn">Annulla</button>
       <button class="btn-save" id="saveBtn">Salva</button>
     </div>
-    ${idx!==null?'<div class="modal-actions"><button class="btn-delete" id="delBtn">Elimina elemento</button></div>':''}`;
+    ${idx!==null?'<div class="modal-actions"><button class="btn-delete" id="delBtn">🗑️ Elimina elemento</button></div>':''}`;
   overlay.appendChild(modal); root.appendChild(overlay);
 
   modal.querySelector("#cancelBtn").onclick=closeModal;
@@ -340,12 +503,12 @@ function openEditModal(key, idx){
     modal.querySelectorAll("[data-field]").forEach(inp=>{ newRow[inp.dataset.field] = inp.value; });
     if(idx!==null){ STATE.data[key].rows[idx] = newRow; }
     else { STATE.data[key].rows.push(newRow); }
-    saveData(); closeModal(); render(); toast("Salvato");
+    saveData(); closeModal(); render(); toast("✅ Salvato");
   };
   const delBtn = modal.querySelector("#delBtn");
   if(delBtn) delBtn.onclick=()=>{
     if(confirm("Eliminare definitivamente questo elemento?")){
-      STATE.data[key].rows.splice(idx,1); saveData(); closeModal(); render(); toast("Eliminato");
+      STATE.data[key].rows.splice(idx,1); saveData(); closeModal(); render(); toast("🗑️ Eliminato");
     }
   };
 }
@@ -355,7 +518,7 @@ function renderSettings(){
   const wrap = document.createElement("div");
   wrap.innerHTML = `
   <div class="settings-group">
-    <h4>Tema</h4>
+    <h4>🎨 Tema</h4>
     <div class="theme-options">
       <button class="pill" data-theme="light">☀️ Chiaro</button>
       <button class="pill" data-theme="dark">🌙 Scuro</button>
@@ -363,16 +526,16 @@ function renderSettings(){
     </div>
   </div>
   <div class="settings-group">
-    <h4>Colore accento</h4>
+    <h4>🖌️ Colore accento</h4>
     <div class="accent-options">
-      <button class="swatch" data-accent="torii" style="background:#c94a5a"></button>
-      <button class="swatch" data-accent="ao" style="background:#3465a4"></button>
-      <button class="swatch" data-accent="matcha" style="background:#548a56"></button>
+      <button class="swatch" data-accent="ao" style="background:#4f7cff"></button>
+      <button class="swatch" data-accent="torii" style="background:#e0566b"></button>
+      <button class="swatch" data-accent="matcha" style="background:#4f9d5a"></button>
       <button class="swatch" data-accent="sakura" style="background:#e08aa0"></button>
     </div>
   </div>
   <div class="settings-group">
-    <h4>Backup e ripristino</h4>
+    <h4>💾 Backup e ripristino</h4>
     <button class="settings-btn" id="exportJson">💾 Esporta backup (JSON) <span class="arrow">›</span></button>
     <button class="settings-btn" id="importJson">📥 Importa backup (JSON) <span class="arrow">›</span></button>
     <button class="settings-btn" id="exportXlsx">📤 Esporta come Excel (.xlsx) <span class="arrow">›</span></button>
@@ -382,11 +545,11 @@ function renderSettings(){
     <input type="file" id="fileXlsx" accept=".xlsx">
   </div>
   <div class="settings-group">
-    <h4>Info</h4>
-    <div style="font-size:13px;color:var(--text-dim);line-height:1.5">
+    <h4>ℹ️ Info</h4>
+    <div style="font-size:13px;color:var(--text-dim);line-height:1.6">
       App Viaggio Giappone 2026/27 — dati salvati localmente sul dispositivo.<br>
-      Per aggiungerla alla Home: apri Safari → icona Condividi → "Aggiungi alla schermata Home".<br>
-      Se aggiorni l'app, rimuovi e ri-aggiungi l'icona dalla Home per applicare le modifiche più recenti.
+      📲 Per aggiungerla alla Home: Safari → icona Condividi → "Aggiungi alla schermata Home".<br>
+      🔄 Dopo un aggiornamento del codice, rimuovi e ri-aggiungi l'icona dalla Home.
     </div>
   </div>`;
 
@@ -402,7 +565,7 @@ function renderSettings(){
   wrap.querySelector("#exportJson").onclick=()=>{
     const payload = { exportedAt:new Date().toISOString(), data:STATE.data, settings:STATE.settings };
     downloadBlob(JSON.stringify(payload,null,2), "giappone-backup.json", "application/json");
-    toast("Backup JSON esportato");
+    toast("💾 Backup JSON esportato");
   };
   wrap.querySelector("#importJson").onclick=()=>wrap.querySelector("#fileJson").click();
   wrap.querySelector("#fileJson").onchange=(e)=>{
@@ -413,7 +576,7 @@ function renderSettings(){
         const payload=JSON.parse(ev.target.result);
         if(payload.data){ STATE.data=payload.data; saveData(); }
         if(payload.settings){ STATE.settings=payload.settings; saveSettings(); applyTheme(); }
-        toast("Backup importato con successo"); render();
+        toast("✅ Backup importato"); render();
       }catch(err){ alert("File non valido: "+err.message); }
     };
     reader.readAsText(file);
@@ -428,7 +591,7 @@ function renderSettings(){
       XLSX.utils.book_append_sheet(wb, ws, key.length>31?key.slice(0,31):key);
     });
     XLSX.writeFile(wb, "Giappone_Backup.xlsx");
-    toast("Excel esportato");
+    toast("📤 Excel esportato");
   };
 
   wrap.querySelector("#importXlsx").onclick=()=>wrap.querySelector("#fileXlsx").click();
@@ -471,7 +634,7 @@ function renderSettings(){
   wrap.querySelector("#resetData").onclick=()=>{
     if(confirm("Questo sovrascriverà tutti i dati correnti con quelli originali del foglio caricato. Continuare?")){
       STATE.data = JSON.parse(JSON.stringify(DEFAULT_DATA));
-      saveData(); render(); toast("Dati ripristinati");
+      saveData(); render(); toast("♻️ Dati ripristinati");
     }
   };
   return wrap;
@@ -485,17 +648,12 @@ function downloadBlob(content, filename, mime){
   URL.revokeObjectURL(url);
 }
 
-document.querySelectorAll("nav.tabbar button").forEach(btn=>{
-  btn.onclick=()=>{
-    STATE.view = btn.dataset.tab; STATE.searchTerm=""; render();
-  };
-});
-
 if(window.matchMedia){
   window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ()=>{ if(STATE.settings.theme==="auto") applyTheme(); });
 }
 
 loadState();
+buildTabbar();
 render();
 </script>
 </body>
