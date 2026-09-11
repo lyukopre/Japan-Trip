@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>Giappone 2026/27</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#111318">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23c94a5a'/%3E%3Ccircle cx='50' cy='45' r='22' fill='%23fff'/%3E%3C/svg%3E">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#f4f2ee; --card:#ffffff; --text:#1c1b1a; --text-dim:#6b6b6b;
+  --border:#e4e0d8; --accent:#c94a5a; --accent-soft:#fbe7ea; --nav-bg:#ffffff;
+  --shadow:0 1px 3px rgba(0,0,0,.08);
+  --safe-top:env(safe-area-inset-top,0px); --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html[data-theme="dark"]{
+  --bg:#111318; --card:#1c1f26; --text:#f2f1ee; --text-dim:#9a9d a3; --text-dim:#9aa0a6;
+  --border:#2b2f38; --accent-soft:#2c1e22; --nav-bg:#161920;
+  --shadow:0 1px 3px rgba(0,0,0,.4);
+}
+html[data-accent="ao"]{--accent:#3465a4; }
+html[data-accent="matcha"]{--accent:#548a56;}
+html[data-accent="sakura"]{--accent:#e08aa0;}
+html[data-accent="torii"]{--accent:#c94a5a;}
+html[data-theme="dark"][data-accent="ao"]{--accent-soft:#182634;}
+html[data-theme="dark"][data-accent="matcha"]{--accent-soft:#1b2a1c;}
+html[data-theme="dark"][data-accent="sakura"]{--accent-soft:#2e2129;}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+body{margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; overscroll-behavior-y:none;}
+#app{display:flex; flex-direction:column; min-height:100vh;}
+header.topbar{
+  position:sticky; top:0; z-index:20; background:var(--nav-bg);
+  padding:calc(var(--safe-top)+10px) 16px 10px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:10px;
+}
+header.topbar h1{font-size:19px; margin:0; flex:1; font-weight:700;}
+header.topbar button.back{background:none; border:none; color:var(--accent); font-size:16px; font-weight:600; padding:4px 6px;}
+main{flex:1; padding:14px 14px calc(90px + var(--safe-bottom)); max-width:640px; margin:0 auto; width:100%;}
+.search-bar{margin-bottom:12px;}
+.search-bar input{width:100%; padding:10px 14px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--text); font-size:15px;}
+.section-title{font-size:13px; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:.04em; margin:18px 4px 8px;}
+.card{background:var(--card); border-radius:16px; padding:14px 16px; margin-bottom:10px; box-shadow:var(--shadow); border:1px solid var(--border);}
+.card .row-top{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
+.card h3{margin:0; font-size:16px; font-weight:700;}
+.card .sub{color:var(--text-dim); font-size:13px; margin-top:2px;}
+.badge{font-size:11px; font-weight:700; padding:3px 9px; border-radius:20px; background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
+.card .note{font-size:14px; color:var(--text); margin-top:8px; line-height:1.4;}
+.card .meta-line{font-size:13px; color:var(--text-dim); margin-top:4px;}
+.maps-row{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;}
+.maps-btn{display:inline-flex; align-items:center; gap:6px; background:var(--accent); color:#fff; border:none; padding:8px 13px; border-radius:10px; font-size:13px; font-weight:600; text-decoration:none;}
+.maps-btn.secondary{background:var(--accent-soft); color:var(--accent);}
+.card-actions{display:flex; justify-content:flex-end; margin-top:8px;}
+.edit-btn{background:none; border:none; color:var(--text-dim); font-size:13px; padding:4px 8px;}
+.grid-menu{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px;}
+.grid-item{background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px 12px; text-align:center; box-shadow:var(--shadow);}
+.grid-item .emoji{font-size:28px; display:block; margin-bottom:6px;}
+.grid-item .label{font-size:14px; font-weight:600;}
+.fab{position:fixed; right:18px; bottom:calc(96px + var(--safe-bottom)); width:52px; height:52px; border-radius:50%; background:var(--accent); color:#fff; font-size:26px; border:none; box-shadow:0 4px 10px rgba(0,0,0,.25); z-index:15;}
+nav.tabbar{
+  position:fixed; bottom:0; left:0; right:0; display:flex; background:var(--nav-bg);
+  border-top:1px solid var(--border); padding:6px 4px calc(6px + var(--safe-bottom)); z-index:20;
+}
+nav.tabbar button{flex:1; background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--text-dim); font-size:11px; padding:4px 0;}
+nav.tabbar button .ic{font-size:21px;}
+nav.tabbar button.active{color:var(--accent);}
+.empty-state{text-align:center; color:var(--text-dim); padding:40px 20px; font-size:14px;}
+.theme-options,.accent-options{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;}
+.pill{padding:9px 16px; border-radius:20px; border:1px solid var(--border); background:var(--card); font-size:14px; font-weight:600; color:var(--text);}
+.pill.active{background:var(--accent); color:#fff; border-color:var(--accent);}
+.swatch{width:38px; height:38px; border-radius:50%; border:3px solid transparent;}
+.swatch.active{border-color:var(--text);}
+.settings-group{margin-bottom:24px;}
+.settings-group h4{margin:0 0 4px; font-size:13px; text-transform:uppercase; color:var(--text-dim); letter-spacing:.03em;}
+.settings-btn{width:100%; text-align:left; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px 16px; font-size:15px; font-weight:600; color:var(--text); margin-top:8px; display:flex; justify-content:space-between; align-items:center;}
+.settings-btn.danger{color:#c0392b;}
+.settings-btn .arrow{color:var(--text-dim); font-weight:400;}
+input[type=file]{display:none;}
+.modal-overlay{position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:30; display:flex; align-items:flex-end;}
+.modal{background:var(--card); width:100%; max-height:88vh; overflow-y:auto; border-radius:20px 20px 0 0; padding:18px 18px calc(24px + var(--safe-bottom));}
+.modal h2{margin:0 0 14px; font-size:18px;}
+.field{margin-bottom:12px;}
+.field label{display:block; font-size:12px; color:var(--text-dim); margin-bottom:4px; font-weight:600;}
+.field input,.field textarea{width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:15px; font-family:inherit;}
+.field textarea{min-height:60px; resize:vertical;}
+.modal-actions{display:flex; gap:10px; margin-top:16px;}
+.modal-actions button{flex:1; padding:13px; border-radius:12px; border:none; font-size:15px; font-weight:700;}
+.btn-save{background:var(--accent); color:#fff;}
+.btn-cancel{background:var(--border); color:var(--text);}
+.btn-delete{background:#c0392b; color:#fff;}
+.toast{position:fixed; bottom:calc(100px + var(--safe-bottom)); left:50%; transform:translateX(-50%); background:var(--text); color:var(--bg); padding:10px 18px; border-radius:20px; font-size:13px; z-index:50; opacity:0; transition:opacity .3s;}
+.toast.show{opacity:1;}
+a{color:var(--accent);}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <button class="back" id="backBtn" style="display:none">‹ Indietro</button>
+    <h1 id="pageTitle">Giappone 26/27</h1>
+  </header>
+  <main id="main"></main>
+  <button class="fab" id="fabAdd" style="display:none">+</button>
+  <nav class="tabbar">
+    <button data-tab="1. Itinerario"><span class="ic">🗺️</span>Itinerario</button>
+    <button data-tab="6. Attrazioni"><span class="ic">⛩️</span>Attrazioni</button>
+    <button data-tab="8. Cibo e Ristoranti"><span class="ic">🍜</span>Cibo</button>
+    <button data-tab="more"><span class="ic">☰</span>Altro</button>
+    <button data-tab="settings"><span class="ic">⚙️</span>Impostazioni</button>
+  </nav>
+</div>
+<div id="modalRoot"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DEFAULT_DATA = {"1. Itinerario":{"headers":["Data","Giorno","Città","Attività Principali","Pernottamento","Spostamento"],"rows":[{"Data":"2026-12-25","Giorno":"Venerdì","Città":"Osaka","Attività Principali":"Arrivo KIX, Dotonbori, primo ramen","Pernottamento":"Osaka","Spostamento":"KIX -> Osaka (Treno)"},{"Data":"2026-12-26","Giorno":"Sabato","Città":"Osaka","Attività Principali":"Castello di Osaka, Shinsekai, Umeda Sky","Pernottamento":"Osaka","Spostamento":"Metropolitana"},{"Data":"2026-12-27","Giorno":"Domenica","Città":"Osaka / Hiroshima","Attività Principali":"Parco della Pace, Traghetto per Miyajima","Pernottamento":"Osaka","Spostamento":"Shinkansen A/R"},{"Data":"2026-12-28","Giorno":"Lunedì","Città":"Kyoto","Attività Principali":"Fushimi Inari, acquisto Goshuincho","Pernottamento":"Kyoto","Spostamento":"JR Special Rapid"},{"Data":"2026-12-29","Giorno":"Martedì","Città":"Kyoto","Attività Principali":"Arashiyama (Bambù), Kinkaku-ji, Ryoan-ji","Pernottamento":"Kyoto","Spostamento":"Autobus / Metro"},{"Data":"2026-12-30","Giorno":"Mercoledì","Città":"Kyoto","Attività Principali":"Kiyomizu-dera, Higashiyama, Gion","Pernottamento":"Kyoto","Spostamento":"A piedi / Autobus"},{"Data":"2026-12-31","Giorno":"Giovedì","Città":"Kyoto","Attività Principali":"Capodanno, Joya no Kane (campane)","Pernottamento":"Kyoto","Spostamento":"Locale"},{"Data":"2027-01-01","Giorno":"Venerdì","Città":"Takayama","Attività Principali":"Spedizione valigie a Tokyo. Arrivo Alpi Giapponesi","Pernottamento":"Takayama","Spostamento":"Shinkansen + Hida Express"},{"Data":"2027-01-02","Giorno":"Sabato","Città":"Takayama / Shirakawa-go","Attività Principali":"Gita al villaggio innevato, cena manzo Hida (solo zaino)","Pernottamento":"Takayama","Spostamento":"Nohi Bus A/R"},{"Data":"2027-01-03","Giorno":"Domenica","Città":"Tokyo","Attività Principali":"Arrivo a Tokyo, check-in, recupero valigie grandi","Pernottamento":"Tokyo","Spostamento":"Hida Express + Shinkansen"},{"Data":"2027-01-04","Giorno":"Lunedì","Città":"Tokyo","Attività Principali":"Akihabara, Ueno (Parco e Ameyoko)","Pernottamento":"Tokyo","Spostamento":"Yamanote Line (Suica)"},{"Data":"2027-01-05","Giorno":"Martedì","Città":"Tokyo / Kawaguchiko","Attività Principali":"Escursione al Monte Fuji (Pagoda Chureito, Lago)","Pernottamento":"Tokyo","Spostamento":"Highway Bus A/R"},{"Data":"2027-01-06","Giorno":"Mercoledì","Città":"Tokyo","Attività Principali":"Shibuya, Harajuku, Meiji Jingu","Pernottamento":"Tokyo","Spostamento":"Metropolitana"},{"Data":"2027-01-07","Giorno":"Giovedì","Città":"Tokyo / Kamakura","Attività Principali":"Grande Buddha, Enoshima, location Slam Dunk","Pernottamento":"Tokyo","Spostamento":"Shonan-Shinjuku Line A/R"},{"Data":"2027-01-08","Giorno":"Venerdì","Città":"Tokyo","Attività Principali":"Asakusa, Odaiba e ultimi acquisti","Pernottamento":"Tokyo","Spostamento":"Metropolitana / Yurikamome"},{"Data":"2027-01-09","Giorno":"Sabato","Città":"Partenza","Attività Principali":"Trasferimento a Narita e volo di rientro","Pernottamento":"-","Spostamento":"Keisei Skyliner o N'EX"}]},"2. Hotel e Alloggi":{"headers":["Data","Città","Notte","Nome Hotel / Ryokan","Link Google Maps","Note / Conferma"],"rows":[{"Data":"2026-12-25","Città":"Osaka","Notte":"Notte tra il 25 e il 26 Dicembre","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2026-12-26","Città":"Osaka","Notte":"Notte tra il 26 e il 27 Dicembre","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2026-12-27","Città":"Osaka","Notte":"Notte tra il 27 e il 28 Dicembre","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2026-12-28","Città":"Kyoto","Notte":"Notte tra il 28 e il 29 Dicembre","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2026-12-29","Città":"Kyoto","Notte":"Notte tra il 29 e il 30 Dicembre","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2026-12-30","Città":"Kyoto","Notte":"Notte tra il 30 e il 31 Dicembre","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2026-12-31","Città":"Kyoto","Notte":"Notte tra il 31 Dicembre e l'1 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2027-01-01","Città":"Takayama","Notte":"Notte tra l'1 e il 2 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2027-01-02","Città":"Takayama","Notte":"Notte tra il 2 e il 3 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2027-01-03","Città":"Tokyo","Notte":"Notte tra il 3 e il 4 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2027-01-04","Città":"Tokyo","Notte":"Notte tra il 4 e il 5 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2027-01-05","Città":"Tokyo","Notte":"Notte tra il 5 e il 6 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2027-01-06","Città":"Tokyo","Notte":"Notte tra il 6 e il 7 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2027-01-07","Città":"Tokyo","Notte":"Notte tra il 7 e l'8 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2027-01-08","Città":"Tokyo","Notte":"Notte tra l'8 e il 9 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""}]},"3. Trasporti":{"headers":["Tratta / Servizio","Mezzo / Vettore","Durata","Costo Stimato","Link Maps Partenza","Link Maps Arrivo"],"rows":[{"Tratta / Servizio":"KIX -> Osaka","Mezzo / Vettore":"Haruka Express o Nankai","Durata":"45 min","Costo Stimato":"€ 10 - 15","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Osaka <-> Hiroshima (A/R)","Mezzo / Vettore":"Shinkansen","Durata":"1h 25m a tratta","Costo Stimato":"€ 120 - 130","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Osaka -> Kyoto","Mezzo / Vettore":"JR Special Rapid","Durata":"29 min","Costo Stimato":"€ 3,50 - 4","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Kyoto -> Takayama","Mezzo / Vettore":"Shinkansen + Hida Express","Durata":"3h 15m","Costo Stimato":"€ 65 - 75","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Takayama <-> Shirakawa-go","Mezzo / Vettore":"Nohi Bus","Durata":"50 min a tratta","Costo Stimato":"€ 35","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Takayama -> Tokyo","Mezzo / Vettore":"Hida Express + Shinkansen","Durata":"4h 15m","Costo Stimato":"€ 90 - 100","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Tokyo <-> Kawaguchiko (A/R)","Mezzo / Vettore":"Highway Bus da Shinjuku","Durata":"1h 45m a tratta","Costo Stimato":"€ 25 - 30","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Tokyo <-> Kamakura (A/R)","Mezzo / Vettore":"Shonan-Shinjuku Line","Durata":"1h a tratta","Costo Stimato":"€ 12 - 15","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Tokyo -> Narita","Mezzo / Vettore":"Keisei Skyliner o N'EX","Durata":"41m - 1h 20m","Costo Stimato":"€ 16 - 20","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Spostamenti urbani","Mezzo / Vettore":"Metro / Bus","Durata":"Giornaliero","Costo Stimato":"€ 5 - 8 al giorno","Link Maps Partenza":"N/A","Link Maps Arrivo":"N/A"},{"Tratta / Servizio":"Spedizione Bagagli","Mezzo / Vettore":"Yamato Transport (Ta-Q-Bin)","Durata":"Consegna 1-2 giorni","Costo Stimato":"€ 15 - 20 a valigia","Link Maps Partenza":"N/A","Link Maps Arrivo":"N/A"}]},"4. App":{"headers":["App","Categoria","Funzione Principale","Urgenza Configurazione","Note"],"rows":[{"App":"Saily","Categoria":"Connettività","Funzione Principale":"eSIM per la connessione dati in Giappone","Urgenza Configurazione":"Alta (Prima di partire)","Note":"Pulsante diretto inserito nell'app Glide"},{"App":"Revolut","Categoria":"Finanze","Funzione Principale":"Conto Joint per spese condivise","Urgenza Configurazione":"Alta (Prima di partire)","Note":"Caricare su Apple Pay per pagamenti e ricariche Suica"},{"App":"SmartEX","Categoria":"Trasporti","Funzione Principale":"Prenotazione biglietti Shinkansen","Urgenza Configurazione":"Alta (30 giorni prima)","Note":"Associare le carte Revolut e prenotare lato sinistro per Tokyo"},{"App":"Apple Wallet (Suica)","Categoria":"Trasporti","Funzione Principale":"Pagamento trasporti locali (metro/bus) e distributori","Urgenza Configurazione":"Alta (Prima di partire)","Note":"Aggiungere carta trasporti dal Wallet, ricarica via Apple Pay"},{"App":"Glide (App Personale)","Categoria":"Organizzazione","Funzione Principale":"Database itinerario, budget e documenti condivisi","Urgenza Configurazione":"Media (In corso)","Note":"Da salvare sulla Home dell'iPhone come PWA"}]},"5. Valigia":{"headers":["Messo in Valigia?","Categoria","Articolo","Urgenza","Note per il Giappone"],"rows":[{"Messo in Valigia?":"Da preparare","Categoria":"Logistica","Articolo":"Zaino da viaggio capiente","Urgenza":"Alta","Note per il Giappone":"Per i 2 giorni a Takayama mentre le valigie viaggiano a Tokyo."},{"Messo in Valigia?":"Da preparare","Categoria":"Capispalla","Articolo":"Piumino Columbia Labyrinth Loop II o similare","Urgenza":"Alta","Note per il Giappone":"Tecnologia termica, cappuccio regolabile, comprimibile nello zaino"},{"Messo in Valigia?":"Da preparare","Categoria":"Capispalla","Articolo":"Guanti touch-screen e Cappello di lana","Urgenza":"Alta","Note per il Giappone":"Essenziali per il freddo a Takayama e Kyoto"},{"Messo in Valigia?":"Da preparare","Categoria":"Abbigliamento","Articolo":"Maglie termiche (es. Heattech)","Urgenza":"Alta","Note per il Giappone":"Basi per la stratificazione"},{"Messo in Valigia?":"Da preparare","Categoria":"Tecnologia","Articolo":"Adattatore presa tipo A (pin piatti)","Urgenza":"Alta","Note per il Giappone":"Indispensabile in Giappone"},{"Messo in Valigia?":"Da preparare","Categoria":"Tecnologia","Articolo":"Powerbank capiente","Urgenza":"Alta","Note per il Giappone":"Navigazione e foto scaricano la batteria"},{"Messo in Valigia?":"Da preparare","Categoria":"Varie","Articolo":"Taccuino per Eki Stamp","Urgenza":"Media","Note per il Giappone":"Per i timbri Goshuin serve un quaderno apposito comprato ai templi"}]},"6. Attrazioni":{"headers":["Città","Attrazione","Categoria","Urgenza","Note","Link Google Maps"],"rows":[{"Città":"Osaka","Attrazione":"Dotonbori & Castello","Categoria":"Città/Cultura","Urgenza":"Alta","Note":"Street food e passeggiata al castello.","Link Google Maps":""},{"Città":"Osaka","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Osaka","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Hiroshima","Attrazione":"Parco della Pace","Categoria":"Storia","Urgenza":"Alta","Note":"Cupola e museo.","Link Google Maps":""},{"Città":"Hiroshima","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Kyoto","Attrazione":"Fushimi Inari & Kinkaku-ji","Categoria":"Cultura","Urgenza":"Alta","Note":"Tunnel di torii e Padiglione d'oro.","Link Google Maps":""},{"Città":"Kyoto","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Kyoto","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Takayama","Attrazione":"Sanmachi Suji","Categoria":"Cultura","Urgenza":"Alta","Note":"Città vecchia.","Link Google Maps":""},{"Città":"Takayama","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Tokyo","Attrazione":"Akihabara & Nakano Broadway","Categoria":"Anime","Urgenza":"Alta","Note":"Elettronica, figures e manga.","Link Google Maps":""},{"Città":"Tokyo","Attrazione":"Incrocio di Shibuya","Categoria":"Vita Urbana","Urgenza":"Alta","Note":"L'incrocio pedonale più trafficato.","Link Google Maps":""},{"Città":"Tokyo","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Tokyo","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Kamakura","Attrazione":"Kamakurakoko-Mae","Categoria":"Anime/Pop","Urgenza":"Alta","Note":"Passaggio a livello Slam Dunk.","Link Google Maps":""},{"Città":"Kamakura","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Kawaguchiko","Attrazione":"Pagoda Chureito","Categoria":"Panoramico","Urgenza":"Alta","Note":"Fuji sullo sfondo.","Link Google Maps":""},{"Città":"Kawaguchiko","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""}]},"7. Guida":{"headers":["Argomento","Dettagli Operativi"],"rows":[{"Argomento":"Spedizione Bagagli","Dettagli Operativi":"Il 1 Gennaio spedire valigie da Kyoto a Tokyo con Yamato Transport (15-20€). A Takayama si viaggia leggeri con lo zaino."},{"Argomento":"Usanze","Dettagli Operativi":"Niente mance. Niente telefonate sui treni (usare spazi tra le carrozze). Non mangiare camminando."},{"Argomento":"Suica su iPhone","Dettagli Operativi":"Aggiungere Suica da Wallet e ricaricare con Apple Pay. Si passa ai tornelli appoggiando il telefono chiuso."},{"Argomento":"Shinkansen","Dettagli Operativi":"Prenotare su SmartEX. Per Tokyo da Nagoya chiedere lato sinistro (posti E) per vedere il Monte Fuji."}]},"8. Cibo e Ristoranti":{"headers":["Città","Specialità / Piatto","Categoria","Note e Suggerimenti","Link Google Maps"],"rows":[{"Città":"Osaka","Specialità / Piatto":"Okonomiyaki & Takoyaki","Categoria":"Street Food","Note e Suggerimenti":"Da provare a Dotonbori. Piatti ricchi e tipici della regione del Kansai.","Link Google Maps":""},{"Città":"Osaka","Specialità / Piatto":"Yakiniku (BBQ Giapponese)","Categoria":"Carne","Note e Suggerimenti":"Eccellente per mantenere un alto apporto proteico. Grigliate la carne direttamente al tavolo.","Link Google Maps":""},{"Città":"Osaka","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Osaka","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Kyoto","Specialità / Piatto":"Kaiseki","Categoria":"Cena Tradizionale","Note e Suggerimenti":"Cena multi-portata servita spesso nei Ryokan. Un'esperienza estetica e culinaria di altissimo livello.","Link Google Maps":""},{"Città":"Kyoto","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Kyoto","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Takayama","Specialità / Piatto":"Manzo Hida (Hida-gyu)","Categoria":"Carne Premium","Note e Suggerimenti":"Pregiata carne locale. Si trova in spiedini per strada o servita in ristoranti specializzati (prenotare in anticipo).","Link Google Maps":""},{"Città":"Takayama","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Takayama","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Tokyo","Specialità / Piatto":"Yakitori (Omoide Yokocho)","Categoria":"Carne / Spiedini","Note e Suggerimenti":"Spiedini di pollo grigliati al momento nei vicoletti storici. Ottimi macro nutrizionali e atmosfera autentica.","Link Google Maps":""},{"Città":"Tokyo","Specialità / Piatto":"Yakiniku (BBQ Giapponese)","Categoria":"Carne","Note e Suggerimenti":"Molti ristoranti a Shinjuku o Shibuya. Ottimo pasto post-allenamento.","Link Google Maps":""},{"Città":"Tokyo","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Tokyo","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Ovunque","Specialità / Piatto":"Sashimi e Sushi","Categoria":"Pesce","Note e Suggerimenti":"Pesce freschissimo e leggero. Perfetto per la ricomposizione corporea.","Link Google Maps":""},{"Città":"Ovunque","Specialità / Piatto":"Catene di backup (Sukiya, Yoshinoya)","Categoria":"Fast Food Locale","Note e Suggerimenti":"Aperte 24/7. Servono Gyudon (ciotole di riso e manzo) a circa 4-5€. Veloci, economiche e sazianti.","Link Google Maps":""},{"Città":"Ovunque","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Ovunque","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""}]},"9. Shopping":{"headers":["Città","Quartiere","Brand / Negozio","Categoria","Articolo Mirato / Note","Link Google Maps"],"rows":[{"Città":"Osaka","Quartiere":"Den Den Town","Brand / Negozio":"Super Potato","Categoria":"Retrogaming","Articolo Mirato / Note":"Videogiochi vintage e console storiche.","Link Google Maps":""},{"Città":"Osaka","Quartiere":"","Brand / Negozio":"","Categoria":"","Articolo Mirato / Note":"","Link Google Maps":""},{"Città":"Kyoto","Quartiere":"Higashiyama","Brand / Negozio":"Botteghe artigianali","Categoria":"Tradizionale","Articolo Mirato / Note":"Goshuincho di qualità.","Link Google Maps":""},{"Città":"Kyoto","Quartiere":"","Brand / Negozio":"","Categoria":"","Articolo Mirato / Note":"","Link Google Maps":""},{"Città":"Tokyo","Quartiere":"Shibuya/Harajuku","Brand / Negozio":"Columbia / Patagonia","Categoria":"Abbigliamento Tecnico","Articolo Mirato / Note":"Flagship store per testare vestibilità.","Link Google Maps":""},{"Città":"Tokyo","Quartiere":"Nakano","Brand / Negozio":"Nakano Broadway","Categoria":"Anime / Manga","Articolo Mirato / Note":"Più conveniente per vintage anime e cel originali.","Link Google Maps":""},{"Città":"Tokyo","Quartiere":"Akihabara","Brand / Negozio":"Mandarake / Animate","Categoria":"Anime / Elettronica","Articolo Mirato / Note":"Nuove uscite, action figures, merchandise.","Link Google Maps":""},{"Città":"Tokyo","Quartiere":"","Brand / Negozio":"","Categoria":"","Articolo Mirato / Note":"","Link Google Maps":""},{"Città":"Tokyo","Quartiere":"","Brand / Negozio":"","Categoria":"","Articolo Mirato / Note":"","Link Google Maps":""}]},"10. Emergenze":{"headers":["Contatto / Servizio","Numero / Riferimento","Dettagli Operativi"],"rows":[{"Contatto / Servizio":"Polizia (Emergenze)","Numero / Riferimento":"110","Dettagli Operativi":"Per denunce di smarrimento (es. passaporto) rivolgersi ai 'Koban'."},{"Contatto / Servizio":"Ambulanza / Pompieri","Numero / Riferimento":"119","Dettagli Operativi":"Gli operatori sono solitamente in grado di gestire chiamate con un inglese di base."},{"Contatto / Servizio":"Ambasciata Italiana","Numero / Riferimento":"03-3453-5291","Dettagli Operativi":"Tokyo: 2-5-4 Mita, Minato-ku, Tokyo. Salvare il numero in rubrica."},{"Contatto / Servizio":"Blocco Carte / Revolut","Numero / Riferimento":"Tramite App","Dettagli Operativi":"Accedere a Revolut web o numeri verdi in caso di furto/smarrimento smartphone."},{"Contatto / Servizio":"Assicurazione Sanitaria","Numero / Riferimento":"Da compilare","Dettagli Operativi":"Inserire numero polizza e numero verde di emergenza."}]},"11. Budget":{"headers":["Data","Giorno","Budget Previsto (Yen)","Spesa Effettiva Revolut","Differenza","Note / Categoria"],"rows":[{"Data":"2026-12-25","Giorno":"Friday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2026-12-26","Giorno":"Saturday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2026-12-27","Giorno":"Sunday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2026-12-28","Giorno":"Monday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2026-12-29","Giorno":"Tuesday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2026-12-30","Giorno":"Wednesday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2026-12-31","Giorno":"Thursday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-01","Giorno":"Friday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-02","Giorno":"Saturday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-03","Giorno":"Sunday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-04","Giorno":"Monday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-05","Giorno":"Tuesday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-06","Giorno":"Wednesday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-07","Giorno":"Thursday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-08","Giorno":"Friday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-09","Giorno":"Saturday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""}]}};
+
+const SHEET_ORDER = ["1. Itinerario","2. Hotel e Alloggi","3. Trasporti","4. App","5. Valigia","6. Attrazioni","7. Guida","8. Cibo e Ristoranti","9. Shopping","10. Emergenze","11. Budget"];
+
+const META = {
+ "1. Itinerario":{icon:"🗺️",label:"Itinerario",title:"Attività Principali",sub:["Giorno","Data","Città"],badge:null,notes:[],maps:[],search:["Città","Attività Principali","Spostamento"],extra:["Pernottamento","Spostamento"]},
+ "2. Hotel e Alloggi":{icon:"🏨",label:"Hotel e Alloggi",title:"Nome Hotel / Ryokan",titleFallback:"Città",sub:["Data","Città","Notte"],badge:null,notes:["Note / Conferma"],maps:[{f:"Link Google Maps",l:"Maps"}],search:["Città","Nome Hotel / Ryokan"],extra:[]},
+ "3. Trasporti":{icon:"🚄",label:"Trasporti",title:"Tratta / Servizio",sub:["Mezzo / Vettore"],badge:"Costo Stimato",notes:[],maps:[{f:"Link Maps Partenza",l:"Partenza"},{f:"Link Maps Arrivo",l:"Arrivo"}],search:["Tratta / Servizio","Mezzo / Vettore"],extra:["Durata"]},
+ "4. App":{icon:"📱",label:"App",title:"App",sub:["Categoria"],badge:"Urgenza Configurazione",notes:["Funzione Principale","Note"],maps:[],search:["App","Categoria"],extra:[]},
+ "5. Valigia":{icon:"🧳",label:"Valigia",title:"Articolo",sub:["Categoria"],badge:"Urgenza",toggle:"Messo in Valigia?",notes:["Note per il Giappone"],maps:[],search:["Articolo","Categoria"],extra:[]},
+ "6. Attrazioni":{icon:"⛩️",label:"Attrazioni",title:"Attrazione",titleFallback:"Città",sub:["Città","Categoria"],badge:"Urgenza",notes:["Note"],maps:[{f:"Link Google Maps",l:"Maps"}],search:["Città","Attrazione","Categoria"],extra:[]},
+ "7. Guida":{icon:"📖",label:"Guida",title:"Argomento",sub:[],badge:null,notes:["Dettagli Operativi"],maps:[],search:["Argomento"],extra:[]},
+ "8. Cibo e Ristoranti":{icon:"🍜",label:"Cibo e Ristoranti",title:"Specialità / Piatto",titleFallback:"Città",sub:["Città","Categoria"],badge:null,notes:["Note e Suggerimenti"],maps:[{f:"Link Google Maps",l:"Maps"}],search:["Città","Specialità / Piatto","Categoria"],extra:[]},
+ "9. Shopping":{icon:"🛍️",label:"Shopping",title:"Brand / Negozio",titleFallback:"Quartiere",sub:["Città","Quartiere","Categoria"],badge:null,notes:["Articolo Mirato / Note"],maps:[{f:"Link Google Maps",l:"Maps"}],search:["Città","Quartiere","Brand / Negozio"],extra:[]},
+ "10. Emergenze":{icon:"🚨",label:"Emergenze",title:"Contatto / Servizio",sub:["Numero / Riferimento"],badge:null,notes:["Dettagli Operativi"],maps:[],search:["Contatto / Servizio"],extra:[]},
+ "11. Budget":{icon:"💴",label:"Budget",title:"Data",sub:["Giorno"],badge:"Budget Previsto (Yen)",notes:["Note / Categoria"],maps:[],search:["Data","Giorno"],extra:["Spesa Effettiva Revolut","Differenza"]},
+};
+const MORE_KEYS = ["2. Hotel e Alloggi","3. Trasporti","9. Shopping","4. App","5. Valigia","7. Guida","10. Emergenze","11. Budget"];
+
+let STATE = { data:null, settings:null, view:"1. Itinerario", searchTerm:"", editing:null };
+
+function loadState(){
+  let d = localStorage.getItem("ggwtDB");
+  STATE.data = d ? JSON.parse(d) : JSON.parse(JSON.stringify(DEFAULT_DATA));
+  let s = localStorage.getItem("ggwtSettings");
+  STATE.settings = s ? JSON.parse(s) : {theme:"auto", accent:"torii"};
+  applyTheme();
+}
+function saveData(){ localStorage.setItem("ggwtDB", JSON.stringify(STATE.data)); }
+function saveSettings(){ localStorage.setItem("ggwtSettings", JSON.stringify(STATE.settings)); }
+function applyTheme(){
+  let t = STATE.settings.theme;
+  if(t==="auto") t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark":"light";
+  document.documentElement.setAttribute("data-theme", t);
+  document.documentElement.setAttribute("data-accent", STATE.settings.accent);
+}
+function toast(msg){
+  const el = document.getElementById("toast"); el.textContent = msg; el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"), 2200);
+}
+function isMapsUrl(v){ return v && /^https?:\/\//.test(v.trim()); }
+
+function render(){
+  const main = document.getElementById("main");
+  const title = document.getElementById("pageTitle");
+  const back = document.getElementById("backBtn");
+  const fab = document.getElementById("fabAdd");
+  document.querySelectorAll("nav.tabbar button").forEach(b=>b.classList.remove("active"));
+  main.innerHTML=""; fab.style.display="none"; back.style.display="none";
+
+  if(STATE.view==="more"){
+    title.textContent="Altro";
+    document.querySelector('[data-tab="more"]').classList.add("active");
+    const grid = document.createElement("div"); grid.className="grid-menu";
+    MORE_KEYS.forEach(k=>{
+      const m=META[k];
+      const it=document.createElement("div"); it.className="grid-item";
+      it.innerHTML=`<span class="emoji">${m.icon}</span><span class="label">${m.label}</span>`;
+      it.onclick=()=>{ STATE.view=k; STATE.fromMore=true; render(); };
+      grid.appendChild(it);
+    });
+    main.appendChild(grid);
+    return;
+  }
+
+  if(STATE.view==="settings"){
+    title.textContent="Impostazioni";
+    document.querySelector('[data-tab="settings"]').classList.add("active");
+    main.appendChild(renderSettings());
+    return;
+  }
+
+  // section view
+  const key = STATE.view;
+  const meta = META[key];
+  title.textContent = meta.label;
+  if(SHEET_ORDER.slice(0,0)); // noop
+  if(["1. Itinerario","6. Attrazioni","8. Cibo e Ristoranti"].includes(key)){
+    document.querySelector(`[data-tab="${key}"]`)?.classList.add("active");
+  } else {
+    document.querySelector('[data-tab="more"]').classList.add("active");
+    back.style.display="inline-block";
+    back.onclick=()=>{ STATE.view="more"; render(); };
+  }
+  fab.style.display="block";
+  fab.onclick=()=>openEditModal(key,null);
+
+  const wrap = document.createElement("div");
+  const sb = document.createElement("div"); sb.className="search-bar";
+  sb.innerHTML = `<input type="search" placeholder="Cerca in ${meta.label}..." value="${STATE.searchTerm||""}">`;
+  sb.querySelector("input").oninput = (e)=>{ STATE.searchTerm = e.target.value; renderList(key, listContainer); };
+  wrap.appendChild(sb);
+  const listContainer = document.createElement("div");
+  wrap.appendChild(listContainer);
+  main.appendChild(wrap);
+  renderList(key, listContainer);
+}
+
+function renderList(key, container){
+  const meta = META[key];
+  const rows = STATE.data[key]?.rows || [];
+  const term = (STATE.searchTerm||"").toLowerCase().trim();
+  const filtered = rows.filter((r,idx)=>{
+    if(!term) return true;
+    return (meta.search||[]).some(f => (r[f]||"").toLowerCase().includes(term));
+  }).map((r,idx)=>({r, idx: rows.indexOf(r)}));
+
+  container.innerHTML="";
+  if(filtered.length===0){
+    container.innerHTML = `<div class="empty-state">Nessun elemento. Tocca + per aggiungerne uno.</div>`;
+    return;
+  }
+  filtered.forEach(({r, idx})=>{
+    container.appendChild(renderCard(key, meta, r, idx));
+  });
+}
+
+function renderCard(key, meta, r, idx){
+  const card = document.createElement("div"); card.className="card";
+  let titleVal = r[meta.title] || (meta.titleFallback ? r[meta.titleFallback] : "") || "(senza titolo)";
+  let subParts = (meta.sub||[]).map(f=>r[f]).filter(v=>v);
+  let badgeVal = meta.badge ? r[meta.badge] : (meta.toggle ? r[meta.toggle] : null);
+
+  const top = document.createElement("div"); top.className="row-top";
+  const left = document.createElement("div");
+  left.innerHTML = `<h3>${escapeHtml(titleVal)}</h3>` + (subParts.length? `<div class="sub">${escapeHtml(subParts.join(" · "))}</div>`:"");
+  top.appendChild(left);
+  if(badgeVal){
+    const b=document.createElement("span"); b.className="badge"; b.textContent=badgeVal;
+    if(meta.toggle){ b.style.cursor="pointer"; b.onclick=(e)=>{ e.stopPropagation(); toggleField(key, idx, meta.toggle); }; }
+    top.appendChild(b);
+  }
+  card.appendChild(top);
+
+  (meta.notes||[]).forEach(f=>{
+    if(r[f]) { const p=document.createElement("div"); p.className="note"; p.textContent=r[f]; card.appendChild(p); }
+  });
+  (meta.extra||[]).forEach(f=>{
+    if(r[f]){ const p=document.createElement("div"); p.className="meta-line"; p.textContent = f+": "+r[f]; card.appendChild(p); }
+  });
+
+  const mapsRow = document.createElement("div"); mapsRow.className="maps-row";
+  (meta.maps||[]).forEach(m=>{
+    const url = r[m.f];
+    if(isMapsUrl(url)){
+      const a=document.createElement("a"); a.className="maps-btn"; a.href=url; a.target="_blank"; a.rel="noopener";
+      a.innerHTML = `📍 ${m.l==="Maps"?"Apri in Maps":m.l}`;
+      mapsRow.appendChild(a);
+    }
+  });
+  if(mapsRow.children.length) card.appendChild(mapsRow);
+
+  const actions = document.createElement("div"); actions.className="card-actions";
+  const editBtn=document.createElement("button"); editBtn.className="edit-btn"; editBtn.textContent="Modifica ✎";
+  editBtn.onclick=()=>openEditModal(key, idx);
+  actions.appendChild(editBtn);
+  card.appendChild(actions);
+  return card;
+}
+
+function toggleField(key, idx, field){
+  const r = STATE.data[key].rows[idx];
+  r[field] = (r[field]==="Fatto") ? "Da preparare" : "Fatto";
+  saveData(); render();
+}
+
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function openEditModal(key, idx){
+  const headers = STATE.data[key].headers;
+  const row = idx!==null ? STATE.data[key].rows[idx] : {};
+  const root = document.getElementById("modalRoot");
+  const overlay = document.createElement("div"); overlay.className="modal-overlay";
+  overlay.onclick=(e)=>{ if(e.target===overlay) closeModal(); };
+  const modal = document.createElement("div"); modal.className="modal";
+  let fieldsHtml = headers.map(h=>{
+    const val = row[h] || "";
+    const isLink = /link|maps/i.test(h);
+    const isDate = /^data$/i.test(h);
+    const type = isLink ? "url" : isDate ? "date" : "text";
+    const long = /note|dettagli|articolo mirato|attività/i.test(h);
+    if(long){
+      return `<div class="field"><label>${escapeHtml(h)}</label><textarea data-field="${escapeHtml(h)}">${escapeHtml(val)}</textarea></div>`;
+    }
+    return `<div class="field"><label>${escapeHtml(h)}</label><input type="${type}" data-field="${escapeHtml(h)}" value="${escapeHtml(val)}" placeholder="${isLink?'https://maps.app.goo.gl/...':''}"></div>`;
+  }).join("");
+  modal.innerHTML = `<h2>${idx!==null?"Modifica elemento":"Nuovo elemento"} — ${META[key].label}</h2>
+    <div id="fieldsHolder">${fieldsHtml}</div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="cancelBtn">Annulla</button>
+      <button class="btn-save" id="saveBtn">Salva</button>
+    </div>
+    ${idx!==null?'<div class="modal-actions"><button class="btn-delete" id="delBtn">Elimina elemento</button></div>':''}`;
+  overlay.appendChild(modal); root.appendChild(overlay);
+
+  modal.querySelector("#cancelBtn").onclick=closeModal;
+  modal.querySelector("#saveBtn").onclick=()=>{
+    const newRow = {};
+    modal.querySelectorAll("[data-field]").forEach(inp=>{ newRow[inp.dataset.field] = inp.value; });
+    if(idx!==null){ STATE.data[key].rows[idx] = newRow; }
+    else { STATE.data[key].rows.push(newRow); }
+    saveData(); closeModal(); render(); toast("Salvato");
+  };
+  const delBtn = modal.querySelector("#delBtn");
+  if(delBtn) delBtn.onclick=()=>{
+    if(confirm("Eliminare definitivamente questo elemento?")){
+      STATE.data[key].rows.splice(idx,1); saveData(); closeModal(); render(); toast("Eliminato");
+    }
+  };
+}
+function closeModal(){ document.getElementById("modalRoot").innerHTML=""; }
+
+function renderSettings(){
+  const wrap = document.createElement("div");
+  wrap.innerHTML = `
+  <div class="settings-group">
+    <h4>Tema</h4>
+    <div class="theme-options">
+      <button class="pill" data-theme="light">☀️ Chiaro</button>
+      <button class="pill" data-theme="dark">🌙 Scuro</button>
+      <button class="pill" data-theme="auto">🔄 Automatico</button>
+    </div>
+  </div>
+  <div class="settings-group">
+    <h4>Colore accento</h4>
+    <div class="accent-options">
+      <button class="swatch" data-accent="torii" style="background:#c94a5a"></button>
+      <button class="swatch" data-accent="ao" style="background:#3465a4"></button>
+      <button class="swatch" data-accent="matcha" style="background:#548a56"></button>
+      <button class="swatch" data-accent="sakura" style="background:#e08aa0"></button>
+    </div>
+  </div>
+  <div class="settings-group">
+    <h4>Backup e ripristino</h4>
+    <button class="settings-btn" id="exportJson">💾 Esporta backup (JSON) <span class="arrow">›</span></button>
+    <button class="settings-btn" id="importJson">📥 Importa backup (JSON) <span class="arrow">›</span></button>
+    <button class="settings-btn" id="exportXlsx">📤 Esporta come Excel (.xlsx) <span class="arrow">›</span></button>
+    <button class="settings-btn" id="importXlsx">📊 Importa foglio Excel (.xlsx) <span class="arrow">›</span></button>
+    <button class="settings-btn danger" id="resetData">♻️ Ripristina dati originali <span class="arrow">›</span></button>
+    <input type="file" id="fileJson" accept="application/json">
+    <input type="file" id="fileXlsx" accept=".xlsx">
+  </div>
+  <div class="settings-group">
+    <h4>Info</h4>
+    <div style="font-size:13px;color:var(--text-dim);line-height:1.5">
+      App Viaggio Giappone 2026/27 — dati salvati localmente sul dispositivo.<br>
+      Per aggiungerla alla Home: apri Safari → icona Condividi → "Aggiungi alla schermata Home".
+    </div>
+  </div>`;
+
+  wrap.querySelectorAll('[data-theme]').forEach(b=>{
+    if(b.dataset.theme===STATE.settings.theme) b.classList.add("active");
+    b.onclick=()=>{ STATE.settings.theme=b.dataset.theme; saveSettings(); applyTheme(); render(); };
+  });
+  wrap.querySelectorAll('[data-accent]').forEach(b=>{
+    if(b.dataset.accent===STATE.settings.accent) b.classList.add("active");
+    b.onclick=()=>{ STATE.settings.accent=b.dataset.accent; saveSettings(); applyTheme(); render(); };
+  });
+
+  wrap.querySelector("#exportJson").onclick=()=>{
+    const payload = { exportedAt:new Date().toISOString(), data:STATE.data, settings:STATE.settings };
+    downloadBlob(JSON.stringify(payload,null,2), "giappone-backup.json", "application/json");
+    toast("Backup JSON esportato");
+  };
+  wrap.querySelector("#importJson").onclick=()=>wrap.querySelector("#fileJson").click();
+  wrap.querySelector("#fileJson").onchange=(e)=>{
+    const file=e.target.files[0]; if(!file) return;
+    const reader=new FileReader();
+    reader.onload=(ev)=>{
+      try{
+        const payload=JSON.parse(ev.target.result);
+        if(payload.data){ STATE.data=payload.data; saveData(); }
+        if(payload.settings){ STATE.settings=payload.settings; saveSettings(); applyTheme(); }
+        toast("Backup importato con successo"); render();
+      }catch(err){ alert("File non valido: "+err.message); }
+    };
+    reader.readAsText(file);
+  };
+
+  wrap.querySelector("#exportXlsx").onclick=()=>{
+    const wb = XLSX.utils.book_new();
+    SHEET_ORDER.forEach(key=>{
+      const sheet = STATE.data[key];
+      const aoa = [sheet.headers, ...sheet.rows.map(r=>sheet.headers.map(h=>r[h]||""))];
+      const ws = XLSX.utils.aoa_to_sheet(aoa);
+      XLSX.utils.book_append_sheet(wb, ws, key.length>31?key.slice(0,31):key);
+    });
+    XLSX.writeFile(wb, "Giappone_Backup.xlsx");
+    toast("Excel esportato");
+  };
+
+  wrap.querySelector("#importXlsx").onclick=()=>wrap.querySelector("#fileXlsx").click();
+  wrap.querySelector("#fileXlsx").onchange=(e)=>{
+    const file=e.target.files[0]; if(!file) return;
+    const reader=new FileReader();
+    reader.onload=(ev)=>{
+      try{
+        const data=new Uint8Array(ev.target.result);
+        const wb=XLSX.read(data,{type:"array",cellDates:false});
+        let imported=0, sheetsOk=[], sheetsMissing=[];
+        SHEET_ORDER.forEach(key=>{
+          const wsName = wb.SheetNames.find(n=>n.trim()===key.trim()) || wb.SheetNames.find(n=>n.replace(/^\d+\.\s*/,'').trim()===key.replace(/^\d+\.\s*/,'').trim());
+          if(!wsName){ sheetsMissing.push(key); return; }
+          const ws = wb.Sheets[wsName];
+          const aoa = XLSX.utils.sheet_to_json(ws,{header:1,defval:"",raw:false});
+          if(aoa.length<1) return;
+          const headers = aoa[0].map(h=>String(h).trim());
+          const rows=[];
+          for(let i=1;i<aoa.length;i++){
+            const line=aoa[i];
+            if(line.every(v=>v===""||v===undefined||v===null)) continue;
+            const rec={};
+            headers.forEach((h,ci)=>{ rec[h]= line[ci]!==undefined && line[ci]!==null ? String(line[ci]) : ""; });
+            rows.push(rec);
+          }
+          STATE.data[key] = { headers, rows };
+          imported += rows.length; sheetsOk.push(key);
+        });
+        saveData();
+        let msg = `Importati ${imported} elementi da ${sheetsOk.length} fogli.`;
+        if(sheetsMissing.length) msg += `\nFogli non trovati: ${sheetsMissing.join(", ")}`;
+        alert(msg);
+        STATE.view="1. Itinerario"; render();
+      }catch(err){ alert("Errore durante l'importazione: "+err.message); }
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  wrap.querySelector("#resetData").onclick=()=>{
+    if(confirm("Questo sovrascriverà tutti i dati correnti con quelli originali del foglio caricato. Continuare?")){
+      STATE.data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      saveData(); render(); toast("Dati ripristinati");
+    }
+  };
+  return wrap;
+}
+
+document.querySelectorAll("nav.tabbar button").forEach(btn=>{
+  btn.onclick=()=>{
+    STATE.view = btn.dataset.tab; STATE.searchTerm=""; render();
+  };
+});
+
+if(window.matchMedia){
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ()=>{ if(STATE.settings.theme==="auto") applyTheme(); });
+}
+
+loadState();
+render();
+</script>
+</body>
+</html>
