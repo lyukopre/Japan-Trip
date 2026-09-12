@@ -2,41 +2,36 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#111318">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Giappone">
 
   <title>Giappone 2026/27</title>
-
   <link rel="manifest" href="manifest.json">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
     /* ================================================================
-       1. Variabili e temi
+       1. Variabili tema
        ================================================================ */
 
     :root {
       --bg: #f3f1ec;
-      --surface: #ffffff;
-      --surface-soft: #faf8f4;
+      --surface: rgba(255, 255, 255, 0.86);
+      --surface-solid: #ffffff;
+      --surface-soft: rgba(250, 248, 244, 0.86);
       --text: #1c1a18;
       --text-muted: #77716a;
-      --border: #e6e0d6;
+      --border: rgba(230, 224, 214, 0.88);
       --accent: #c94a5a;
       --accent-soft: #fae9eb;
       --gold: #c9a24a;
-      --nav-bg: rgba(255, 255, 255, 0.78);
-      --header-bg: rgba(243, 241, 236, 0.82);
-      --shadow-small: 0 1px 3px rgba(28, 20, 10, 0.07);
-      --shadow-card:
-        0 1px 2px rgba(28, 20, 10, 0.06),
-        0 10px 22px -12px rgba(28, 20, 10, 0.22);
+      --nav-bg: rgba(255, 255, 255, 0.72);
+      --header-bg: rgba(243, 241, 236, 0.72);
+      --shadow-small: 0 1px 3px rgba(28, 20, 10, 0.08);
+      --shadow-card: 0 1px 2px rgba(28, 20, 10, 0.06), 0 12px 24px -12px rgba(28, 20, 10, 0.24);
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --radius-large: 26px;
@@ -46,18 +41,17 @@
 
     html[data-theme="dark"] {
       --bg: #111318;
-      --surface: #1b1e26;
-      --surface-soft: #22252e;
+      --surface: rgba(27, 30, 38, 0.86);
+      --surface-solid: #1b1e26;
+      --surface-soft: rgba(34, 37, 46, 0.86);
       --text: #f2f0ec;
       --text-muted: #96939a;
-      --border: #2c2f39;
+      --border: rgba(44, 47, 57, 0.92);
       --accent-soft: #35232a;
-      --nav-bg: rgba(17, 19, 24, 0.8);
-      --header-bg: rgba(17, 19, 24, 0.82);
-      --shadow-small: 0 1px 3px rgba(0, 0, 0, 0.35);
-      --shadow-card:
-        0 1px 2px rgba(0, 0, 0, 0.4),
-        0 12px 24px -12px rgba(0, 0, 0, 0.65);
+      --nav-bg: rgba(17, 19, 24, 0.74);
+      --header-bg: rgba(17, 19, 24, 0.74);
+      --shadow-small: 0 1px 3px rgba(0, 0, 0, 0.36);
+      --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.44), 0 12px 26px -12px rgba(0, 0, 0, 0.7);
     }
 
     html[data-accent="ao"] {
@@ -92,7 +86,6 @@
       --accent-soft: #30212a;
     }
 
-    /* Colori delle città */
     .city-osaka { --city-color: #e08a3c; }
     .city-kyoto { --city-color: #4f8a5e; }
     .city-tokyo { --city-color: #2c4a6e; }
@@ -104,7 +97,7 @@
     .city-default { --city-color: var(--accent); }
 
     /* ================================================================
-       2. Reset e struttura generale
+       2. Reset e struttura
        ================================================================ */
 
     * {
@@ -143,20 +136,21 @@
     }
 
     #app {
+      position: relative;
       display: flex;
       flex-direction: column;
       min-height: 100dvh;
-      position: relative;
+      isolation: isolate;
     }
 
     main {
+      position: relative;
+      z-index: 2;
       flex: 1;
       width: 100%;
       max-width: 640px;
       margin: 0 auto;
       padding: 12px 16px calc(116px + var(--safe-bottom));
-      position: relative;
-      z-index: 1;
     }
 
     .view-fade {
@@ -175,33 +169,52 @@
     }
 
     /* ================================================================
-       3. Sfondo decorativo e header
+       3. Sfondo: pattern sempre visibile
        ================================================================ */
 
-    .seigaiha-background {
-      position: absolute;
-      inset: 0 0 auto;
-      height: 230px;
+    .background-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
       overflow: hidden;
       pointer-events: none;
-      opacity: 0.42;
-      z-index: 0;
+      background:
+        radial-gradient(circle at 88% 8%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 30%),
+        radial-gradient(circle at 8% 38%, color-mix(in srgb, var(--gold) 12%, transparent), transparent 27%);
     }
 
-    .seigaiha-background svg {
+    .background-layer::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--bg) 12%, transparent) 100%);
+    }
+
+    .background-pattern {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
+      opacity: 0.24;
     }
+
+    html[data-theme="dark"] .background-pattern {
+      opacity: 0.36;
+    }
+
+    /* ================================================================
+       4. Header glassmorphism
+       ================================================================ */
 
     .topbar {
       position: sticky;
       top: 0;
       z-index: 30;
       padding: max(14px, calc(var(--safe-top) + 10px)) 18px 10px;
-      background: var(--header-bg);
       border-bottom: 1px solid transparent;
-      -webkit-backdrop-filter: blur(20px) saturate(150%);
-      backdrop-filter: blur(20px) saturate(150%);
+      background: var(--header-bg);
+      -webkit-backdrop-filter: blur(22px) saturate(160%);
+      backdrop-filter: blur(22px) saturate(160%);
       transition: padding 0.25s ease, border-color 0.25s ease;
     }
 
@@ -280,7 +293,26 @@
     }
 
     /* ================================================================
-       4. Toolbar, statistiche e progressi
+       5. Superfici trasparenti
+       ================================================================ */
+
+    .card,
+    .stat-box,
+    .progress-card,
+    .toolbar input,
+    .dropdown select,
+    .settings-button,
+    .rate-box,
+    .field input,
+    .field select,
+    .field textarea {
+      background: var(--surface);
+      -webkit-backdrop-filter: blur(14px) saturate(135%);
+      backdrop-filter: blur(14px) saturate(135%);
+    }
+
+    /* ================================================================
+       6. Statistiche e valigia
        ================================================================ */
 
     .stats-row {
@@ -294,7 +326,6 @@
       padding: 15px 8px;
       border: 1px solid var(--border);
       border-radius: var(--radius-medium);
-      background: var(--surface-soft);
       text-align: center;
       box-shadow: var(--shadow-small);
     }
@@ -322,7 +353,6 @@
       padding: 16px;
       border: 1px solid var(--border);
       border-radius: var(--radius-medium);
-      background: var(--surface-soft);
       box-shadow: var(--shadow-small);
     }
 
@@ -363,6 +393,10 @@
       font-weight: 600;
     }
 
+    /* ================================================================
+       7. Toolbar
+       ================================================================ */
+
     .toolbar {
       display: flex;
       flex-wrap: wrap;
@@ -377,9 +411,20 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-small);
       outline: none;
-      background: var(--surface);
       color: var(--text);
       font-size: 15px;
+      box-shadow: var(--shadow-small);
+    }
+
+    .dropdown select {
+      max-width: 155px;
+      padding: 12px 30px 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-small);
+      outline: none;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
       box-shadow: var(--shadow-small);
     }
 
@@ -391,25 +436,8 @@
       box-shadow: 0 0 0 3px var(--accent-soft);
     }
 
-    .dropdown {
-      flex: 0 0 auto;
-    }
-
-    .dropdown select {
-      max-width: 155px;
-      padding: 12px 30px 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-small);
-      outline: none;
-      background: var(--surface);
-      color: var(--text);
-      font-size: 14px;
-      font-weight: 700;
-      box-shadow: var(--shadow-small);
-    }
-
     /* ================================================================
-       5. Card e contenuti
+       8. Card
        ================================================================ */
 
     .card {
@@ -419,7 +447,6 @@
       padding: 17px 18px;
       border: 1px solid var(--border);
       border-radius: var(--radius-medium);
-      background: var(--surface);
       box-shadow: var(--shadow-card);
       cursor: pointer;
       transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -467,7 +494,7 @@
     }
 
     .card-subtitle {
-      margin-top: 2px;
+      margin-top: 3px;
       color: var(--text-muted);
       font-size: 13px;
       font-weight: 600;
@@ -478,10 +505,9 @@
       padding: 5px 11px;
       border-radius: 9px;
       background: var(--city-color, var(--accent));
-      color: #ffffff;
+      color: #fff;
       font-size: 11.5px;
       font-weight: 800;
-      letter-spacing: 0.02em;
     }
 
     .day-chip.today-chip {
@@ -582,7 +608,7 @@
       border: 0;
       border-radius: var(--radius-small);
       background: var(--accent);
-      color: #ffffff;
+      color: #fff;
       font-size: 13px;
       font-weight: 700;
       text-decoration: none;
@@ -591,7 +617,6 @@
 
     .action-button.small {
       padding: 8px 13px;
-      border-radius: 10px;
       font-size: 12.5px;
     }
 
@@ -626,13 +651,12 @@
       align-items: center;
       gap: 8px;
       margin: 20px 4px 10px;
-      color: var(--text);
       font-size: 14px;
       font-weight: 800;
     }
 
     /* ================================================================
-       6. Barra di navigazione e pulsante flottante
+       9. Tabbar e pulsante aggiunta
        ================================================================ */
 
     .floating-button {
@@ -645,14 +669,9 @@
       border: 0;
       border-radius: 18px;
       background: var(--accent);
-      color: #ffffff;
+      color: #fff;
       font-size: 26px;
       box-shadow: 0 8px 20px -4px var(--accent);
-      transition: transform 0.15s ease;
-    }
-
-    .floating-button:active {
-      transform: scale(0.92);
     }
 
     .tabbar {
@@ -692,19 +711,14 @@
 
     .tab-button-icon {
       font-size: 21px;
-      transition: transform 0.15s ease;
     }
 
     .tab-button.active {
       color: var(--accent);
     }
 
-    .tab-button.active .tab-button-icon {
-      transform: translateY(-1px) scale(1.08);
-    }
-
     /* ================================================================
-       7. Impostazioni e modale
+       10. Impostazioni, modali e toast
        ================================================================ */
 
     .settings-section {
@@ -741,7 +755,7 @@
     .pill-button.active {
       border-color: var(--accent);
       background: var(--accent);
-      color: #ffffff;
+      color: #fff;
     }
 
     .color-swatch {
@@ -810,7 +824,7 @@
       overflow-y: auto;
       padding: 22px 20px calc(26px + var(--safe-bottom));
       border-radius: 28px 28px 0 0;
-      background: var(--surface);
+      background: var(--surface-solid);
       box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25);
     }
 
@@ -865,30 +879,15 @@
       font-weight: 800;
     }
 
-    .save-button {
-      background: var(--accent);
-      color: #ffffff;
-    }
-
-    .cancel-button {
-      border: 1px solid var(--border) !important;
-      background: var(--surface-soft);
-      color: var(--text);
-    }
-
-    .delete-button {
-      background: #c94a5a;
-      color: #ffffff;
-    }
+    .save-button { background: var(--accent); color: #fff; }
+    .cancel-button { border: 1px solid var(--border) !important; background: var(--surface-soft); color: var(--text); }
+    .delete-button { background: #c94a5a; color: #fff; }
 
     .toast {
       position: fixed;
       bottom: calc(100px + var(--safe-bottom));
       left: 50%;
       z-index: 50;
-      display: flex;
-      align-items: center;
-      gap: 10px;
       max-width: 90vw;
       padding: 12px 18px;
       border-radius: 20px;
@@ -901,32 +900,24 @@
       opacity: 0;
       transform: translateX(-50%);
       transition: opacity 0.3s ease;
-      pointer-events: none;
     }
 
     .toast.visible {
       opacity: 1;
-      pointer-events: auto;
-    }
-
-    .toast button {
-      border: 0;
-      background: transparent;
-      color: var(--gold);
-      font-size: 13px;
-      font-weight: 800;
     }
   </style>
 </head>
 
 <body>
   <div id="app">
-    <div id="seigaihaBackground" class="seigaiha-background"></div>
+    <div id="backgroundLayer" class="background-layer">
+      <svg id="backgroundPattern" class="background-pattern" viewBox="0 0 520 520" preserveAspectRatio="xMidYMid slice"></svg>
+    </div>
 
     <header id="topbar" class="topbar">
       <div class="topbar-row">
         <div class="logo-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
             <path d="M3 9h18M6 9V6c0-1 1-2 2-2h8c1 0 2 1 2 2v3M6 9v11M18 9v11" />
           </svg>
         </div>
@@ -937,8 +928,7 @@
     </header>
 
     <main id="main"></main>
-
-    <button id="addButton" class="floating-button" type="button" hidden aria-label="Aggiungi elemento">+</button>
+    <button id="addButton" class="floating-button" type="button" hidden>+</button>
     <nav id="tabbar" class="tabbar" aria-label="Sezioni app"></nav>
   </div>
 
@@ -947,10 +937,13 @@
 
   <script>
     /* ================================================================
-       1. Configurazione e dati iniziali
+       1. Costanti e configurazione
        ================================================================ */
 
-    const SHEET_ORDER = [
+    const DATA_KEY = "giappone-data";
+    const SETTINGS_KEY = "giappone-settings";
+
+    const SHEETS = [
       "1. Itinerario",
       "2. Hotel e Alloggi",
       "3. Trasporti",
@@ -964,45 +957,12 @@
       "11. Budget"
     ];
 
-    const TAB_ORDER = [
-      "1. Itinerario",
-      "mappa",
-      "6. Attrazioni",
-      "8. Cibo e Ristoranti",
-      "2. Hotel e Alloggi",
-      "3. Trasporti",
-      "9. Shopping",
-      "4. App",
-      "5. Valigia",
-      "7. Guida",
-      "10. Emergenze",
-      "11. Budget",
-      "settings"
-    ];
+    const STATUSES = ["Da preparare", "Da comprare", "In valigia", "Fatto"];
+    const URGENCY_ORDER = { Alta: 0, Media: 1, Bassa: 2 };
+    const MONTHS = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"];
+    const WEEKDAYS = ["dom", "lun", "mar", "mer", "gio", "ven", "sab"];
 
-    const VALIGIA_STATUS = [
-      "Da preparare",
-      "Da comprare",
-      "In valigia",
-      "Fatto"
-    ];
-
-    const URGENZA_ORDER = {
-      Alta: 0,
-      Media: 1,
-      Bassa: 2
-    };
-
-    const MONTHS_IT = [
-      "gen", "feb", "mar", "apr", "mag", "giu",
-      "lug", "ago", "set", "ott", "nov", "dic"
-    ];
-
-    const WEEKDAYS_IT = [
-      "dom", "lun", "mar", "mer", "gio", "ven", "sab"
-    ];
-
-    const SECTION_EMOJI = {
+    const SECTION_ICONS = {
       "1. Itinerario": "🗺️",
       "2. Hotel e Alloggi": "🏨",
       "3. Trasporti": "🚄",
@@ -1016,7 +976,7 @@
       "11. Budget": "💴"
     };
 
-    const FIELD_EMOJI = {
+    const FIELD_ICONS = {
       "Città": "📍",
       "Categoria": "🏷️",
       "Note": "📝",
@@ -1044,317 +1004,59 @@
       "Contatto / Servizio": "🚨"
     };
 
-    const SECTION_META = {
-      "1. Itinerario": {
-        label: "Itinerario",
-        title: "Attività Principali",
-        search: ["Città", "Attività Principali", "Spostamento"]
-      },
-      "2. Hotel e Alloggi": {
-        label: "Alloggi",
-        title: "Nome Hotel / Ryokan",
-        fallbackTitle: "Città",
-        sub: ["Città", "Notte"],
-        notes: ["Note / Conferma"],
-        maps: [{ field: "Link Google Maps", label: "Maps" }],
-        search: ["Città", "Nome Hotel / Ryokan"],
-        cityField: "Città"
-      },
-      "3. Trasporti": {
-        label: "Trasporti",
-        title: "Tratta / Servizio",
-        sub: ["Mezzo / Vettore"],
-        badge: "Costo Stimato",
-        extra: ["Durata"],
-        maps: [
-          { field: "Link Maps Partenza", label: "Partenza" },
-          { field: "Link Maps Arrivo", label: "Arrivo" }
-        ],
-        search: ["Tratta / Servizio", "Mezzo / Vettore"]
-      },
-      "4. App": {
-        label: "App",
-        title: "App",
-        sub: ["Categoria"],
-        badge: "Urgenza Configurazione",
-        notes: ["Funzione Principale", "Note"],
-        search: ["App", "Categoria"]
-      },
-      "5. Valigia": {
-        label: "Valigia",
-        title: "Articolo",
-        sub: ["Categoria"],
-        statusField: "Messo in Valigia?",
-        notes: ["Note per il Giappone"],
-        extra: ["Urgenza"],
-        search: ["Articolo", "Categoria"]
-      },
-      "6. Attrazioni": {
-        label: "Attrazioni",
-        title: "Attrazione",
-        fallbackTitle: "Città",
-        sub: ["Città", "Categoria"],
-        badge: "Urgenza",
-        notes: ["Note"],
-        maps: [{ field: "Link Google Maps", label: "Maps" }],
-        search: ["Città", "Attrazione", "Categoria"],
-        cityField: "Città"
-      },
-      "7. Guida": {
-        label: "Guida",
-        title: "Argomento",
-        notes: ["Dettagli Operativi"],
-        search: ["Argomento"]
-      },
-      "8. Cibo e Ristoranti": {
-        label: "Cibo",
-        title: "Specialità / Piatto",
-        fallbackTitle: "Città",
-        sub: ["Città", "Categoria"],
-        notes: ["Note e Suggerimenti"],
-        maps: [{ field: "Link Google Maps", label: "Maps" }],
-        search: ["Città", "Specialità / Piatto", "Categoria"],
-        cityField: "Città"
-      },
-      "9. Shopping": {
-        label: "Shopping",
-        title: "Brand / Negozio",
-        fallbackTitle: "Quartiere",
-        sub: ["Città", "Quartiere", "Categoria"],
-        notes: ["Articolo Mirato / Note"],
-        maps: [{ field: "Link Google Maps", label: "Maps" }],
-        search: ["Città", "Quartiere", "Brand / Negozio"],
-        cityField: "Città"
-      },
-      "10. Emergenze": {
-        label: "Emergenze",
-        title: "Contatto / Servizio",
-        sub: ["Numero / Riferimento"],
-        notes: ["Dettagli Operativi"],
-        search: ["Contatto / Servizio"]
-      },
-      "11. Budget": {
-        label: "Budget",
-        title: "Data",
-        sub: ["Giorno"],
-        badge: "Budget Previsto (Yen)",
-        notes: ["Note / Categoria"],
-        extra: ["Spesa Effettiva Revolut", "Differenza"],
-        search: ["Data", "Giorno"]
-      }
+    const META = {
+      "1. Itinerario": { label: "Itinerario", title: "Attività Principali", search: ["Città", "Attività Principali", "Spostamento"] },
+      "2. Hotel e Alloggi": { label: "Alloggi", title: "Nome Hotel / Ryokan", fallback: "Città", sub: ["Città", "Notte"], notes: ["Note / Conferma"], maps: [{ field: "Link Google Maps", label: "Maps" }], search: ["Città", "Nome Hotel / Ryokan"], city: "Città" },
+      "3. Trasporti": { label: "Trasporti", title: "Tratta / Servizio", sub: ["Mezzo / Vettore"], badge: "Costo Stimato", extra: ["Durata"], maps: [{ field: "Link Maps Partenza", label: "Partenza" }, { field: "Link Maps Arrivo", label: "Arrivo" }], search: ["Tratta / Servizio", "Mezzo / Vettore"] },
+      "4. App": { label: "App", title: "App", sub: ["Categoria"], badge: "Urgenza Configurazione", notes: ["Funzione Principale", "Note"], search: ["App", "Categoria"] },
+      "5. Valigia": { label: "Valigia", title: "Articolo", sub: ["Categoria"], status: "Messo in Valigia?", notes: ["Note per il Giappone"], extra: ["Urgenza"], search: ["Articolo", "Categoria"] },
+      "6. Attrazioni": { label: "Attrazioni", title: "Attrazione", fallback: "Città", sub: ["Città", "Categoria"], badge: "Urgenza", notes: ["Note"], maps: [{ field: "Link Google Maps", label: "Maps" }], search: ["Città", "Attrazione", "Categoria"], city: "Città" },
+      "7. Guida": { label: "Guida", title: "Argomento", notes: ["Dettagli Operativi"], search: ["Argomento"] },
+      "8. Cibo e Ristoranti": { label: "Cibo", title: "Specialità / Piatto", fallback: "Città", sub: ["Città", "Categoria"], notes: ["Note e Suggerimenti"], maps: [{ field: "Link Google Maps", label: "Maps" }], search: ["Città", "Specialità / Piatto", "Categoria"], city: "Città" },
+      "9. Shopping": { label: "Shopping", title: "Brand / Negozio", fallback: "Quartiere", sub: ["Città", "Quartiere", "Categoria"], notes: ["Articolo Mirato / Note"], maps: [{ field: "Link Google Maps", label: "Maps" }], search: ["Città", "Quartiere", "Brand / Negozio"], city: "Città" },
+      "10. Emergenze": { label: "Emergenze", title: "Contatto / Servizio", sub: ["Numero / Riferimento"], notes: ["Dettagli Operativi"], search: ["Contatto / Servizio"] },
+      "11. Budget": { label: "Budget", title: "Data", sub: ["Giorno"], badge: "Budget Previsto (Yen)", notes: ["Note / Categoria"], extra: ["Spesa Effettiva Revolut", "Differenza"], search: ["Data", "Giorno"] }
     };
 
-    const DEFAULT_DATA = {
-      "1. Itinerario": {
-        headers: ["Data", "Giorno", "Città", "Attività Principali", "Pernottamento", "Spostamento"],
-        rows: [
-          { "Data": "2026-12-25", "Giorno": "Venerdì", "Città": "Osaka", "Attività Principali": "Arrivo KIX, Dotonbori, primo ramen", "Pernottamento": "Osaka", "Spostamento": "KIX -> Osaka (Treno)" },
-          { "Data": "2026-12-26", "Giorno": "Sabato", "Città": "Osaka", "Attività Principali": "Castello di Osaka, Shinsekai, Umeda Sky", "Pernottamento": "Osaka", "Spostamento": "Metropolitana" },
-          { "Data": "2026-12-27", "Giorno": "Domenica", "Città": "Osaka / Hiroshima", "Attività Principali": "Parco della Pace, Traghetto per Miyajima", "Pernottamento": "Osaka", "Spostamento": "Shinkansen A/R" },
-          { "Data": "2026-12-28", "Giorno": "Lunedì", "Città": "Kyoto", "Attività Principali": "Fushimi Inari, acquisto Goshuincho", "Pernottamento": "Kyoto", "Spostamento": "JR Special Rapid" },
-          { "Data": "2026-12-29", "Giorno": "Martedì", "Città": "Kyoto", "Attività Principali": "Arashiyama (Bambù), Kinkaku-ji, Ryoan-ji", "Pernottamento": "Kyoto", "Spostamento": "Autobus / Metro" },
-          { "Data": "2026-12-30", "Giorno": "Mercoledì", "Città": "Kyoto", "Attività Principali": "Kiyomizu-dera, Higashiyama, Gion", "Pernottamento": "Kyoto", "Spostamento": "A piedi / Autobus" },
-          { "Data": "2026-12-31", "Giorno": "Giovedì", "Città": "Kyoto", "Attività Principali": "Capodanno, Joya no Kane (campane)", "Pernottamento": "Kyoto", "Spostamento": "Locale" },
-          { "Data": "2027-01-01", "Giorno": "Venerdì", "Città": "Takayama", "Attività Principali": "Spedizione valigie a Tokyo. Arrivo Alpi Giapponesi", "Pernottamento": "Takayama", "Spostamento": "Shinkansen + Hida Express" },
-          { "Data": "2027-01-02", "Giorno": "Sabato", "Città": "Takayama / Shirakawa-go", "Attività Principali": "Gita al villaggio innevato, cena manzo Hida (solo zaino)", "Pernottamento": "Takayama", "Spostamento": "Nohi Bus A/R" },
-          { "Data": "2027-01-03", "Giorno": "Domenica", "Città": "Tokyo", "Attività Principali": "Arrivo a Tokyo, check-in, recupero valigie grandi", "Pernottamento": "Tokyo", "Spostamento": "Hida Express + Shinkansen" },
-          { "Data": "2027-01-04", "Giorno": "Lunedì", "Città": "Tokyo", "Attività Principali": "Akihabara, Ueno (Parco e Ameyoko)", "Pernottamento": "Tokyo", "Spostamento": "Yamanote Line (Suica)" },
-          { "Data": "2027-01-05", "Giorno": "Martedì", "Città": "Tokyo / Kawaguchiko", "Attività Principali": "Escursione al Monte Fuji (Pagoda Chureito, Lago)", "Pernottamento": "Tokyo", "Spostamento": "Highway Bus A/R" },
-          { "Data": "2027-01-06", "Giorno": "Mercoledì", "Città": "Tokyo", "Attività Principali": "Shibuya, Harajuku, Meiji Jingu", "Pernottamento": "Tokyo", "Spostamento": "Metropolitana" },
-          { "Data": "2027-01-07", "Giorno": "Giovedì", "Città": "Tokyo / Kamakura", "Attività Principali": "Grande Buddha, Enoshima, location Slam Dunk", "Pernottamento": "Tokyo", "Spostamento": "Shonan-Shinjuku Line A/R" },
-          { "Data": "2027-01-08", "Giorno": "Venerdì", "Città": "Tokyo", "Attività Principali": "Asakusa, Odaiba e ultimi acquisti", "Pernottamento": "Tokyo", "Spostamento": "Metropolitana / Yurikamome" },
-          { "Data": "2027-01-09", "Giorno": "Sabato", "Città": "Partenza", "Attività Principali": "Trasferimento a Narita e volo di rientro", "Pernottamento": "-", "Spostamento": "Keisei Skyliner o N'EX" }
-        ]
-      },
-      "2. Hotel e Alloggi": {
-        headers: ["Data", "Città", "Notte", "Nome Hotel / Ryokan", "Link Google Maps", "Note / Conferma"],
-        rows: [
-          { "Data": "2026-12-25", "Città": "Osaka", "Notte": "Notte tra il 25 e il 26 Dicembre", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
-          { "Data": "2026-12-26", "Città": "Osaka", "Notte": "Notte tra il 26 e il 27 Dicembre", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
-          { "Data": "2026-12-27", "Città": "Osaka", "Notte": "Notte tra il 27 e il 28 Dicembre", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
-          { "Data": "2026-12-28", "Città": "Kyoto", "Notte": "Notte tra il 28 e il 29 Dicembre", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
-          { "Data": "2026-12-29", "Città": "Kyoto", "Notte": "Notte tra il 29 e il 30 Dicembre", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
-          { "Data": "2026-12-30", "Città": "Kyoto", "Notte": "Notte tra il 30 e il 31 Dicembre", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
-          { "Data": "2026-12-31", "Città": "Kyoto", "Notte": "Notte tra il 31 Dicembre e l'1 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
-          { "Data": "2027-01-01", "Città": "Takayama", "Notte": "Notte tra l'1 e il 2 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
-          { "Data": "2027-01-02", "Città": "Takayama", "Notte": "Notte tra il 2 e il 3 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
-          { "Data": "2027-01-03", "Città": "Tokyo", "Notte": "Notte tra il 3 e il 4 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
-          { "Data": "2027-01-04", "Città": "Tokyo", "Notte": "Notte tra il 4 e il 5 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
-          { "Data": "2027-01-05", "Città": "Tokyo", "Notte": "Notte tra il 5 e il 6 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
-          { "Data": "2027-01-06", "Città": "Tokyo", "Notte": "Notte tra il 6 e il 7 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
-          { "Data": "2027-01-07", "Città": "Tokyo", "Notte": "Notte tra il 7 e l'8 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
-          { "Data": "2027-01-08", "Città": "Tokyo", "Notte": "Notte tra l'8 e il 9 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" }
-        ]
-      },
-      "3. Trasporti": {
-        headers: ["Tratta / Servizio", "Mezzo / Vettore", "Durata", "Costo Stimato", "Link Maps Partenza", "Link Maps Arrivo"],
-        rows: [
-          { "Tratta / Servizio": "KIX -> Osaka", "Mezzo / Vettore": "Haruka Express o Nankai", "Durata": "45 min", "Costo Stimato": "€ 10 - 15", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
-          { "Tratta / Servizio": "Osaka <-> Hiroshima (A/R)", "Mezzo / Vettore": "Shinkansen", "Durata": "1h 25m a tratta", "Costo Stimato": "€ 120 - 130", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
-          { "Tratta / Servizio": "Osaka -> Kyoto", "Mezzo / Vettore": "JR Special Rapid", "Durata": "29 min", "Costo Stimato": "€ 3,50 - 4", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
-          { "Tratta / Servizio": "Kyoto -> Takayama", "Mezzo / Vettore": "Shinkansen + Hida Express", "Durata": "3h 15m", "Costo Stimato": "€ 65 - 75", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
-          { "Tratta / Servizio": "Takayama <-> Shirakawa-go", "Mezzo / Vettore": "Nohi Bus", "Durata": "50 min a tratta", "Costo Stimato": "€ 35", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
-          { "Tratta / Servizio": "Takayama -> Tokyo", "Mezzo / Vettore": "Hida Express + Shinkansen", "Durata": "4h 15m", "Costo Stimato": "€ 90 - 100", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
-          { "Tratta / Servizio": "Tokyo <-> Kawaguchiko (A/R)", "Mezzo / Vettore": "Highway Bus da Shinjuku", "Durata": "1h 45m a tratta", "Costo Stimato": "€ 25 - 30", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
-          { "Tratta / Servizio": "Tokyo <-> Kamakura (A/R)", "Mezzo / Vettore": "Shonan-Shinjuku Line", "Durata": "1h a tratta", "Costo Stimato": "€ 12 - 15", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
-          { "Tratta / Servizio": "Tokyo -> Narita", "Mezzo / Vettore": "Keisei Skyliner o N'EX", "Durata": "41m - 1h 20m", "Costo Stimato": "€ 16 - 20", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
-          { "Tratta / Servizio": "Spostamenti urbani", "Mezzo / Vettore": "Metro / Bus", "Durata": "Giornaliero", "Costo Stimato": "€ 5 - 8 al giorno", "Link Maps Partenza": "N/A", "Link Maps Arrivo": "N/A" },
-          { "Tratta / Servizio": "Spedizione Bagagli", "Mezzo / Vettore": "Yamato Transport (Ta-Q-Bin)", "Durata": "Consegna 1-2 giorni", "Costo Stimato": "€ 15 - 20 a valigia", "Link Maps Partenza": "N/A", "Link Maps Arrivo": "N/A" }
-        ]
-      },
-      "4. App": {
-        headers: ["App", "Categoria", "Funzione Principale", "Urgenza Configurazione", "Note"],
-        rows: [
-          { "App": "Saily", "Categoria": "Connettività", "Funzione Principale": "eSIM per la connessione dati in Giappone", "Urgenza Configurazione": "Alta (Prima di partire)", "Note": "Pulsante diretto inserito nell'app Glide" },
-          { "App": "Revolut", "Categoria": "Finanze", "Funzione Principale": "Conto Joint per spese condivise", "Urgenza Configurazione": "Alta (Prima di partire)", "Note": "Caricare su Apple Pay per pagamenti e ricariche Suica" },
-          { "App": "SmartEX", "Categoria": "Trasporti", "Funzione Principale": "Prenotazione biglietti Shinkansen", "Urgenza Configurazione": "Alta (30 giorni prima)", "Note": "Associare le carte Revolut e prenotare lato sinistro per Tokyo" },
-          { "App": "Apple Wallet (Suica)", "Categoria": "Trasporti", "Funzione Principale": "Pagamento trasporti locali (metro/bus) e distributori", "Urgenza Configurazione": "Alta (Prima di partire)", "Note": "Aggiungere carta trasporti dal Wallet, ricarica via Apple Pay" },
-          { "App": "Glide (App Personale)", "Categoria": "Organizzazione", "Funzione Principale": "Database itinerario, budget e documenti condivisi", "Urgenza Configurazione": "Media (In corso)", "Note": "Da salvare sulla Home dell'iPhone come PWA" }
-        ]
-      },
-      "5. Valigia": {
-        headers: ["Messo in Valigia?", "Categoria", "Articolo", "Urgenza", "Note per il Giappone"],
-        rows: [
-          { "Messo in Valigia?": "Da preparare", "Categoria": "Logistica", "Articolo": "Zaino da viaggio capiente", "Urgenza": "Alta", "Note per il Giappone": "Per i 2 giorni a Takayama mentre le valigie viaggiano a Tokyo." },
-          { "Messo in Valigia?": "Da preparare", "Categoria": "Capispalla", "Articolo": "Piumino Columbia Labyrinth Loop II o similare", "Urgenza": "Alta", "Note per il Giappone": "Tecnologia termica, cappuccio regolabile, comprimibile nello zaino" },
-          { "Messo in Valigia?": "Da preparare", "Categoria": "Capispalla", "Articolo": "Guanti touch-screen e Cappello di lana", "Urgenza": "Alta", "Note per il Giappone": "Essenziali per il freddo a Takayama e Kyoto" },
-          { "Messo in Valigia?": "Da preparare", "Categoria": "Abbigliamento", "Articolo": "Maglie termiche (es. Heattech)", "Urgenza": "Alta", "Note per il Giappone": "Basi per la stratificazione" },
-          { "Messo in Valigia?": "Da preparare", "Categoria": "Tecnologia", "Articolo": "Adattatore presa tipo A (pin piatti)", "Urgenza": "Alta", "Note per il Giappone": "Indispensabile in Giappone" },
-          { "Messo in Valigia?": "Da preparare", "Categoria": "Tecnologia", "Articolo": "Powerbank capiente", "Urgenza": "Alta", "Note per il Giappone": "Navigazione e foto scaricano la batteria" },
-          { "Messo in Valigia?": "Da preparare", "Categoria": "Varie", "Articolo": "Taccuino per Eki Stamp", "Urgenza": "Media", "Note per il Giappone": "Per i timbri Goshuin serve un quaderno apposito comprato ai templi" }
-        ]
-      },
-      "6. Attrazioni": {
-        headers: ["Città", "Attrazione", "Categoria", "Urgenza", "Note", "Link Google Maps"],
-        rows: [
-          { "Città": "Osaka", "Attrazione": "Dotonbori & Castello", "Categoria": "Città/Cultura", "Urgenza": "Alta", "Note": "Street food e passeggiata al castello.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Dotonbori%2C%20Osaka%2C%20Giappone" },
-          { "Città": "Hiroshima", "Attrazione": "Parco della Pace", "Categoria": "Storia", "Urgenza": "Alta", "Note": "Cupola e museo.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Hiroshima%20Peace%20Memorial%20Park%2C%20Hiroshima%2C%20Giappone" },
-          { "Città": "Kyoto", "Attrazione": "Fushimi Inari & Kinkaku-ji", "Categoria": "Cultura", "Urgenza": "Alta", "Note": "Tunnel di torii e Padiglione d'oro.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Fushimi%20Inari%20Taisha%2C%20Kyoto%2C%20Giappone" },
-          { "Città": "Takayama", "Attrazione": "Sanmachi Suji", "Categoria": "Cultura", "Urgenza": "Alta", "Note": "Città vecchia.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Sanmachi%20Suji%2C%20Takayama%2C%20Giappone" },
-          { "Città": "Tokyo", "Attrazione": "Akihabara & Nakano Broadway", "Categoria": "Anime", "Urgenza": "Alta", "Note": "Elettronica, figures e manga.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Akihabara%2C%20Tokyo%2C%20Giappone" },
-          { "Città": "Tokyo", "Attrazione": "Incrocio di Shibuya", "Categoria": "Vita Urbana", "Urgenza": "Alta", "Note": "L'incrocio pedonale più trafficato.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Shibuya%20Crossing%2C%20Tokyo%2C%20Giappone" },
-          { "Città": "Kamakura", "Attrazione": "Kamakurakoko-Mae", "Categoria": "Anime/Pop", "Urgenza": "Alta", "Note": "Passaggio a livello Slam Dunk.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Kamakurakokomae%20Station%2C%20Giappone" },
-          { "Città": "Kawaguchiko", "Attrazione": "Pagoda Chureito", "Categoria": "Panoramico", "Urgenza": "Alta", "Note": "Fuji sullo sfondo.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Chureito%20Pagoda%2C%20Fujiyoshida%2C%20Giappone" }
-        ]
-      },
-      "7. Guida": {
-        headers: ["Argomento", "Dettagli Operativi"],
-        rows: [
-          { "Argomento": "Spedizione Bagagli", "Dettagli Operativi": "Il 1 Gennaio spedire valigie da Kyoto a Tokyo con Yamato Transport (15-20€). A Takayama si viaggia leggeri con lo zaino." },
-          { "Argomento": "Usanze", "Dettagli Operativi": "Niente mance. Niente telefonate sui treni (usare spazi tra le carrozze). Non mangiare camminando." },
-          { "Argomento": "Suica su iPhone", "Dettagli Operativi": "Aggiungere Suica da Wallet e ricaricare con Apple Pay. Si passa ai tornelli appoggiando il telefono chiuso." },
-          { "Argomento": "Shinkansen", "Dettagli Operativi": "Prenotare su SmartEX. Per Tokyo da Nagoya chiedere lato sinistro (posti E) per vedere il Monte Fuji." }
-        ]
-      },
-      "8. Cibo e Ristoranti": {
-        headers: ["Città", "Specialità / Piatto", "Categoria", "Note e Suggerimenti", "Link Google Maps"],
-        rows: [
-          { "Città": "Osaka", "Specialità / Piatto": "Okonomiyaki & Takoyaki", "Categoria": "Street Food", "Note e Suggerimenti": "Da provare a Dotonbori. Piatti ricchi e tipici della regione del Kansai.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Dotonbori%2C%20Osaka%2C%20Giappone" },
-          { "Città": "Osaka", "Specialità / Piatto": "Yakiniku (BBQ Giapponese)", "Categoria": "Carne", "Note e Suggerimenti": "Eccellente per mantenere un alto apporto proteico. Grigliate la carne direttamente al tavolo.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Yakiniku%20restaurant%2C%20Osaka%2C%20Giappone" },
-          { "Città": "Kyoto", "Specialità / Piatto": "Kaiseki", "Categoria": "Cena Tradizionale", "Note e Suggerimenti": "Cena multi-portata servita spesso nei Ryokan. Un'esperienza estetica e culinaria di altissimo livello.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Kaiseki%20restaurant%2C%20Kyoto%2C%20Giappone" },
-          { "Città": "Takayama", "Specialità / Piatto": "Manzo Hida (Hida-gyu)", "Categoria": "Carne Premium", "Note e Suggerimenti": "Pregiata carne locale. Si trova in spiedini per strada o servita in ristoranti specializzati.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Hida%20beef%20restaurant%2C%20Takayama%2C%20Giappone" },
-          { "Città": "Tokyo", "Specialità / Piatto": "Yakitori (Omoide Yokocho)", "Categoria": "Carne / Spiedini", "Note e Suggerimenti": "Spiedini di pollo grigliati al momento nei vicoletti storici.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Omoide%20Yokocho%2C%20Shinjuku%2C%20Tokyo%2C%20Giappone" },
-          { "Città": "Tokyo", "Specialità / Piatto": "Yakiniku (BBQ Giapponese)", "Categoria": "Carne", "Note e Suggerimenti": "Molti ristoranti a Shinjuku o Shibuya. Ottimo pasto post-allenamento.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Yakiniku%20restaurant%2C%20Shinjuku%2C%20Tokyo%2C%20Giappone" },
-          { "Città": "Ovunque", "Specialità / Piatto": "Sashimi e Sushi", "Categoria": "Pesce", "Note e Suggerimenti": "Pesce freschissimo e leggero. Perfetto per la ricomposizione corporea.", "Link Google Maps": "" },
-          { "Città": "Ovunque", "Specialità / Piatto": "Catene di backup (Sukiya, Yoshinoya)", "Categoria": "Fast Food Locale", "Note e Suggerimenti": "Aperte 24/7. Servono Gyudon: veloci, economiche e sazianti.", "Link Google Maps": "" }
-        ]
-      },
-      "9. Shopping": {
-        headers: ["Città", "Quartiere", "Brand / Negozio", "Categoria", "Articolo Mirato / Note", "Link Google Maps"],
-        rows: [
-          { "Città": "Osaka", "Quartiere": "Den Den Town", "Brand / Negozio": "Super Potato", "Categoria": "Retrogaming", "Articolo Mirato / Note": "Videogiochi vintage e console storiche.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Super%20Potato%20Den%20Den%20Town%2C%20Osaka%2C%20Giappone" },
-          { "Città": "Kyoto", "Quartiere": "Higashiyama", "Brand / Negozio": "Botteghe artigianali", "Categoria": "Tradizionale", "Articolo Mirato / Note": "Goshuincho di qualità.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Higashiyama%2C%20Kyoto%2C%20Giappone" },
-          { "Città": "Tokyo", "Quartiere": "Shibuya/Harajuku", "Brand / Negozio": "Columbia / Patagonia", "Categoria": "Abbigliamento Tecnico", "Articolo Mirato / Note": "Flagship store per testare vestibilità.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Patagonia%20Harajuku%2C%20Tokyo%2C%20Giappone" },
-          { "Città": "Tokyo", "Quartiere": "Nakano", "Brand / Negozio": "Nakano Broadway", "Categoria": "Anime / Manga", "Articolo Mirato / Note": "Più conveniente per vintage anime e cel originali.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Nakano%20Broadway%2C%20Tokyo%2C%20Giappone" },
-          { "Città": "Tokyo", "Quartiere": "Akihabara", "Brand / Negozio": "Mandarake / Animate", "Categoria": "Anime / Elettronica", "Articolo Mirato / Note": "Nuove uscite, action figures, merchandise.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Mandarake%20Akihabara%2C%20Tokyo%2C%20Giappone" }
-        ]
-      },
-      "10. Emergenze": {
-        headers: ["Contatto / Servizio", "Numero / Riferimento", "Dettagli Operativi"],
-        rows: [
-          { "Contatto / Servizio": "Polizia (Emergenze)", "Numero / Riferimento": "110", "Dettagli Operativi": "Per denunce di smarrimento rivolgersi ai Koban." },
-          { "Contatto / Servizio": "Ambulanza / Pompieri", "Numero / Riferimento": "119", "Dettagli Operativi": "Gli operatori gestiscono normalmente chiamate con un inglese di base." },
-          { "Contatto / Servizio": "Ambasciata Italiana", "Numero / Riferimento": "03-3453-5291", "Dettagli Operativi": "Tokyo: 2-5-4 Mita, Minato-ku, Tokyo." },
-          { "Contatto / Servizio": "Blocco Carte / Revolut", "Numero / Riferimento": "Tramite App", "Dettagli Operativi": "Accedere a Revolut web o numeri verdi in caso di furto." },
-          { "Contatto / Servizio": "Assicurazione Sanitaria", "Numero / Riferimento": "Da compilare", "Dettagli Operativi": "Inserire numero polizza e numero verde di emergenza." }
-        ]
-      },
-      "11. Budget": {
-        headers: ["Data", "Giorno", "Budget Previsto (Yen)", "Spesa Effettiva Revolut", "Differenza", "Note / Categoria"],
-        rows: [
-          { "Data": "2026-12-25", "Giorno": "Friday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
-          { "Data": "2026-12-26", "Giorno": "Saturday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
-          { "Data": "2026-12-27", "Giorno": "Sunday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
-          { "Data": "2026-12-28", "Giorno": "Monday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
-          { "Data": "2026-12-29", "Giorno": "Tuesday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
-          { "Data": "2026-12-30", "Giorno": "Wednesday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
-          { "Data": "2026-12-31", "Giorno": "Thursday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
-          { "Data": "2027-01-01", "Giorno": "Friday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
-          { "Data": "2027-01-02", "Giorno": "Saturday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
-          { "Data": "2027-01-03", "Giorno": "Sunday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
-          { "Data": "2027-01-04", "Giorno": "Monday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
-          { "Data": "2027-01-05", "Giorno": "Tuesday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
-          { "Data": "2027-01-06", "Giorno": "Wednesday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
-          { "Data": "2027-01-07", "Giorno": "Thursday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
-          { "Data": "2027-01-08", "Giorno": "Friday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
-          { "Data": "2027-01-09", "Giorno": "Saturday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" }
-        ]
-      }
-    };
+    const TABS = ["1. Itinerario", "mappa", "6. Attrazioni", "8. Cibo e Ristoranti", "2. Hotel e Alloggi", "3. Trasporti", "9. Shopping", "4. App", "5. Valigia", "7. Guida", "10. Emergenze", "11. Budget", "settings"];
 
     /* ================================================================
-       2. Stato e utility
+       2. Stato applicazione
        ================================================================ */
 
-    const state = {
-      data: null,
-      settings: null,
+    const appState = {
+      data: JSON.parse(localStorage.getItem(DATA_KEY) || "{}"),
+      settings: JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}"),
       view: "1. Itinerario",
       search: "",
       city: "",
       sort: "default"
     };
 
-    function clone(value) {
-      return JSON.parse(JSON.stringify(value));
-    }
-
-    function loadState() {
-      const savedData = localStorage.getItem("giappone-data");
-      const savedSettings = localStorage.getItem("giappone-settings");
-
-      state.data = savedData ? JSON.parse(savedData) : clone(DEFAULT_DATA);
-      state.settings = savedSettings
-        ? JSON.parse(savedSettings)
-        : { theme: "auto", accent: "torii", exchangeRate: 160 };
-
-      if (!state.settings.exchangeRate) {
-        state.settings.exchangeRate = 160;
-      }
-
-      applyTheme();
-    }
+    if (!appState.settings.theme) appState.settings.theme = "auto";
+    if (!appState.settings.accent) appState.settings.accent = "torii";
+    if (!appState.settings.exchangeRate) appState.settings.exchangeRate = 160;
 
     function saveData() {
-      localStorage.setItem("giappone-data", JSON.stringify(state.data));
+      localStorage.setItem(DATA_KEY, JSON.stringify(appState.data));
     }
 
     function saveSettings() {
-      localStorage.setItem("giappone-settings", JSON.stringify(state.settings));
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(appState.settings));
     }
 
     function applyTheme() {
-      let theme = state.settings.theme;
-
+      let theme = appState.settings.theme;
       if (theme === "auto") {
-        theme = window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
+        theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       }
-
       document.documentElement.dataset.theme = theme;
-      document.documentElement.dataset.accent = state.settings.accent;
+      document.documentElement.dataset.accent = appState.settings.accent;
     }
+
+    /* ================================================================
+       3. Utility
+       ================================================================ */
 
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, (character) => ({
@@ -1366,87 +1068,57 @@
       })[character]);
     }
 
-    function fieldEmoji(field) {
-      return FIELD_EMOJI[field] || "•";
+    function iconFor(field) {
+      return FIELD_ICONS[field] || "•";
     }
 
-    function isHttpUrl(value) {
+    function isUrl(value) {
       return /^https?:\/\//i.test(String(value || "").trim());
     }
 
-    function isPhoneNumber(value) {
+    function isPhone(value) {
       return /^[\d+\-\s()]{3,}$/.test(String(value || "").trim());
     }
 
     function parseDate(value) {
       const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
-      if (!match) return null;
-      return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+      return match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : null;
     }
 
     function todayString() {
       const date = new Date();
-      return [
-        date.getFullYear(),
-        String(date.getMonth() + 1).padStart(2, "0"),
-        String(date.getDate()).padStart(2, "0")
-      ].join("-");
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
     }
 
     function shortDate(value) {
       const date = parseDate(value);
-      if (!date) return value || "";
-      return `${WEEKDAYS_IT[date.getDay()]} ${date.getDate()} ${MONTHS_IT[date.getMonth()]}`;
+      return date ? `${WEEKDAYS[date.getDay()]} ${date.getDate()} ${MONTHS[date.getMonth()]}` : String(value || "");
     }
 
-    function dayMonth(value) {
+    function monthDay(value) {
       const date = parseDate(value);
-      if (!date) return value || "";
-      return `${date.getDate()} ${MONTHS_IT[date.getMonth()]}`;
+      return date ? `${date.getDate()} ${MONTHS[date.getMonth()]}` : String(value || "");
     }
 
     function cityClass(value) {
       const city = String(value || "").split("/")[0].trim().toLowerCase();
-      const map = {
-        osaka: "city-osaka",
-        kyoto: "city-kyoto",
-        tokyo: "city-tokyo",
-        takayama: "city-takayama",
-        hiroshima: "city-hiroshima",
-        kamakura: "city-kamakura",
-        kawaguchiko: "city-kawaguchiko",
-        partenza: "city-partenza"
-      };
-      return map[city] || "city-default";
+      const classes = { osaka: "city-osaka", kyoto: "city-kyoto", tokyo: "city-tokyo", takayama: "city-takayama", hiroshima: "city-hiroshima", kamakura: "city-kamakura", kawaguchiko: "city-kawaguchiko", partenza: "city-partenza" };
+      return classes[city] || "city-default";
     }
 
     function showToast(message) {
       const toast = document.getElementById("toast");
-      toast.innerHTML = "";
       toast.textContent = message;
       toast.classList.add("visible");
       setTimeout(() => toast.classList.remove("visible"), 2300);
     }
 
-    function showUndoToast(message, undo) {
-      const toast = document.getElementById("toast");
-      toast.innerHTML = `<span>${escapeHtml(message)}</span><button type="button">ANNULLA</button>`;
-      toast.classList.add("visible");
-
-      let undone = false;
-      toast.querySelector("button").onclick = () => {
-        undone = true;
-        undo();
-        toast.classList.remove("visible");
-      };
-
-      setTimeout(() => {
-        if (!undone) toast.classList.remove("visible");
-      }, 5000);
+    function clone(value) {
+      return JSON.parse(JSON.stringify(value));
     }
 
-    function downloadFile(content, filename, mimeType) {
-      const blob = new Blob([content], { type: mimeType });
+    function downloadFile(content, filename, mime) {
+      const blob = new Blob([content], { type: mime });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -1458,64 +1130,59 @@
     }
 
     /* ================================================================
-       3. Rendering dell'interfaccia
+       4. Sfondo visibile
        ================================================================ */
 
-    function renderPattern() {
-      const target = document.getElementById("seigaihaBackground");
-      let paths = "";
+    function renderBackground() {
+      const svg = document.getElementById("backgroundPattern");
       const radius = 46;
+      let paths = "";
 
-      for (let row = 0; row < 3; row += 1) {
-        for (let column = 0; column < 11; column += 1) {
+      for (let row = 0; row < 11; row += 1) {
+        for (let column = 0; column < 14; column += 1) {
           const offset = row % 2 ? radius * 0.52 : 0;
           const x = column * radius * 1.05 + offset;
           const y = row * radius * 0.55;
-          paths += `<path d="M${x - radius} ${y}a${radius} ${radius} 0 0 1 ${radius * 2} 0" fill="none" stroke="var(--accent)" stroke-width="1.4"/>`;
+          paths += `<path d="M${x - radius} ${y}a${radius} ${radius} 0 0 1 ${radius * 2} 0" fill="none" stroke="var(--accent)" stroke-width="1.6"/>`;
         }
       }
 
-      target.innerHTML = `<svg viewBox="0 0 460 230" preserveAspectRatio="xMidYMin slice">${paths}</svg>`;
+      svg.innerHTML = paths;
     }
+
+    /* ================================================================
+       5. Navigazione e header
+       ================================================================ */
 
     function renderTabs() {
       const tabbar = document.getElementById("tabbar");
       tabbar.innerHTML = "";
 
-      TAB_ORDER.forEach((key) => {
+      TABS.forEach((key) => {
         const button = document.createElement("button");
         button.className = "tab-button";
-        button.dataset.tab = key;
         button.type = "button";
+        button.dataset.tab = key;
 
-        const icon = key === "mappa"
-          ? "🗺️📍"
-          : key === "settings"
-            ? "⚙️"
-            : SECTION_EMOJI[key];
-
-        const label = key === "mappa"
-          ? "Mappa"
-          : key === "settings"
-            ? "Impostazioni"
-            : SECTION_META[key].label;
+        const icon = key === "mappa" ? "🗺️📍" : key === "settings" ? "⚙️" : SECTION_ICONS[key];
+        const label = key === "mappa" ? "Mappa" : key === "settings" ? "Impostazioni" : META[key].label;
 
         button.innerHTML = `<span class="tab-button-icon">${icon}</span>${label}`;
         button.onclick = () => {
-          state.view = key;
-          state.search = "";
-          state.city = "";
-          state.sort = "default";
-          render();
+          appState.view = key;
+          appState.search = "";
+          appState.city = "";
+          appState.sort = "default";
+          renderApp();
         };
 
         tabbar.appendChild(button);
       });
     }
 
-    function renderCountdown() {
+    function renderTripBanner() {
       const banner = document.getElementById("tripBanner");
-      const rows = state.data["1. Itinerario"]?.rows || [];
+      const rows = appState.data["1. Itinerario"]?.rows || [];
 
       if (!rows.length) {
         banner.hidden = true;
@@ -1524,37 +1191,37 @@
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);
+      const first = parseDate(rows[0].Data);
+      const last = parseDate(rows[rows.length - 1].Data);
 
-      const start = parseDate(rows[0].Data);
-      const end = parseDate(rows[rows.length - 1].Data);
-
-      if (!start || !end) {
+      if (!first || !last) {
         banner.hidden = true;
         return;
       }
 
       banner.hidden = false;
-
-      if (today < start) {
-        const days = Math.ceil((start - today) / 86400000);
-        banner.textContent = `🛫 Mancano ${days} giorni alla partenza`;
-      } else if (today <= end) {
-        let index = rows.findIndex((row) => row.Data === todayString());
-        if (index < 0) index = rows.findIndex((row) => parseDate(row.Data) >= today);
-        banner.textContent = `📍 Sei in viaggio · Giorno ${Math.max(index + 1, 1)} di ${rows.length}`;
+      if (today < first) {
+        banner.textContent = `🛫 Mancano ${Math.ceil((first - today) / 86400000)} giorni alla partenza`;
+      } else if (today <= last) {
+        const index = Math.max(0, rows.findIndex((row) => row.Data === todayString()));
+        banner.textContent = `📍 Sei in viaggio · Giorno ${index + 1} di ${rows.length}`;
       } else {
         banner.textContent = "✅ Viaggio concluso · che ricordi! 🎌";
       }
     }
 
-    function render() {
+    /* ================================================================
+       6. Rendering principale
+       ================================================================ */
+
+    function renderApp() {
       const main = document.getElementById("main");
       const title = document.getElementById("pageTitle");
       const subtitle = document.getElementById("pageSubtitle");
       const addButton = document.getElementById("addButton");
 
       document.querySelectorAll(".tab-button").forEach((button) => {
-        button.classList.toggle("active", button.dataset.tab === state.view);
+        button.classList.toggle("active", button.dataset.tab === appState.view);
       });
 
       main.innerHTML = "";
@@ -1563,47 +1230,38 @@
       main.classList.add("view-fade");
       addButton.hidden = true;
       subtitle.textContent = "";
-      renderCountdown();
+      renderTripBanner();
 
-      if (state.view === "settings") {
+      if (appState.view === "settings") {
         title.textContent = "⚙️ Impostazioni";
         main.appendChild(renderSettings());
         return;
       }
 
-      if (state.view === "mappa") {
+      if (appState.view === "mappa") {
         title.textContent = "🗺️ Mappa rapida";
         subtitle.textContent = "Luoghi con link Google Maps";
         main.appendChild(renderMap());
         return;
       }
 
-      const meta = SECTION_META[state.view];
-      title.textContent = `${SECTION_EMOJI[state.view]} ${meta.label}`;
+      const meta = META[appState.view];
+      title.textContent = `${SECTION_ICONS[appState.view]} ${meta.label}`;
 
-      if (state.view === "1. Itinerario") {
-        main.appendChild(renderItineraryStats());
-      }
-
-      if (state.view === "5. Valigia") {
-        main.appendChild(renderPackingProgress());
-      }
+      if (appState.view === "1. Itinerario") main.appendChild(renderStats());
+      if (appState.view === "5. Valigia") main.appendChild(renderPackingProgress());
 
       addButton.hidden = false;
-      addButton.onclick = () => openEditModal(state.view, null);
+      addButton.onclick = () => openEditModal(appState.view, null);
 
-      const container = document.createElement("div");
-      const toolbar = renderToolbar(state.view, meta);
+      const toolbar = renderToolbar(appState.view, meta);
       const list = document.createElement("div");
-
-      toolbar.onchange = () => renderList(state.view, list);
-      container.append(toolbar, list);
-      main.appendChild(container);
-      renderList(state.view, list);
+      main.append(toolbar, list);
+      renderList(appState.view, list);
     }
 
-    function renderItineraryStats() {
-      const rows = state.data["1. Itinerario"].rows;
+    function renderStats() {
+      const rows = appState.data["1. Itinerario"]?.rows || [];
       const cities = new Set();
 
       rows.forEach((row) => {
@@ -1613,31 +1271,22 @@
         });
       });
 
-      const start = rows[0]?.Data || "";
-      const end = rows[rows.length - 1]?.Data || "";
-      document.getElementById("pageSubtitle").textContent = `Giappone ${dayMonth(start)} – ${dayMonth(end)}`;
+      const first = rows[0]?.Data || "";
+      const last = rows[rows.length - 1]?.Data || "";
+      document.getElementById("pageSubtitle").textContent = `Giappone ${monthDay(first)} – ${monthDay(last)}`;
 
       const element = document.createElement("div");
       element.className = "stats-row";
       element.innerHTML = `
-        <div class="stat-box">
-          <div class="stat-label">Durata</div>
-          <div class="stat-value">${rows.length} giorni</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Tappe</div>
-          <div class="stat-value">${cities.size} città</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Periodo</div>
-          <div class="stat-value">${dayMonth(start)} – ${dayMonth(end)}</div>
-        </div>
+        <div class="stat-box"><div class="stat-label">Durata</div><div class="stat-value">${rows.length} giorni</div></div>
+        <div class="stat-box"><div class="stat-label">Tappe</div><div class="stat-value">${cities.size} città</div></div>
+        <div class="stat-box"><div class="stat-label">Periodo</div><div class="stat-value">${monthDay(first)} – ${monthDay(last)}</div></div>
       `;
       return element;
     }
 
     function renderPackingProgress() {
-      const rows = state.data["5. Valigia"].rows;
+      const rows = appState.data["5. Valigia"]?.rows || [];
       const completed = rows.filter((row) => row["Messo in Valigia?"] === "Fatto").length;
       const percent = rows.length ? Math.round((completed / rows.length) * 100) : 0;
       const radius = 30;
@@ -1649,20 +1298,10 @@
       element.innerHTML = `
         <svg class="progress-ring" width="72" height="72" viewBox="0 0 72 72">
           <circle class="progress-ring-background" cx="36" cy="36" r="${radius}"></circle>
-          <circle
-            class="progress-ring-value"
-            cx="36"
-            cy="36"
-            r="${radius}"
-            stroke-dasharray="${circumference}"
-            stroke-dashoffset="${offset}"
-          ></circle>
+          <circle class="progress-ring-value" cx="36" cy="36" r="${radius}" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"></circle>
           <text class="progress-ring-label" x="36" y="41" text-anchor="middle" transform="rotate(90 36 36)">${percent}%</text>
         </svg>
-        <div>
-          <div class="progress-title">🧳 Preparazione valigia</div>
-          <div class="progress-subtitle">${completed} di ${rows.length} oggetti pronti</div>
-        </div>
+        <div><div class="progress-title">🧳 Preparazione valigia</div><div class="progress-subtitle">${completed} di ${rows.length} oggetti pronti</div></div>
       `;
       return element;
     }
@@ -1674,84 +1313,52 @@
       const search = document.createElement("input");
       search.type = "search";
       search.placeholder = `🔎 Cerca in ${meta.label}...`;
-      search.value = state.search;
+      search.value = appState.search;
       search.oninput = () => {
-        state.search = search.value;
-        const list = toolbar.nextElementSibling;
-        renderList(key, list);
+        appState.search = search.value;
+        renderList(key, toolbar.nextElementSibling);
       };
       toolbar.appendChild(search);
 
-      if (meta.cityField) {
-        const cities = [...new Set(
-          state.data[key].rows.map((row) => row[meta.cityField]).filter(Boolean)
-        )].sort();
-
-        toolbar.appendChild(createSelect(
-          "🌆 Tutte le città",
-          cities.map((city) => ({ value: city, label: city })),
-          state.city,
-          (value) => {
-            state.city = value;
-            renderList(key, toolbar.nextElementSibling);
-          }
-        ));
+      if (meta.city) {
+        const cities = [...new Set(appState.data[key].rows.map((row) => row[meta.city]).filter(Boolean))].sort();
+        toolbar.appendChild(createSelect("🌆 Tutte le città", cities.map((city) => ({ value: city, label: city })), appState.city, (value) => {
+          appState.city = value;
+          renderList(key, toolbar.nextElementSibling);
+        }));
       }
 
       if (key !== "1. Itinerario" && key !== "11. Budget") {
-        const sortOptions = [
-          { value: "default", label: "↕️ Originale" },
-          { value: "alpha", label: "🔤 A-Z" }
-        ];
-
-        if (state.data[key].headers.includes("Urgenza")) {
-          sortOptions.push({ value: "urgency", label: "⏳ Urgenza" });
-        }
-
-        toolbar.appendChild(createSelect(
-          "↕️ Originale",
-          sortOptions,
-          state.sort,
-          (value) => {
-            state.sort = value;
-            renderList(key, toolbar.nextElementSibling);
-          },
-          true
-        ));
+        const options = [{ value: "default", label: "↕️ Originale" }, { value: "alpha", label: "🔤 A-Z" }];
+        if (appState.data[key].headers.includes("Urgenza")) options.push({ value: "urgency", label: "⏳ Urgenza" });
+        toolbar.appendChild(createSelect("↕️ Originale", options, appState.sort, (value) => {
+          appState.sort = value;
+          renderList(key, toolbar.nextElementSibling);
+        }, true));
       }
 
       return toolbar;
     }
 
-    function createSelect(firstLabel, options, selectedValue, onChange, customOptions = false) {
+    function createSelect(firstLabel, options, selected, onChange, custom = false) {
       const wrapper = document.createElement("div");
       wrapper.className = "dropdown";
-
       const select = document.createElement("select");
-      const firstOption = document.createElement("option");
 
-      if (customOptions) {
-        options.forEach((option) => {
-          const element = document.createElement("option");
-          element.value = option.value;
-          element.textContent = option.label;
-          element.selected = option.value === selectedValue;
-          select.appendChild(element);
-        });
-      } else {
-        firstOption.value = "";
-        firstOption.textContent = firstLabel;
-        firstOption.selected = !selectedValue;
-        select.appendChild(firstOption);
-
-        options.forEach((option) => {
-          const element = document.createElement("option");
-          element.value = option.value;
-          element.textContent = option.label;
-          element.selected = option.value === selectedValue;
-          select.appendChild(element);
-        });
+      if (!custom) {
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = firstLabel;
+        select.appendChild(first);
       }
+
+      options.forEach((option) => {
+        const element = document.createElement("option");
+        element.value = option.value;
+        element.textContent = option.label;
+        element.selected = option.value === selected;
+        select.appendChild(element);
+      });
 
       select.onchange = () => onChange(select.value);
       wrapper.appendChild(select);
@@ -1760,33 +1367,22 @@
 
     function renderList(key, container) {
       if (!container) return;
-
-      const meta = SECTION_META[key];
-      const rows = state.data[key]?.rows || [];
-      const query = state.search.toLowerCase().trim();
-      let items = rows.map((row, index) => ({ row, index }));
+      const meta = META[key];
+      const query = appState.search.toLowerCase().trim();
+      let items = (appState.data[key]?.rows || []).map((row, index) => ({ row, index }));
 
       items = items.filter(({ row }) => {
-        const matchesSearch = !query || meta.search.some((field) => {
-          return String(row[field] || "").toLowerCase().includes(query);
-        });
-
-        const matchesCity = !meta.cityField || !state.city || row[meta.cityField] === state.city;
-        return matchesSearch && matchesCity;
+        const matchesQuery = !query || meta.search.some((field) => String(row[field] || "").toLowerCase().includes(query));
+        const matchesCity = !meta.city || !appState.city || row[meta.city] === appState.city;
+        return matchesQuery && matchesCity;
       });
 
-      if (state.sort === "alpha") {
-        items.sort((a, b) => {
-          const aValue = String(a.row[meta.title] || a.row[meta.fallbackTitle] || "");
-          const bValue = String(b.row[meta.title] || b.row[meta.fallbackTitle] || "");
-          return aValue.localeCompare(bValue);
-        });
+      if (appState.sort === "alpha") {
+        items.sort((a, b) => String(a.row[meta.title] || a.row[meta.fallback] || "").localeCompare(String(b.row[meta.title] || b.row[meta.fallback] || "")));
       }
 
-      if (state.sort === "urgency") {
-        items.sort((a, b) => {
-          return (URGENZA_ORDER[a.row.Urgenza] ?? 99) - (URGENZA_ORDER[b.row.Urgenza] ?? 99);
-        });
+      if (appState.sort === "urgency") {
+        items.sort((a, b) => (URGENCY_ORDER[a.row.Urgenza] ?? 99) - (URGENCY_ORDER[b.row.Urgenza] ?? 99));
       }
 
       container.innerHTML = "";
@@ -1797,21 +1393,12 @@
       }
 
       items.forEach(({ row, index }) => {
-        const card = key === "1. Itinerario"
-          ? renderItineraryCard(row, index)
-          : renderDataCard(key, meta, row, index);
-        container.appendChild(card);
+        container.appendChild(key === "1. Itinerario" ? renderItineraryCard(row, index) : renderDataCard(key, meta, row, index));
       });
-
-      if (key === "1. Itinerario") {
-        setTimeout(() => {
-          document.querySelector(".card.today")?.scrollIntoView({ block: "center", behavior: "smooth" });
-        }, 60);
-      }
     }
 
     /* ================================================================
-       4. Card itinerario e card dati
+       7. Card
        ================================================================ */
 
     function renderItineraryCard(row, index) {
@@ -1819,61 +1406,33 @@
       const today = row.Data === todayString();
       card.className = `card city-card ${cityClass(row["Città"])}${today ? " today" : ""}`;
       card.onclick = (event) => {
-        if (!event.target.closest("button") && !event.target.closest("a")) {
-          openEditModal("1. Itinerario", index);
-        }
+        if (!event.target.closest("button, a")) openEditModal("1. Itinerario", index);
       };
 
-      const activities = String(row["Attività Principali"] || "")
-        .split(/,|;/)
-        .map((item) => item.trim())
-        .filter(Boolean)
-        .slice(0, 4);
-
-      const activityIcons = ["☀️", "🏙️", "🌙", "✨"];
-      const activityHtml = activities.map((activity, activityIndex) => `
-        <div class="bullet">
-          <span class="bullet-icon">${activityIcons[activityIndex % activityIcons.length]}</span>
-          <span>${escapeHtml(activity)}</span>
-        </div>
-      `).join("");
-
-      const transferHtml = row["Spostamento"] && row["Spostamento"] !== "-"
-        ? `<div class="bullet muted"><span class="bullet-icon">🚉</span><span>${escapeHtml(row["Spostamento"])}</span></div>`
-        : "";
-
-      const hotel = state.data["2. Hotel e Alloggi"].rows.find((item) => item.Data === row.Data);
+      const activities = String(row["Attività Principali"] || "").split(/,|;/).map((value) => value.trim()).filter(Boolean).slice(0, 4);
+      const icons = ["☀️", "🏙️", "🌙", "✨"];
+      const activitiesHtml = activities.map((value, activityIndex) => `<div class="bullet"><span class="bullet-icon">${icons[activityIndex % icons.length]}</span><span>${escapeHtml(value)}</span></div>`).join("");
+      const transferHtml = row["Spostamento"] && row["Spostamento"] !== "-" ? `<div class="bullet muted"><span class="bullet-icon">🚉</span><span>${escapeHtml(row["Spostamento"])}</span></div>` : "";
+      const hotel = appState.data["2. Hotel e Alloggi"]?.rows.find((item) => item.Data === row.Data);
       const hotelName = hotel?.["Nome Hotel / Ryokan"] || (row["Pernottamento"] !== "-" ? row["Pernottamento"] : "");
-      const hotelLink = hotel?.["Link Google Maps"];
-
-      const hotelHtml = hotelName ? `
-        <div class="hotel-pill">
-          <span class="hotel-name">🏨 ${escapeHtml(hotelName)}</span>
-          ${isHttpUrl(hotelLink) ? `<a class="action-button small" href="${hotelLink}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📍 Maps</a>` : ""}
-        </div>
-      ` : "";
+      const hotelHtml = hotelName ? `<div class="hotel-pill"><span class="hotel-name">🏨 ${escapeHtml(hotelName)}</span>${isUrl(hotel?.["Link Google Maps"]) ? `<a class="action-button small" href="${hotel["Link Google Maps"]}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📍 Maps</a>` : ""}</div>` : "";
 
       card.innerHTML = `
         <div class="card-top">
           <div class="card-top-left">
             <span class="day-chip${today ? " today-chip" : ""}">${today ? "OGGI" : `G${index + 1}`}</span>
-            <div class="card-title-wrap">
-              <h3 class="card-title">${escapeHtml(row["Città"] || "—")}</h3>
-            </div>
+            <div class="card-title-wrap"><h3 class="card-title">${escapeHtml(row["Città"] || "—")}</h3></div>
           </div>
           <div class="date-chevron">${escapeHtml(shortDate(row.Data))}<span class="chevron">›</span></div>
         </div>
-        <div class="bullet-list">${activityHtml}${transferHtml}</div>
+        <div class="bullet-list">${activitiesHtml}${transferHtml}</div>
         ${hotelHtml}
-        <div class="button-row">
-          <button class="action-button small secondary" type="button" data-calendar>📅 Calendario</button>
-          <button class="action-button small secondary" type="button" data-share>📤 Condividi</button>
-        </div>
+        <div class="button-row"><button class="action-button small secondary" data-calendar type="button">📅 Calendario</button><button class="action-button small secondary" data-share type="button">📤 Condividi</button></div>
       `;
 
       card.querySelector("[data-calendar]").onclick = (event) => {
         event.stopPropagation();
-        addToCalendar(row);
+        addCalendar(row);
       };
 
       card.querySelector("[data-share]").onclick = (event) => {
@@ -1885,78 +1444,36 @@
     }
 
     function renderDataCard(key, meta, row, index) {
-      const title = row[meta.title] || row[meta.fallbackTitle] || "(senza titolo)";
+      const title = row[meta.title] || row[meta.fallback] || "(senza titolo)";
       const subtitle = (meta.sub || []).map((field) => row[field]).filter(Boolean).join(" · ");
+      const city = meta.city ? row[meta.city] : "";
       const card = document.createElement("article");
-      const city = meta.cityField ? row[meta.cityField] : "";
-
       card.className = `card${city ? ` city-card ${cityClass(city)}` : ""}`;
       card.onclick = (event) => {
         if (!event.target.closest("button, a, select")) openEditModal(key, index);
       };
 
-      const statusHtml = meta.statusField
-        ? renderStatusSelect(row, meta.statusField)
-        : meta.badge && row[meta.badge]
-          ? `<span class="badge">${fieldEmoji(meta.badge)} ${escapeHtml(row[meta.badge])}</span>`
-          : `<span class="chevron">›</span>`;
-
-      const notesHtml = (meta.notes || []).map((field) => row[field] ? `
-        <div class="bullet"><span class="bullet-icon">${fieldEmoji(field)}</span><span>${escapeHtml(row[field])}</span></div>
-      ` : "").join("");
-
-      const extraHtml = (meta.extra || []).map((field) => row[field] ? `
-        <div class="bullet muted"><span class="bullet-icon">${fieldEmoji(field)}</span><span>${escapeHtml(field)}: ${escapeHtml(row[field])}</span></div>
-      ` : "").join("");
-
-      const mapsHtml = (meta.maps || []).map((map) => {
-        if (!isHttpUrl(row[map.field])) return "";
-        return `<a class="action-button" href="${row[map.field]}" target="_blank" rel="noopener">📍 ${map.label === "Maps" ? "Apri in Maps" : map.label}</a>`;
-      }).join("");
-
-      const emergencyHtml = key === "10. Emergenze" && isPhoneNumber(row["Numero / Riferimento"])
-        ? `
-          <a class="action-button" href="tel:${row["Numero / Riferimento"].replace(/\s/g, "")}">📞 Chiama</a>
-          <button class="action-button secondary" type="button" data-copy-phone>📋 Copia</button>
-        `
-        : "";
-
-      const budgetHtml = key === "11. Budget" ? renderBudgetEuro(row) : "";
+      const topRight = meta.status ? renderStatus(row, meta.status) : meta.badge && row[meta.badge] ? `<span class="badge">${iconFor(meta.badge)} ${escapeHtml(row[meta.badge])}</span>` : `<span class="chevron">›</span>`;
+      const notes = (meta.notes || []).map((field) => row[field] ? `<div class="bullet"><span class="bullet-icon">${iconFor(field)}</span><span>${escapeHtml(row[field])}</span></div>` : "").join("");
+      const extra = (meta.extra || []).map((field) => row[field] ? `<div class="bullet muted"><span class="bullet-icon">${iconFor(field)}</span><span>${escapeHtml(field)}: ${escapeHtml(row[field])}</span></div>` : "").join("");
+      const maps = (meta.maps || []).map((map) => isUrl(row[map.field]) ? `<a class="action-button" href="${row[map.field]}" target="_blank" rel="noopener">📍 ${map.label === "Maps" ? "Apri in Maps" : map.label}</a>` : "").join("");
+      const emergency = key === "10. Emergenze" && isPhone(row["Numero / Riferimento"]) ? `<a class="action-button" href="tel:${row["Numero / Riferimento"].replace(/\s/g, "")}">📞 Chiama</a>` : "";
 
       card.innerHTML = `
-        <div class="card-top">
-          <div class="card-top-left">
-            <div class="card-title-wrap">
-              <h3 class="card-title">${escapeHtml(title)}</h3>
-              ${subtitle ? `<div class="card-subtitle">${escapeHtml(subtitle)}</div>` : ""}
-            </div>
-          </div>
-          ${statusHtml}
-        </div>
-        ${(notesHtml || extraHtml || budgetHtml) ? `<div class="bullet-list">${notesHtml}${extraHtml}${budgetHtml}</div>` : ""}
-        ${(mapsHtml || emergencyHtml) ? `<div class="button-row">${mapsHtml}${emergencyHtml}</div>` : ""}
-        <div class="button-row">
-          <button class="action-button small secondary" type="button" data-share>📤 Condividi</button>
-        </div>
+        <div class="card-top"><div class="card-title-wrap"><h3 class="card-title">${escapeHtml(title)}</h3>${subtitle ? `<div class="card-subtitle">${escapeHtml(subtitle)}</div>` : ""}</div>${topRight}</div>
+        ${(notes || extra) ? `<div class="bullet-list">${notes}${extra}${key === "11. Budget" ? renderEuro(row) : ""}</div>` : ""}
+        ${(maps || emergency) ? `<div class="button-row">${maps}${emergency}</div>` : ""}
+        <div class="button-row"><button class="action-button small secondary" data-share type="button">📤 Condividi</button></div>
       `;
 
-      const select = card.querySelector("select[data-status]");
+      const select = card.querySelector("[data-status]");
       if (select) {
-        select.onclick = (event) => event.stopPropagation();
         select.onchange = () => {
-          row[meta.statusField] = select.value;
+          row[meta.status] = select.value;
           saveData();
-          if (key === "5. Valigia") refreshPackingProgress();
+          if (key === "5. Valigia") refreshProgress();
         };
-      }
-
-      const copyButton = card.querySelector("[data-copy-phone]");
-      if (copyButton) {
-        copyButton.onclick = (event) => {
-          event.stopPropagation();
-          navigator.clipboard?.writeText(row["Numero / Riferimento"])
-            .then(() => showToast("📋 Numero copiato"));
-        };
+        select.onclick = (event) => event.stopPropagation();
       }
 
       card.querySelector("[data-share]").onclick = (event) => {
@@ -1967,259 +1484,141 @@
       return card;
     }
 
-    function renderStatusSelect(row, field) {
-      const current = row[field] || VALIGIA_STATUS[0];
-      const options = VALIGIA_STATUS.includes(current)
-        ? VALIGIA_STATUS
-        : [current, ...VALIGIA_STATUS];
-
-      return `
-        <select class="status-select" data-status aria-label="Stato elemento">
-          ${options.map((option) => `<option value="${escapeHtml(option)}" ${option === current ? "selected" : ""}>${escapeHtml(option)}</option>`).join("")}
-        </select>
-      `;
+    function renderStatus(row, field) {
+      const current = row[field] || STATUSES[0];
+      const options = STATUSES.includes(current) ? STATUSES : [current, ...STATUSES];
+      return `<select class="status-select" data-status aria-label="Stato">${options.map((option) => `<option value="${escapeHtml(option)}" ${option === current ? "selected" : ""}>${escapeHtml(option)}</option>`).join("")}</select>`;
     }
 
-    function renderBudgetEuro(row) {
-      const rate = state.settings.exchangeRate || 160;
+    function renderEuro(row) {
+      const rate = appState.settings.exchangeRate || 160;
       const planned = Number(row["Budget Previsto (Yen)"]);
-      const spent = Number(row["Spesa Effettiva Revolut"]);
-      let html = "";
-
-      if (!Number.isNaN(planned) && planned > 0) {
-        html += `<div class="bullet muted"><span class="bullet-icon">💶</span><span>Previsto: ≈ €${(planned / rate).toFixed(2)}</span></div>`;
-      }
-
-      if (!Number.isNaN(spent) && spent > 0) {
-        html += `<div class="bullet muted"><span class="bullet-icon">💶</span><span>Spesa: ≈ €${(spent / rate).toFixed(2)}</span></div>`;
-      }
-
-      return html;
+      return Number.isNaN(planned) ? "" : `<div class="bullet muted"><span class="bullet-icon">💶</span><span>Previsto: ≈ €${(planned / rate).toFixed(2)}</span></div>`;
     }
 
     /* ================================================================
-       5. Mappa, calendario e condivisione
+       8. Mappa, calendario e condivisione
        ================================================================ */
 
     function renderMap() {
       const wrapper = document.createElement("div");
       let found = false;
 
-      SHEET_ORDER.forEach((key) => {
-        const meta = SECTION_META[key];
+      SHEETS.forEach((key) => {
+        const meta = META[key];
         if (!meta.maps) return;
 
         const links = [];
-        state.data[key].rows.forEach((row) => {
+        appState.data[key]?.rows.forEach((row) => {
           meta.maps.forEach((map) => {
-            if (!isHttpUrl(row[map.field])) return;
+            if (!isUrl(row[map.field])) return;
             found = true;
-            links.push({
-              title: row[meta.title] || row[meta.fallbackTitle] || "—",
-              subtitle: (meta.sub || []).map((field) => row[field]).filter(Boolean).join(" · "),
-              url: row[map.field],
-              city: meta.cityField ? row[meta.cityField] : ""
-            });
+            links.push({ title: row[meta.title] || row[meta.fallback] || "—", subtitle: (meta.sub || []).map((field) => row[field]).filter(Boolean).join(" · "), url: row[map.field], city: meta.city ? row[meta.city] : "" });
           });
         });
 
         if (!links.length) return;
-
         const heading = document.createElement("div");
         heading.className = "group-title";
-        heading.innerHTML = `${SECTION_EMOJI[key]} ${meta.label}`;
+        heading.innerHTML = `${SECTION_ICONS[key]} ${meta.label}`;
         wrapper.appendChild(heading);
 
         links.forEach((item) => {
           const card = document.createElement("article");
           card.className = `card${item.city ? ` city-card ${cityClass(item.city)}` : ""}`;
-          card.innerHTML = `
-            <h3 class="card-title">${escapeHtml(item.title)}</h3>
-            ${item.subtitle ? `<div class="card-subtitle">${escapeHtml(item.subtitle)}</div>` : ""}
-            <div class="button-row"><a class="action-button" href="${item.url}" target="_blank" rel="noopener">📍 Apri in Maps</a></div>
-          `;
+          card.innerHTML = `<h3 class="card-title">${escapeHtml(item.title)}</h3>${item.subtitle ? `<div class="card-subtitle">${escapeHtml(item.subtitle)}</div>` : ""}<div class="button-row"><a class="action-button" href="${item.url}" target="_blank" rel="noopener">📍 Apri in Maps</a></div>`;
           wrapper.appendChild(card);
         });
       });
 
-      if (!found) {
-        wrapper.innerHTML = `<div class="empty-state">📍 Nessun link Google Maps inserito.</div>`;
-      }
-
+      if (!found) wrapper.innerHTML = `<div class="empty-state">📍 Nessun link Google Maps inserito.</div>`;
       return wrapper;
     }
 
-    function buildCalendarFile(row) {
+    function addCalendar(row) {
       const date = parseDate(row.Data);
-      if (!date) return null;
+      if (!date) return showToast("Data non valida");
 
       const start = row.Data.replace(/-/g, "");
       const next = new Date(date.getTime() + 86400000);
-      const end = [
-        next.getFullYear(),
-        String(next.getMonth() + 1).padStart(2, "0"),
-        String(next.getDate()).padStart(2, "0")
-      ].join("");
+      const end = `${next.getFullYear()}${String(next.getMonth() + 1).padStart(2, "0")}${String(next.getDate()).padStart(2, "0")}`;
+      const content = ["BEGIN:VCALENDAR", "VERSION:2.0", "BEGIN:VEVENT", `UID:giappone-${start}@local`, `DTSTART;VALUE=DATE:${start}`, `DTEND;VALUE=DATE:${end}`, `SUMMARY:${row.Città}: ${row["Attività Principali"]}`, `DESCRIPTION:${row["Spostamento"] || ""}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
 
-      const summary = `${row.Città || "Giappone"}: ${(row["Attività Principali"] || "").slice(0, 70)}`;
-      const description = `${row["Attività Principali"] || ""}${row.Spostamento ? ` | Spostamento: ${row.Spostamento}` : ""}`;
-
-      return [
-        "BEGIN:VCALENDAR",
-        "VERSION:2.0",
-        "BEGIN:VEVENT",
-        `UID:giappone-${start}@local`,
-        `DTSTAMP:${start}T000000Z`,
-        `DTSTART;VALUE=DATE:${start}`,
-        `DTEND;VALUE=DATE:${end}`,
-        `SUMMARY:${summary.replace(/\r?\n/g, " ")}`,
-        `DESCRIPTION:${description.replace(/\r?\n/g, " ")}`,
-        "END:VEVENT",
-        "END:VCALENDAR"
-      ].join("\r\n");
-    }
-
-    function addToCalendar(row) {
-      const calendar = buildCalendarFile(row);
-      if (!calendar) {
-        showToast("Data non valida");
-        return;
-      }
-
-      downloadFile(calendar, `giorno-${row.Data}.ics`, "text/calendar;charset=utf-8");
+      downloadFile(content, `giorno-${row.Data}.ics`, "text/calendar;charset=utf-8");
       showToast("📅 File calendario creato");
     }
 
     function shareText(title, text) {
-      if (navigator.share) {
-        navigator.share({ title, text }).catch(() => {});
-        return;
-      }
-
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => showToast("📋 Copiato negli appunti"));
-        return;
-      }
-
-      showToast("Condivisione non supportata");
+      if (navigator.share) navigator.share({ title, text }).catch(() => {});
+      else if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => showToast("📋 Copiato"));
+      else showToast("Condivisione non supportata");
     }
 
     /* ================================================================
-       6. Modifica, eliminazione e backup
+       9. Modali, impostazioni e backup
        ================================================================ */
 
     function openEditModal(key, index) {
-      const sheet = state.data[key];
+      const sheet = appState.data[key];
       const row = index === null ? {} : sheet.rows[index];
-      const meta = SECTION_META[key];
+      const meta = META[key];
       const overlay = document.createElement("div");
       overlay.className = "modal-overlay";
-      overlay.onclick = (event) => {
-        if (event.target === overlay) closeModal();
-      };
+      overlay.onclick = (event) => { if (event.target === overlay) closeModal(); };
 
       const modal = document.createElement("div");
       modal.className = "modal";
-
-      const fields = sheet.headers.map((field) => renderField(field, row[field], meta)).join("");
-      modal.innerHTML = `
-        <h2 class="modal-title">${index === null ? "➕ Nuovo" : "✎ Modifica"} · ${SECTION_EMOJI[key]} ${meta.label}</h2>
-        ${fields}
-        <div class="modal-actions">
-          <button class="cancel-button" type="button" data-cancel>Annulla</button>
-          <button class="save-button" type="button" data-save>Salva</button>
-        </div>
-        ${index !== null ? `<div class="modal-actions"><button class="delete-button" type="button" data-delete>🗑️ Elimina</button></div>` : ""}
-      `;
+      modal.innerHTML = `<h2 class="modal-title">${index === null ? "➕ Nuovo" : "✎ Modifica"} · ${SECTION_ICONS[key]} ${meta.label}</h2>${sheet.headers.map((field) => renderField(field, row[field], meta)).join("")}<div class="modal-actions"><button class="cancel-button" data-cancel>Annulla</button><button class="save-button" data-save>Salva</button></div>${index === null ? "" : "<div class=\"modal-actions\"><button class=\"delete-button\" data-delete>🗑️ Elimina</button></div>"}`;
 
       overlay.appendChild(modal);
       document.getElementById("modalRoot").appendChild(overlay);
-
       modal.querySelector("[data-cancel]").onclick = closeModal;
       modal.querySelector("[data-save]").onclick = () => {
         const updated = {};
-        modal.querySelectorAll("[data-field]").forEach((field) => {
-          updated[field.dataset.field] = field.value;
-        });
-
-        if (index === null) sheet.rows.push(updated);
-        else sheet.rows[index] = updated;
-
+        modal.querySelectorAll("[data-field]").forEach((field) => { updated[field.dataset.field] = field.value; });
+        if (index === null) sheet.rows.push(updated); else sheet.rows[index] = updated;
         saveData();
         closeModal();
-        render();
+        renderApp();
         showToast("✅ Salvato");
       };
 
-      const deleteButton = modal.querySelector("[data-delete]");
-      if (deleteButton) {
-        deleteButton.onclick = () => {
-          const removed = sheet.rows.splice(index, 1)[0];
+      const remove = modal.querySelector("[data-delete]");
+      if (remove) {
+        remove.onclick = () => {
+          sheet.rows.splice(index, 1);
           saveData();
           closeModal();
-          render();
-          showUndoToast("🗑️ Elemento eliminato", () => {
-            sheet.rows.splice(index, 0, removed);
-            saveData();
-            render();
-            showToast("↩️ Ripristinato");
-          });
+          renderApp();
+          showToast("🗑️ Eliminato");
         };
       }
     }
 
     function renderField(field, value, meta) {
       const current = value || "";
-      const label = `${fieldEmoji(field)} ${field}`;
-      const isLong = /note|dettagli|articolo mirato|attività/i.test(field);
+      const label = `${iconFor(field)} ${field}`;
 
-      if (meta.statusField === field) {
-        return `
-          <div class="field">
-            <label class="field-label">${escapeHtml(label)}</label>
-            <select data-field="${escapeHtml(field)}">
-              ${VALIGIA_STATUS.map((option) => `<option value="${escapeHtml(option)}" ${option === current ? "selected" : ""}>${escapeHtml(option)}</option>`).join("")}
-            </select>
-          </div>
-        `;
+      if (meta.status === field) {
+        return `<div class="field"><label class="field-label">${escapeHtml(label)}</label><select data-field="${escapeHtml(field)}">${STATUSES.map((option) => `<option value="${option}" ${option === current ? "selected" : ""}>${option}</option>`).join("")}</select></div>`;
       }
 
       if (field === "Urgenza" || field === "Urgenza Configurazione") {
-        const options = ["Alta", "Media", "Bassa"];
-        return `
-          <div class="field">
-            <label class="field-label">${escapeHtml(label)}</label>
-            <select data-field="${escapeHtml(field)}">
-              ${options.map((option) => `<option value="${option}" ${current.startsWith(option) ? "selected" : ""}>${option}</option>`).join("")}
-            </select>
-          </div>
-        `;
+        return `<div class="field"><label class="field-label">${escapeHtml(label)}</label><select data-field="${escapeHtml(field)}"><option>Alta</option><option>Media</option><option>Bassa</option></select></div>`;
       }
 
       const type = /^data$/i.test(field) ? "date" : /link|maps/i.test(field) ? "url" : "text";
+      const long = /note|dettagli|articolo mirato|attività/i.test(field);
 
-      if (isLong) {
-        return `
-          <div class="field">
-            <label class="field-label">${escapeHtml(label)}</label>
-            <textarea data-field="${escapeHtml(field)}">${escapeHtml(current)}</textarea>
-          </div>
-        `;
-      }
-
-      return `
-        <div class="field">
-          <label class="field-label">${escapeHtml(label)}</label>
-          <input type="${type}" data-field="${escapeHtml(field)}" value="${escapeHtml(current)}" ${type === "url" ? "placeholder=\"https://maps.app.goo.gl/...\"" : ""}>
-        </div>
-      `;
+      if (long) return `<div class="field"><label class="field-label">${escapeHtml(label)}</label><textarea data-field="${escapeHtml(field)}">${escapeHtml(current)}</textarea></div>`;
+      return `<div class="field"><label class="field-label">${escapeHtml(label)}</label><input type="${type}" data-field="${escapeHtml(field)}" value="${escapeHtml(current)}" ${type === "url" ? "placeholder=\"https://maps.app.goo.gl/...\"" : ""}></div>`;
     }
 
     function closeModal() {
       document.getElementById("modalRoot").innerHTML = "";
     }
 
-    function refreshPackingProgress() {
+    function refreshProgress() {
       const progress = document.querySelector(".progress-card");
       if (progress) progress.replaceWith(renderPackingProgress());
     }
@@ -2227,213 +1626,99 @@
     function renderSettings() {
       const wrapper = document.createElement("div");
       wrapper.innerHTML = `
-        <section class="settings-section">
-          <h2 class="settings-heading">🎨 Tema</h2>
-          <div class="theme-options">
-            <button class="pill-button" data-theme="light" type="button">☀️ Chiaro</button>
-            <button class="pill-button" data-theme="dark" type="button">🌙 Scuro</button>
-            <button class="pill-button" data-theme="auto" type="button">🔄 Automatico</button>
-          </div>
-        </section>
-
-        <section class="settings-section">
-          <h2 class="settings-heading">🖌️ Colore accento</h2>
-          <div class="accent-options">
-            <button class="color-swatch" data-accent="torii" style="background:#c94a5a" type="button" aria-label="Torii"></button>
-            <button class="color-swatch" data-accent="ao" style="background:#3f6ea8" type="button" aria-label="Indaco"></button>
-            <button class="color-swatch" data-accent="matcha" style="background:#4f8a5e" type="button" aria-label="Matcha"></button>
-            <button class="color-swatch" data-accent="sakura" style="background:#d97ea0" type="button" aria-label="Sakura"></button>
-          </div>
-        </section>
-
-        <section class="settings-section">
-          <h2 class="settings-heading">💴 Cambio Yen / Euro</h2>
-          <label class="rate-box">
-            <span>1 € =</span>
-            <input id="exchangeRate" type="number" min="1" step="0.5" value="${state.settings.exchangeRate}">
-            <span>¥</span>
-          </label>
-        </section>
-
-        <section class="settings-section">
-          <h2 class="settings-heading">💾 Backup e ripristino</h2>
-          <button class="settings-button" data-action="export-json" type="button">💾 Esporta backup JSON <span>›</span></button>
-          <button class="settings-button" data-action="import-json" type="button">📥 Importa backup JSON <span>›</span></button>
-          <button class="settings-button" data-action="export-xlsx" type="button">📤 Esporta Excel <span>›</span></button>
-          <button class="settings-button" data-action="import-xlsx" type="button">📊 Importa Excel <span>›</span></button>
-          <button class="settings-button danger" data-action="reset" type="button">♻️ Ripristina dati originali <span>›</span></button>
-          <input id="jsonInput" type="file" accept="application/json">
-          <input id="xlsxInput" type="file" accept=".xlsx">
-        </section>
-
-        <section class="settings-section">
-          <h2 class="settings-heading">ℹ️ Informazioni</h2>
-          <p style="color:var(--text-muted);font-size:13px;line-height:1.6;margin:0">
-            I dati vengono salvati localmente sul dispositivo. Dopo il primo caricamento l'app può funzionare offline.
-            Per aggiornare l'app dalla Home, chiudila completamente e riaprila.
-          </p>
-        </section>
+        <section class="settings-section"><h2 class="settings-heading">🎨 Tema</h2><div class="theme-options"><button class="pill-button" data-theme="light">☀️ Chiaro</button><button class="pill-button" data-theme="dark">🌙 Scuro</button><button class="pill-button" data-theme="auto">🔄 Automatico</button></div></section>
+        <section class="settings-section"><h2 class="settings-heading">🖌️ Colore accento</h2><div class="accent-options"><button class="color-swatch" data-accent="torii" style="background:#c94a5a"></button><button class="color-swatch" data-accent="ao" style="background:#3f6ea8"></button><button class="color-swatch" data-accent="matcha" style="background:#4f8a5e"></button><button class="color-swatch" data-accent="sakura" style="background:#d97ea0"></button></div></section>
+        <section class="settings-section"><h2 class="settings-heading">💴 Cambio Yen / Euro</h2><label class="rate-box"><span>1 € =</span><input id="exchangeRate" type="number" value="${appState.settings.exchangeRate}" step="0.5"><span>¥</span></label></section>
+        <section class="settings-section"><h2 class="settings-heading">💾 Backup e ripristino</h2><button class="settings-button" data-action="export-json">💾 Esporta JSON <span>›</span></button><button class="settings-button" data-action="import-json">📥 Importa JSON <span>›</span></button><button class="settings-button" data-action="export-xlsx">📤 Esporta Excel <span>›</span></button><button class="settings-button" data-action="import-xlsx">📊 Importa Excel <span>›</span></button><input id="jsonInput" type="file" accept="application/json"><input id="xlsxInput" type="file" accept=".xlsx"></section>
       `;
 
       wrapper.querySelectorAll("[data-theme]").forEach((button) => {
-        button.classList.toggle("active", button.dataset.theme === state.settings.theme);
-        button.onclick = () => {
-          state.settings.theme = button.dataset.theme;
-          saveSettings();
-          applyTheme();
-          render();
-        };
+        button.classList.toggle("active", button.dataset.theme === appState.settings.theme);
+        button.onclick = () => { appState.settings.theme = button.dataset.theme; saveSettings(); applyTheme(); renderApp(); };
       });
 
       wrapper.querySelectorAll("[data-accent]").forEach((button) => {
-        button.classList.toggle("active", button.dataset.accent === state.settings.accent);
-        button.onclick = () => {
-          state.settings.accent = button.dataset.accent;
-          saveSettings();
-          applyTheme();
-          render();
-        };
+        button.classList.toggle("active", button.dataset.accent === appState.settings.accent);
+        button.onclick = () => { appState.settings.accent = button.dataset.accent; saveSettings(); applyTheme(); renderApp(); };
       });
 
       wrapper.querySelector("#exchangeRate").onchange = (event) => {
-        const value = Number(event.target.value);
-        if (value > 0) {
-          state.settings.exchangeRate = value;
-          saveSettings();
-          showToast("💴 Cambio aggiornato");
-        }
+        const rate = Number(event.target.value);
+        if (rate > 0) { appState.settings.exchangeRate = rate; saveSettings(); showToast("💴 Cambio aggiornato"); }
       };
 
-      wrapper.querySelector('[data-action="export-json"]').onclick = exportJson;
-      wrapper.querySelector('[data-action="import-json"]').onclick = () => wrapper.querySelector("#jsonInput").click();
-      wrapper.querySelector('[data-action="export-xlsx"]').onclick = exportXlsx;
-      wrapper.querySelector('[data-action="import-xlsx"]').onclick = () => wrapper.querySelector("#xlsxInput").click();
-      wrapper.querySelector('[data-action="reset"]').onclick = resetData;
+      wrapper.querySelector('[data-action="export-json"]').onclick = () => {
+        downloadFile(JSON.stringify({ data: appState.data, settings: appState.settings }, null, 2), "giappone-backup.json", "application/json");
+        showToast("💾 Backup esportato");
+      };
 
-      wrapper.querySelector("#jsonInput").onchange = importJson;
-      wrapper.querySelector("#xlsxInput").onchange = importXlsx;
+      wrapper.querySelector('[data-action="import-json"]').onclick = () => wrapper.querySelector("#jsonInput").click();
+      wrapper.querySelector("#jsonInput").onchange = (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          const payload = JSON.parse(reader.result);
+          if (payload.data) appState.data = payload.data;
+          if (payload.settings) appState.settings = payload.settings;
+          saveData();
+          saveSettings();
+          applyTheme();
+          renderApp();
+          showToast("✅ Backup importato");
+        };
+        reader.readAsText(file);
+      };
+
+      wrapper.querySelector('[data-action="export-xlsx"]').onclick = () => {
+        if (!window.XLSX) return alert("Libreria Excel non disponibile.");
+        const workbook = XLSX.utils.book_new();
+        SHEETS.forEach((key) => {
+          const sheet = appState.data[key];
+          const values = [sheet.headers, ...sheet.rows.map((row) => sheet.headers.map((header) => row[header] || ""))];
+          XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(values), key.slice(0, 31));
+        });
+        XLSX.writeFile(workbook, "Giappone_Backup.xlsx");
+        showToast("📤 Excel esportato");
+      };
+
+      wrapper.querySelector('[data-action="import-xlsx"]').onclick = () => wrapper.querySelector("#xlsxInput").click();
+      wrapper.querySelector("#xlsxInput").onchange = (event) => {
+        const file = event.target.files?.[0];
+        if (!file || !window.XLSX) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          const workbook = XLSX.read(new Uint8Array(reader.result), { type: "array", cellDates: false });
+          SHEETS.forEach((key) => {
+            const name = workbook.SheetNames.find((item) => item.trim() === key.trim());
+            if (!name) return;
+            const values = XLSX.utils.sheet_to_json(workbook.Sheets[name], { header: 1, defval: "", raw: false });
+            if (!values.length) return;
+            const headers = values[0].map((header) => String(header).trim());
+            const rows = values.slice(1).filter((row) => row.some(Boolean)).map((row) => {
+              const result = {};
+              headers.forEach((header, index) => { result[header] = String(row[index] ?? ""); });
+              return result;
+            });
+            appState.data[key] = { headers, rows };
+          });
+          saveData();
+          appState.view = "1. Itinerario";
+          renderApp();
+          showToast("✅ Excel importato");
+        };
+        reader.readAsArrayBuffer(file);
+      };
 
       return wrapper;
     }
 
-    function exportJson() {
-      const payload = {
-        exportedAt: new Date().toISOString(),
-        data: state.data,
-        settings: state.settings
-      };
-      downloadFile(JSON.stringify(payload, null, 2), "giappone-backup.json", "application/json");
-      showToast("💾 Backup JSON esportato");
-    }
-
-    function importJson(event) {
-      const file = event.target.files?.[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const payload = JSON.parse(reader.result);
-          if (payload.data) state.data = payload.data;
-          if (payload.settings) state.settings = payload.settings;
-          saveData();
-          saveSettings();
-          applyTheme();
-          render();
-          showToast("✅ Backup importato");
-        } catch (error) {
-          alert(`Backup non valido: ${error.message}`);
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function exportXlsx() {
-      if (!window.XLSX) {
-        alert("Libreria Excel non disponibile. Riprova quando hai una connessione.");
-        return;
-      }
-
-      const workbook = XLSX.utils.book_new();
-
-      SHEET_ORDER.forEach((key) => {
-        const sheet = state.data[key];
-        const rows = [
-          sheet.headers,
-          ...sheet.rows.map((row) => sheet.headers.map((header) => row[header] || ""))
-        ];
-        const worksheet = XLSX.utils.aoa_to_sheet(rows);
-        XLSX.utils.book_append_sheet(workbook, worksheet, key.slice(0, 31));
-      });
-
-      XLSX.writeFile(workbook, "Giappone_Backup.xlsx");
-      showToast("📤 Excel esportato");
-    }
-
-    function importXlsx(event) {
-      const file = event.target.files?.[0];
-      if (!file || !window.XLSX) return;
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const workbook = XLSX.read(new Uint8Array(reader.result), { type: "array", cellDates: false });
-          let importedRows = 0;
-
-          SHEET_ORDER.forEach((key) => {
-            const sheetName = workbook.SheetNames.find((name) => name.trim() === key.trim());
-            if (!sheetName) return;
-
-            const values = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
-              header: 1,
-              defval: "",
-              raw: false
-            });
-
-            if (!values.length) return;
-
-            const headers = values[0].map((header) => String(header).trim());
-            const rows = values.slice(1)
-              .filter((row) => row.some((value) => value !== "" && value !== null && value !== undefined))
-              .map((row) => {
-                const result = {};
-                headers.forEach((header, index) => {
-                  result[header] = String(row[index] ?? "");
-                });
-                return result;
-              });
-
-            state.data[key] = { headers, rows };
-            importedRows += rows.length;
-          });
-
-          saveData();
-          state.view = "1. Itinerario";
-          render();
-          alert(`Importati ${importedRows} elementi.`);
-        } catch (error) {
-          alert(`Errore Excel: ${error.message}`);
-        }
-      };
-      reader.readAsArrayBuffer(file);
-    }
-
-    function resetData() {
-      if (!confirm("Ripristinare tutti i dati originali?")) return;
-      state.data = clone(DEFAULT_DATA);
-      saveData();
-      render();
-      showToast("♻️ Dati ripristinati");
-    }
-
     /* ================================================================
-       7. Avvio app e interazioni globali
+       10. Avvio
        ================================================================ */
 
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("sw.js").catch(() => {});
-      });
+      window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
     }
 
     window.addEventListener("scroll", () => {
@@ -2441,13 +1726,13 @@
     }, { passive: true });
 
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
-      if (state.settings.theme === "auto") applyTheme();
+      if (appState.settings.theme === "auto") applyTheme();
     });
 
-    loadState();
-    renderPattern();
+    applyTheme();
+    renderBackground();
     renderTabs();
-    render();
+    renderApp();
   </script>
 </body>
 </html>
