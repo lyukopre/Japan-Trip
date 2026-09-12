@@ -2,91 +2,143 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#111318">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+  <meta name="theme-color" content="#090a0d">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Giappone">
+
   <title>Giappone 2026/27</title>
   <link rel="manifest" href="manifest.json">
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
+  ></script>
 
   <style>
+    /* ================================================================
+       1. Tema nero
+       ================================================================ */
+
     :root {
-      --bg: #f3f1ec;
-      --surface: rgba(255, 255, 255, 0.96);
-      --surface-solid: #ffffff;
-      --surface-soft: rgba(250, 248, 244, 0.98);
-      --text: #1c1a18;
-      --muted: #77716a;
-      --border: rgba(222, 216, 205, 0.96);
-      --accent: #c94a5a;
-      --accent-soft: #fae9eb;
+      --bg: #090a0d;
+      --surface: #12151b;
+      --surface-solid: #12151b;
+      --surface-soft: #181b22;
+      --text: #f7f7f5;
+      --muted: #9b9da5;
+      --muted-strong: #c4c6cc;
+      --border: #292d36;
+      --accent: #d14e62;
+      --accent-dark: #ad394b;
+      --accent-soft: #2d171d;
       --gold: #c9a24a;
-      --header: rgba(243, 241, 236, 0.98);
-      --nav: rgba(255, 255, 255, 0.99);
-      --shadow: 0 2px 12px rgba(28, 20, 10, 0.10);
+      --header: #090a0d;
+      --nav: rgba(14, 16, 21, 0.98);
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
-    html[data-theme="dark"] {
-      --bg: #111318;
-      --surface: rgba(27, 30, 38, 0.98);
-      --surface-solid: #1b1e26;
-      --surface-soft: rgba(34, 37, 46, 0.99);
-      --text: #f2f0ec;
-      --muted: #96939a;
-      --border: rgba(55, 58, 68, 0.98);
-      --accent-soft: #35232a;
-      --header: rgba(17, 19, 24, 0.99);
-      --nav: rgba(17, 19, 24, 1);
-      --shadow: 0 2px 14px rgba(0, 0, 0, 0.42);
+    html[data-accent="ao"] {
+      --accent: #4f83c2;
+      --accent-dark: #37689e;
+      --accent-soft: #152338;
     }
 
-    html[data-accent="ao"] { --accent: #3f6ea8; --accent-soft: #e8eef8; }
-    html[data-accent="torii"] { --accent: #c94a5a; --accent-soft: #fae9eb; }
-    html[data-accent="matcha"] { --accent: #4f8a5e; --accent-soft: #e8f2e9; }
-    html[data-accent="sakura"] { --accent: #d97ea0; --accent-soft: #f9e9f0; }
+    html[data-accent="torii"] {
+      --accent: #d14e62;
+      --accent-dark: #ad394b;
+      --accent-soft: #2d171d;
+    }
 
-    html[data-theme="dark"][data-accent="ao"] { --accent-soft: #1a293b; }
-    html[data-theme="dark"][data-accent="matcha"] { --accent-soft: #192d1e; }
-    html[data-theme="dark"][data-accent="sakura"] { --accent-soft: #30212a; }
+    html[data-accent="matcha"] {
+      --accent: #5aa66b;
+      --accent-dark: #428351;
+      --accent-soft: #15281a;
+    }
 
-    .city-osaka { --city: #e08a3c; }
-    .city-kyoto { --city: #4f8a5e; }
-    .city-tokyo { --city: #2c4a6e; }
-    .city-takayama { --city: #b5623f; }
-    .city-hiroshima { --city: #7a6bb0; }
-    .city-kamakura { --city: #3f9b9b; }
-    .city-kawaguchiko { --city: #4f8fc9; }
+    html[data-accent="sakura"] {
+      --accent: #de86a5;
+      --accent-dark: #b65f7e;
+      --accent-soft: #2d1b24;
+    }
+
+    .city-osaka { --city: #e28a3d; }
+    .city-kyoto { --city: #55a466; }
+    .city-tokyo { --city: #5489c5; }
+    .city-takayama { --city: #c5704b; }
+    .city-hiroshima { --city: #8e7bd0; }
+    .city-kamakura { --city: #48aaa8; }
+    .city-kawaguchiko { --city: #62a4db; }
     .city-default { --city: var(--accent); }
 
-    .state-ready { --state-color: #2ea86b; --state-bg: #dff5e9; --state-text: #197342; }
-    .state-buy { --state-color: #e08a3c; --state-bg: #fff0dc; --state-text: #a95b18; }
-    .state-preparing { --state-color: #8b8f99; --state-bg: #e9eaee; --state-text: #5e626d; }
-    .state-booked { --state-color: #3f6ea8; --state-bg: #e1ecfb; --state-text: #285b91; }
+    .state-ready {
+      --state-color: #36c477;
+      --state-bg: #143824;
+      --state-text: #9af0bc;
+    }
 
-    html[data-theme="dark"] .state-ready { --state-bg: #173b29; --state-text: #8ce0ae; }
-    html[data-theme="dark"] .state-buy { --state-bg: #4a2d16; --state-text: #ffc078; }
-    html[data-theme="dark"] .state-preparing { --state-bg: #30333c; --state-text: #c0c4ce; }
-    html[data-theme="dark"] .state-booked { --state-bg: #1d3552; --state-text: #9bc4f5; }
+    .state-buy {
+      --state-color: #e99a45;
+      --state-bg: #3a2614;
+      --state-text: #ffd08e;
+    }
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body { min-height: 100%; }
+    .state-preparing {
+      --state-color: #8d939e;
+      --state-bg: #282c34;
+      --state-text: #d1d4db;
+    }
+
+    .state-booked {
+      --state-color: #5b96d9;
+      --state-bg: #172c48;
+      --state-text: #abd0ff;
+    }
+
+    /* ================================================================
+       2. Reset e struttura
+       ================================================================ */
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      background: var(--bg);
+    }
 
     body {
       margin: 0;
-      background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        sans-serif;
       overscroll-behavior-y: none;
       -webkit-text-size-adjust: 100%;
     }
 
-    button, input, select, textarea { font: inherit; }
-    button, select { cursor: pointer; }
-    a { color: var(--accent); }
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button,
+    select {
+      cursor: pointer;
+    }
+
+    a {
+      color: var(--accent);
+    }
 
     #app {
       position: relative;
@@ -96,6 +148,29 @@
       min-height: 100dvh;
       isolation: isolate;
     }
+
+    #main {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      width: 100%;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 12px 16px calc(148px + var(--safe-bottom));
+    }
+
+    .view-fade {
+      animation: viewFade 0.22s ease;
+    }
+
+    @keyframes viewFade {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ================================================================
+       3. Sfondo nero decorativo
+       ================================================================ */
 
     #backgroundLayer {
       position: fixed;
@@ -109,11 +184,13 @@
     #backgroundPattern {
       width: 100%;
       height: 100%;
-      opacity: 0.08;
+      opacity: 0.075;
       pointer-events: none !important;
     }
 
-    html[data-theme="dark"] #backgroundPattern { opacity: 0.12; }
+    /* ================================================================
+       4. Header
+       ================================================================ */
 
     #topbar {
       position: sticky;
@@ -122,7 +199,7 @@
       padding: max(14px, calc(var(--safe-top) + 10px)) 18px 10px;
       border-bottom: 1px solid transparent;
       background: var(--header);
-      transition: 0.25s ease;
+      transition: padding 0.22s ease, border-color 0.22s ease;
     }
 
     #topbar.scrolled {
@@ -130,96 +207,436 @@
       border-bottom-color: var(--border);
     }
 
-    .topbar-row { display: flex; align-items: center; gap: 10px; }
-    .logo { display: grid; place-items: center; width: 30px; height: 30px; flex: 0 0 auto; border-radius: 9px; background: var(--accent); }
-    .logo svg { width: 62%; height: 62%; }
-    .page-title { flex: 1; margin: 0; font-size: 27px; font-weight: 800; letter-spacing: -.03em; }
-    .page-subtitle { max-height: 24px; margin-top: 3px; padding-left: 40px; overflow: hidden; color: var(--muted); font-size: 13.5px; transition: .25s ease; }
-    .topbar.scrolled .page-title { font-size: 19px; }
-    .topbar.scrolled .page-subtitle { max-height: 0; margin-top: 0; opacity: 0; }
-    .trip-banner { margin-top: 10px; padding: 11px 15px; border-radius: 16px; background: var(--accent-soft); color: var(--accent); font-size: 13px; font-weight: 800; text-align: center; }
+    .topbar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-    #main { position: relative; z-index: 2; flex: 1; width: 100%; max-width: 640px; margin: 0 auto; padding: 12px 16px calc(148px + var(--safe-bottom)); }
-    .view-fade { animation: viewFade .25s ease; }
-    @keyframes viewFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .logo {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      flex: 0 0 auto;
+      border-radius: 9px;
+      background: var(--accent);
+    }
 
-    .card, .stat-box, .progress-card, .toolbar input, .dropdown select, .settings-button, .rate-box { background: var(--surface); }
-    .card { position: relative; overflow: hidden; margin-bottom: 12px; padding: 17px 18px; border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow); cursor: pointer; }
-    .card.city-card { border-left: 4px solid var(--city, var(--accent)); }
-    .card-top, .card-top-left { display: flex; align-items: center; }
-    .card-top { justify-content: space-between; gap: 10px; }
-    .card-top-left, .card-title-wrap { min-width: 0; }
-    .card-top-left { gap: 10px; }
-    .card-title { margin: 0; font-size: 17.5px; font-weight: 800; line-height: 1.3; overflow-wrap: anywhere; }
-    .card-subtitle { margin-top: 3px; color: var(--muted); font-size: 13px; font-weight: 600; }
-    .card .badge { flex: 0 0 auto; padding: 5px 11px; border-radius: 20px; background: var(--accent-soft); color: var(--accent); font-size: 11px; font-weight: 800; white-space: nowrap; }
-    .button-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px; }
-    .action-button { display: inline-flex; align-items: center; flex: 0 0 auto; gap: 6px; padding: 10px 15px; border: 0; border-radius: 12px; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; text-decoration: none; box-shadow: var(--shadow); }
-    .action-button.secondary { background: var(--accent-soft); color: var(--accent); box-shadow: none; }
-    .empty-state { padding: 56px 20px; color: var(--muted); font-size: 14px; line-height: 1.6; text-align: center; }
-    .group-title { display: flex; align-items: center; gap: 8px; margin: 20px 4px 10px; font-size: 14px; font-weight: 800; }
+    .logo svg {
+      width: 62%;
+      height: 62%;
+    }
 
-    .dashboard-card { margin-bottom: 14px; padding: 20px; border: 1px solid var(--border); border-radius: 28px; background: var(--surface); box-shadow: var(--shadow); }
-    .dashboard-kicker { color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-    .dashboard-title { margin: 5px 0 0; font-size: 25px; font-weight: 850; }
-    .dashboard-subtitle { margin-top: 5px; color: var(--muted); font-size: 14px; }
-    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
-    .dashboard-metric { padding: 14px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface-soft); }
-    .dashboard-metric-label { color: var(--muted); font-size: 12px; font-weight: 700; }
-    .dashboard-metric-value { margin-top: 4px; font-size: 16px; font-weight: 850; }
-    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0 6px; }
-    .stat-box { padding: 15px 8px; border: 1px solid var(--border); border-radius: 20px; text-align: center; box-shadow: var(--shadow); }
-    .stat-label { color: var(--muted); font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
-    .stat-value { margin-top: 5px; font-size: 17px; font-weight: 800; line-height: 1.2; }
-    .progress-card { display: flex; align-items: center; gap: 16px; margin: 14px 0 6px; padding: 16px; border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow); }
-    .progress-ring { flex: 0 0 auto; transform: rotate(-90deg); }
-    .progress-ring-background { fill: none; stroke: var(--border); stroke-width: 8; }
-    .progress-ring-value { fill: none; stroke: var(--accent); stroke-width: 8; stroke-linecap: round; }
-    .progress-ring-label { fill: var(--text); font-size: 13px; font-weight: 800; }
+    .page-title {
+      flex: 1;
+      margin: 0;
+      font-size: 27px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .page-subtitle {
+      max-height: 24px;
+      margin-top: 3px;
+      padding-left: 40px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 13.5px;
+      transition: opacity 0.22s ease, max-height 0.22s ease;
+    }
+
+    .topbar.scrolled .page-title {
+      font-size: 19px;
+    }
+
+    .topbar.scrolled .page-subtitle {
+      max-height: 0;
+      margin-top: 0;
+      opacity: 0;
+    }
+
+    .trip-banner {
+      margin-top: 10px;
+      padding: 11px 15px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--surface);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    /* ================================================================
+       5. Superfici e dashboard
+       ================================================================ */
+
+    .dashboard-card,
+    .card,
+    .stat-box,
+    .progress-card,
+    .toolbar input,
+    .dropdown select,
+    .settings-button,
+    .rate-box {
+      background: var(--surface);
+    }
+
+    .dashboard-card {
+      margin-bottom: 14px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .dashboard-kicker {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .dashboard-title {
+      margin: 5px 0 0;
+      font-size: 25px;
+      font-weight: 850;
+    }
+
+    .dashboard-subtitle {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .dashboard-metric {
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface-soft);
+    }
+
+    .dashboard-metric-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .dashboard-metric-value {
+      margin-top: 4px;
+      font-size: 16px;
+      font-weight: 850;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 14px 0 6px;
+    }
+
+    .stat-box {
+      padding: 14px 8px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      margin-top: 5px;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .progress-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 14px 0 6px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .progress-ring {
+      flex: 0 0 auto;
+      transform: rotate(-90deg);
+    }
+
+    .progress-ring-background {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 8;
+    }
+
+    .progress-ring-value {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 8;
+      stroke-linecap: round;
+    }
+
+    .progress-ring-label {
+      fill: var(--text);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
     .progress-title { font-size: 14px; font-weight: 800; }
     .progress-subtitle { margin-top: 3px; color: var(--muted); font-size: 12.5px; font-weight: 600; }
 
-    .filter-row { display: flex; gap: 8px; overflow-x: auto; margin: 12px 0 10px; padding: 2px 1px 5px; scrollbar-width: none; }
+    /* ================================================================
+       6. Filtri e card
+       ================================================================ */
+
+    .filter-row {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      margin: 12px 0 10px;
+      padding: 2px 1px 5px;
+      scrollbar-width: none;
+    }
+
     .filter-row::-webkit-scrollbar { display: none; }
-    .filter-chip { flex: 0 0 auto; padding: 9px 14px; border: 1px solid var(--border); border-radius: 20px; background: var(--surface); color: var(--muted); font-size: 13px; font-weight: 750; box-shadow: var(--shadow); }
-    .filter-chip.active { border-color: var(--accent); background: var(--accent); color: #fff; }
-    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 12px; }
-    .toolbar input[type="search"] { flex: 1 1 140px; min-width: 0; padding: 12px 15px; border: 1px solid var(--border); border-radius: 12px; outline: none; color: var(--text); font-size: 15px; box-shadow: var(--shadow); }
-    .dropdown select { max-width: 155px; padding: 12px 30px 12px 14px; border: 1px solid var(--border); border-radius: 12px; outline: none; color: var(--text); font-size: 14px; font-weight: 700; box-shadow: var(--shadow); }
-    .timeline-list { position: relative; }
-    .timeline-list::before { content: ""; position: absolute; top: 22px; bottom: 32px; left: 13px; width: 2px; background: color-mix(in srgb, var(--accent) 30%, transparent); pointer-events: none; }
-    .timeline-list .card { margin-left: 8px; }
 
-    #tabbar { position: fixed !important; right: 14px !important; bottom: calc(12px + var(--safe-bottom)) !important; left: 14px !important; z-index: 9999 !important; display: flex !important; gap: 6px; overflow-x: auto; padding: 7px; border: 1px solid var(--border); border-radius: 29px; background: var(--nav); box-shadow: 0 10px 30px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.08); -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%); scrollbar-width: none; pointer-events: auto !important; transform: translateZ(0); }
+    .filter-chip {
+      flex: 0 0 auto;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--surface);
+      color: var(--muted-strong);
+      font-size: 12.5px;
+      font-weight: 750;
+    }
+
+    .filter-chip.active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 12px 0 10px;
+    }
+
+    .toolbar input[type="search"] {
+      flex: 1 1 140px;
+      min-width: 0;
+      padding: 11px 13px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      outline: none;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .dropdown select {
+      max-width: 150px;
+      padding: 11px 27px 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      outline: none;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 10px;
+      padding: 15px 16px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+    }
+
+    .card.city-card {
+      border-left: 4px solid var(--city, var(--accent));
+    }
+
+    .card-top,
+    .card-top-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .card-top {
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-top-left,
+    .card-title-wrap {
+      min-width: 0;
+    }
+
+    .card-top-left { gap: 8px; }
+    .card-title { margin: 0; font-size: 16.5px; font-weight: 800; line-height: 1.25; overflow-wrap: anywhere; }
+    .card-subtitle { margin-top: 2px; color: var(--muted); font-size: 12.5px; font-weight: 600; }
+    .card .badge { flex: 0 0 auto; padding: 4px 9px; border-radius: 17px; background: var(--accent-soft); color: var(--accent); font-size: 10.5px; font-weight: 800; white-space: nowrap; }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 9px;
+    }
+
+    .action-button {
+      display: inline-flex;
+      align-items: center;
+      flex: 0 0 auto;
+      gap: 5px;
+      padding: 8px 12px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12.5px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .action-button.secondary {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .empty-state {
+      padding: 45px 20px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .group-title {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 18px 4px 8px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    /* ================================================================
+       7. Navigazione fissa
+       ================================================================ */
+
+    #tabbar {
+      position: fixed !important;
+      right: 12px !important;
+      bottom: calc(10px + var(--safe-bottom)) !important;
+      left: 12px !important;
+      z-index: 9999 !important;
+      display: flex !important;
+      gap: 5px;
+      overflow-x: auto;
+      padding: 6px;
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      background: var(--nav);
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      scrollbar-width: none;
+      pointer-events: auto !important;
+      transform: translateZ(0);
+    }
+
     #tabbar::-webkit-scrollbar { display: none; }
-    .tab-button { display: flex; flex: 0 0 auto; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-width: 76px; min-height: 52px; padding: 6px 10px; border: 0; border-radius: 21px; background: transparent; color: var(--muted); font-size: 10px; font-weight: 750; pointer-events: auto !important; }
-    .tab-button-icon { font-size: 20px; line-height: 1; }
-    .tab-button.active { background: var(--accent); color: #fff; box-shadow: 0 4px 12px color-mix(in srgb, var(--accent) 35%, transparent); }
-    .floating-button { position: fixed; right: 18px; bottom: calc(106px + var(--safe-bottom)); z-index: 9998; width: 54px; height: 54px; border: 0; border-radius: 18px; background: var(--accent); color: #fff; font-size: 26px; box-shadow: 0 8px 20px -4px var(--accent); }
 
-    .settings-section { margin-bottom: 26px; }
-    .settings-heading { margin: 0 0 6px; color: var(--muted); font-size: 13px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
-    .theme-options, .accent-options { display: flex; flex-wrap: wrap; gap: 10px; }
-    .pill-button { padding: 11px 17px; border: 1px solid var(--border); border-radius: 20px; background: var(--surface); color: var(--text); font-size: 14px; font-weight: 700; box-shadow: var(--shadow); }
+    .tab-button {
+      display: flex;
+      flex: 0 0 auto;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      min-width: 70px;
+      min-height: 48px;
+      padding: 5px 8px;
+      border: 0;
+      border-radius: 18px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 9.5px;
+      font-weight: 750;
+      pointer-events: auto !important;
+    }
+
+    .tab-button-icon { font-size: 18px; line-height: 1; }
+    .tab-button.active { background: var(--accent); color: #fff; }
+
+    .floating-button {
+      position: fixed;
+      right: 17px;
+      bottom: calc(96px + var(--safe-bottom));
+      z-index: 9998;
+      width: 50px;
+      height: 50px;
+      border: 0;
+      border-radius: 16px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 24px;
+      box-shadow: 0 6px 16px var(--accent-dark);
+    }
+
+    /* ================================================================
+       8. Impostazioni e modale
+       ================================================================ */
+
+    .settings-section { margin-bottom: 24px; }
+    .settings-heading { margin: 0 0 6px; color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+    .theme-options, .accent-options { display: flex; flex-wrap: wrap; gap: 9px; }
+    .pill-button { padding: 10px 15px; border: 1px solid var(--border); border-radius: 18px; background: var(--surface); color: var(--text); font-size: 13px; font-weight: 700; }
     .pill-button.active { border-color: var(--accent); background: var(--accent); color: #fff; }
-    .color-swatch { width: 42px; height: 42px; border: 3px solid transparent; border-radius: 50%; box-shadow: var(--shadow); }
+    .color-swatch { width: 40px; height: 40px; border: 3px solid transparent; border-radius: 50%; }
     .color-swatch.active { border-color: var(--text); }
-    .settings-button, .rate-box { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px; margin-top: 8px; padding: 15px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text); font-size: 15px; font-weight: 700; text-align: left; box-shadow: var(--shadow); }
-    .rate-box input { width: 90px; padding: 9px 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-soft); color: var(--text); font-size: 15px; text-align: right; }
+    .settings-button, .rate-box { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px; margin-top: 7px; padding: 13px 14px; border: 1px solid var(--border); border-radius: 11px; background: var(--surface); color: var(--text); font-size: 14px; font-weight: 700; text-align: left; }
+    .rate-box input { width: 84px; padding: 8px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-soft); color: var(--text); font-size: 14px; text-align: right; }
     input[type="file"] { display: none; }
-    .modal-overlay { position: fixed; inset: 0; z-index: 100000; display: flex; align-items: flex-end; background: rgba(20,15,10,.5); }
-    .modal { width: 100%; max-height: 88vh; overflow-y: auto; padding: 22px 20px calc(26px + var(--safe-bottom)); border-radius: 28px 28px 0 0; background: var(--surface-solid); box-shadow: 0 -10px 40px rgba(0,0,0,.25); }
-    .modal-title { margin: 0 0 16px; font-size: 19px; font-weight: 800; }
-    .field { margin-bottom: 13px; }
-    .field-label { display: block; margin-bottom: 5px; color: var(--muted); font-size: 12px; font-weight: 700; }
-    .field input, .field select, .field textarea { width: 100%; padding: 12px 13px; border: 1px solid var(--border); border-radius: 12px; outline: none; background: var(--surface-soft); color: var(--text); font-size: 16px; }
-    .field textarea { min-height: 64px; resize: vertical; }
-    .modal-actions { display: flex; gap: 10px; margin-top: 18px; }
-    .modal-actions button { flex: 1; padding: 14px; border: 0; border-radius: 16px; font-size: 15px; font-weight: 800; }
+    .modal-overlay { position: fixed; inset: 0; z-index: 100000; display: flex; align-items: flex-end; background: rgba(0,0,0,.55); }
+    .modal { width: 100%; max-height: 88vh; overflow-y: auto; padding: 20px 18px calc(24px + var(--safe-bottom)); border-radius: 24px 24px 0 0; background: var(--surface-solid); }
+    .modal-title { margin: 0 0 15px; font-size: 18px; font-weight: 800; }
+    .field { margin-bottom: 11px; }
+    .field-label { display: block; margin-bottom: 4px; color: var(--muted); font-size: 11px; font-weight: 700; }
+    .field input, .field select, .field textarea { width: 100%; padding: 11px 12px; border: 1px solid var(--border); border-radius: 11px; outline: none; background: var(--surface-soft); color: var(--text); font-size: 15px; }
+    .field textarea { min-height: 60px; resize: vertical; }
+    .modal-actions { display: flex; gap: 8px; margin-top: 16px; }
+    .modal-actions button { flex: 1; padding: 13px; border: 0; border-radius: 14px; font-size: 14px; font-weight: 800; }
     .save-button { background: var(--accent); color: #fff; }
     .cancel-button { border: 1px solid var(--border) !important; background: var(--surface-soft); color: var(--text); }
     .delete-button { background: #c94a5a; color: #fff; }
-    .toast { position: fixed; bottom: calc(112px + var(--safe-bottom)); left: 50%; z-index: 100001; max-width: 90vw; padding: 12px 18px; border-radius: 20px; background: var(--text); color: var(--bg); font-size: 13px; font-weight: 700; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,.3); opacity: 0; transform: translateX(-50%); transition: opacity .3s ease; }
+    .toast { position: fixed; bottom: calc(104px + var(--safe-bottom)); left: 50%; z-index: 100001; max-width: 90vw; padding: 11px 16px; border-radius: 18px; background: var(--text); color: var(--bg); font-size: 12.5px; font-weight: 700; text-align: center; opacity: 0; transform: translateX(-50%); transition: opacity .25s ease; }
     .toast.visible { opacity: 1; }
   </style>
 </head>
@@ -251,33 +668,15 @@
 
   <script>
     /* ================================================================
-       Configurazione, dati e funzioni base
+       Stato e configurazione
        ================================================================ */
 
     const DATA_KEY = "giappone-data";
     const SETTINGS_KEY = "giappone-settings";
-
-    const STATUSES = [
-      "Da preparare",
-      "Da comprare",
-      "In valigia",
-      "Fatto"
-    ];
-
-    const URGENCY_ORDER = {
-      Alta: 0,
-      Media: 1,
-      Bassa: 2
-    };
-
-    const MONTHS = [
-      "gen", "feb", "mar", "apr", "mag", "giu",
-      "lug", "ago", "set", "ott", "nov", "dic"
-    ];
-
-    const WEEKDAYS = [
-      "dom", "lun", "mar", "mer", "gio", "ven", "sab"
-    ];
+    const STATUSES = ["Da preparare", "Da comprare", "In valigia", "Fatto"];
+    const URGENCY_ORDER = { Alta: 0, Media: 1, Bassa: 2 };
+    const MONTHS = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"];
+    const WEEKDAYS = ["dom", "lun", "mar", "mer", "gio", "ven", "sab"];
 
     const SHEETS = [
       "1. Itinerario", "2. Hotel e Alloggi", "3. Trasporti", "4. App",
@@ -314,25 +713,18 @@
 
     const META = {
       "1. Itinerario": {
-        label: "Itinerario",
-        title: "Attività Principali",
+        label: "Itinerario", title: "Attività Principali",
         search: ["Città", "Attività Principali", "Spostamento"]
       },
       "2. Hotel e Alloggi": {
-        label: "Alloggi",
-        title: "Nome Hotel / Ryokan",
-        fallback: "Città",
-        sub: ["Città", "Notte"],
-        notes: ["Note / Conferma"],
+        label: "Alloggi", title: "Nome Hotel / Ryokan", fallback: "Città",
+        sub: ["Città", "Notte"], notes: ["Note / Conferma"],
         maps: [{ field: "Link Google Maps", label: "Maps" }],
-        search: ["Città", "Nome Hotel / Ryokan"],
-        city: "Città"
+        search: ["Città", "Nome Hotel / Ryokan"], city: "Città"
       },
       "3. Trasporti": {
-        label: "Trasporti",
-        title: "Tratta / Servizio",
-        sub: ["Mezzo / Vettore"],
-        badge: "Costo Stimato",
+        label: "Trasporti", title: "Tratta / Servizio",
+        sub: ["Mezzo / Vettore"], badge: "Costo Stimato",
         extra: ["Durata"],
         maps: [
           { field: "Link Maps Partenza", label: "Partenza" },
@@ -341,72 +733,48 @@
         search: ["Tratta / Servizio", "Mezzo / Vettore"]
       },
       "4. App": {
-        label: "App",
-        title: "App",
-        sub: ["Categoria"],
+        label: "App", title: "App", sub: ["Categoria"],
         badge: "Urgenza Configurazione",
         notes: ["Funzione Principale", "Note"],
         search: ["App", "Categoria"]
       },
       "5. Valigia": {
-        label: "Valigia",
-        title: "Articolo",
-        sub: ["Categoria"],
+        label: "Valigia", title: "Articolo", sub: ["Categoria"],
         status: "Messo in Valigia?",
-        notes: ["Note per il Giappone"],
-        extra: ["Urgenza"],
+        notes: ["Note per il Giappone"], extra: ["Urgenza"],
         search: ["Articolo", "Categoria"]
       },
       "6. Attrazioni": {
-        label: "Attrazioni",
-        title: "Attrazione",
-        fallback: "Città",
-        sub: ["Città", "Categoria"],
-        badge: "Urgenza",
-        notes: ["Note"],
+        label: "Attrazioni", title: "Attrazione", fallback: "Città",
+        sub: ["Città", "Categoria"], badge: "Urgenza", notes: ["Note"],
         maps: [{ field: "Link Google Maps", label: "Maps" }],
-        search: ["Città", "Attrazione", "Categoria"],
-        city: "Città"
+        search: ["Città", "Attrazione", "Categoria"], city: "Città"
       },
       "7. Guida": {
-        label: "Guida",
-        title: "Argomento",
-        notes: ["Dettagli Operativi"],
-        search: ["Argomento"]
+        label: "Guida", title: "Argomento",
+        notes: ["Dettagli Operativi"], search: ["Argomento"]
       },
       "8. Cibo e Ristoranti": {
-        label: "Cibo",
-        title: "Specialità / Piatto",
-        fallback: "Città",
-        sub: ["Città", "Categoria"],
-        notes: ["Note e Suggerimenti"],
+        label: "Cibo", title: "Specialità / Piatto", fallback: "Città",
+        sub: ["Città", "Categoria"], notes: ["Note e Suggerimenti"],
         maps: [{ field: "Link Google Maps", label: "Maps" }],
-        search: ["Città", "Specialità / Piatto", "Categoria"],
-        city: "Città"
+        search: ["Città", "Specialità / Piatto", "Categoria"], city: "Città"
       },
       "9. Shopping": {
-        label: "Shopping",
-        title: "Brand / Negozio",
-        fallback: "Quartiere",
+        label: "Shopping", title: "Brand / Negozio", fallback: "Quartiere",
         sub: ["Città", "Quartiere", "Categoria"],
         notes: ["Articolo Mirato / Note"],
         maps: [{ field: "Link Google Maps", label: "Maps" }],
-        search: ["Città", "Quartiere", "Brand / Negozio"],
-        city: "Città"
+        search: ["Città", "Quartiere", "Brand / Negozio"], city: "Città"
       },
       "10. Emergenze": {
-        label: "Emergenze",
-        title: "Contatto / Servizio",
-        sub: ["Numero / Riferimento"],
-        notes: ["Dettagli Operativi"],
+        label: "Emergenze", title: "Contatto / Servizio",
+        sub: ["Numero / Riferimento"], notes: ["Dettagli Operativi"],
         search: ["Contatto / Servizio"]
       },
       "11. Budget": {
-        label: "Budget",
-        title: "Data",
-        sub: ["Giorno"],
-        badge: "Budget Previsto (Yen)",
-        notes: ["Note / Categoria"],
+        label: "Budget", title: "Data", sub: ["Giorno"],
+        badge: "Budget Previsto (Yen)", notes: ["Note / Categoria"],
         extra: ["Spesa Effettiva Revolut", "Differenza"],
         search: ["Data", "Giorno"]
       }
@@ -415,10 +783,7 @@
     const state = {
       data: JSON.parse(localStorage.getItem(DATA_KEY) || "{}"),
       settings: JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}"),
-      view: "1. Itinerario",
-      search: "",
-      city: "",
-      sort: "default"
+      view: "1. Itinerario", search: "", city: "", sort: "default"
     };
 
     state.settings.theme ||= "auto";
@@ -434,10 +799,7 @@
     }
 
     function saveSettings() {
-      localStorage.setItem(
-        SETTINGS_KEY,
-        JSON.stringify(state.settings)
-      );
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
     }
 
     function iconFor(field) {
@@ -467,11 +829,8 @@
 
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, (character) => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
+        "&": "&amp;", "<": "&lt;", ">": "&gt;",
+        '"': "&quot;", "'": "&#39;"
       })[character]);
     }
 
@@ -480,11 +839,7 @@
         .match(/^(\d{4})-(\d{2})-(\d{2})/);
 
       return match
-        ? new Date(
-          Number(match[1]),
-          Number(match[2]) - 1,
-          Number(match[3])
-        )
+        ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]))
         : null;
     }
 
@@ -510,22 +865,12 @@
     }
 
     function cityClass(value) {
-      const city = String(value || "")
-        .split("/")[0]
-        .trim()
-        .toLowerCase();
-
+      const city = String(value || "").split("/")[0].trim().toLowerCase();
       const classes = {
-        osaka: "city-osaka",
-        kyoto: "city-kyoto",
-        tokyo: "city-tokyo",
-        takayama: "city-takayama",
-        hiroshima: "city-hiroshima",
-        kamakura: "city-kamakura",
-        kawaguchiko: "city-kawaguchiko",
-        partenza: "city-partenza"
+        osaka: "city-osaka", kyoto: "city-kyoto", tokyo: "city-tokyo",
+        takayama: "city-takayama", hiroshima: "city-hiroshima",
+        kamakura: "city-kamakura", kawaguchiko: "city-kawaguchiko"
       };
-
       return classes[city] || "city-default";
     }
 
@@ -549,7 +894,7 @@
     }
 
     /* ================================================================
-       Background e tabbar
+       Background e navigazione
        ================================================================ */
 
     function renderBackground() {
@@ -654,7 +999,7 @@
     }
 
     /* ================================================================
-       Funzioni lista: ignora le righe vuote
+       Funzioni che ignorano le righe vuote
        ================================================================ */
 
     function rowHasContent(key, meta, row) {
@@ -673,25 +1018,6 @@
 
       return false;
     }
-
-    function countMapLinks() {
-      let count = 0;
-
-      SHEETS.forEach((key) => {
-        const meta = META[key];
-        (meta.maps || []).forEach((map) => {
-          count += (state.data[key]?.rows || []).filter((row) => {
-            return rowHasContent(key, meta, row) && isUrl(row[map.field]);
-          }).length;
-        });
-      });
-
-      return count;
-    }
-
-    /* ================================================================
-       Render principale
-       ================================================================ */
 
     function renderApp() {
       const main = document.getElementById("main");
@@ -793,12 +1119,6 @@
             <div class="dashboard-metric-label">💴 Budget</div>
             <div class="dashboard-metric-value">
               ${planned.toLocaleString("it-IT")} ¥
-            </div>
-          </div>
-          <div class="dashboard-metric">
-            <div class="dashboard-metric-label">📍 Luoghi Maps</div>
-            <div class="dashboard-metric-value">
-              ${countMapLinks()}
             </div>
           </div>
         </div>
@@ -1083,7 +1403,7 @@
     }
 
     /* ================================================================
-       Card itinerario e dati
+       Card
        ================================================================ */
 
     function renderItineraryCard(row, index) {
@@ -1138,13 +1458,7 @@
               🏨 ${escapeHtml(hotelName)}
             </span>
             ${isUrl(hotel?.["Link Google Maps"])
-              ? `<a
-                   class="action-button small"
-                   href="${hotel["Link Google Maps"]}"
-                   target="_blank"
-                   rel="noopener"
-                   onclick="event.stopPropagation()"
-                 >📍 Maps</a>`
+              ? `<a class="action-button" href="${hotel["Link Google Maps"]}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📍 Maps</a>`
               : ""}
           </div>
         `
@@ -1173,12 +1487,8 @@
         </div>
         ${hotelHtml}
         <div class="button-row">
-          <button class="action-button small secondary" data-calendar>
-            📅 Calendario
-          </button>
-          <button class="action-button small secondary" data-share>
-            📤 Condividi
-          </button>
+          <button class="action-button" data-calendar>📅 Calendario</button>
+          <button class="action-button secondary" data-share>📤 Condividi</button>
         </div>
       `;
 
@@ -1221,89 +1531,37 @@
       const right = meta.status
         ? renderStatus(row, meta.status)
         : meta.badge && row[meta.badge]
-          ? `<span class="badge">
-               ${iconFor(meta.badge)} ${escapeHtml(row[meta.badge])}
-             </span>`
+          ? `<span class="badge">${iconFor(meta.badge)} ${escapeHtml(row[meta.badge])}</span>`
           : `<span class="chevron">›</span>`;
 
       const notes = (meta.notes || []).map((field) => row[field]
-        ? `
-          <div class="bullet">
-            <span class="bullet-icon">${iconFor(field)}</span>
-            <span>${escapeHtml(row[field])}</span>
-          </div>
-        `
+        ? `<div class="bullet"><span class="bullet-icon">${iconFor(field)}</span><span>${escapeHtml(row[field])}</span></div>`
         : "").join("");
 
       const extra = (meta.extra || []).map((field) => row[field]
-        ? `
-          <div class="bullet muted">
-            <span class="bullet-icon">${iconFor(field)}</span>
-            <span>
-              ${escapeHtml(field)}: ${escapeHtml(row[field])}
-            </span>
-          </div>
-        `
+        ? `<div class="bullet muted"><span class="bullet-icon">${iconFor(field)}</span><span>${escapeHtml(field)}: ${escapeHtml(row[field])}</span></div>`
         : "").join("");
 
       const maps = (meta.maps || []).map((map) => {
         if (!isUrl(row[map.field])) return "";
-
-        return `
-          <a
-            class="action-button"
-            href="${row[map.field]}"
-            target="_blank"
-            rel="noopener"
-          >
-            📍 ${map.label === "Maps" ? "Apri in Maps" : map.label}
-          </a>
-        `;
+        return `<a class="action-button" href="${row[map.field]}" target="_blank" rel="noopener">📍 ${map.label === "Maps" ? "Apri in Maps" : map.label}</a>`;
       }).join("");
 
-      const emergency = key === "10. Emergenze" &&
-        isPhone(row["Numero / Riferimento"])
-        ? `
-          <a
-            class="action-button"
-            href="tel:${row["Numero / Riferimento"].replace(/\s/g, "")}" 
-          >📞 Chiama</a>
-        `
+      const emergency = key === "10. Emergenze" && isPhone(row["Numero / Riferimento"])
+        ? `<a class="action-button" href="tel:${row["Numero / Riferimento"].replace(/\s/g, "")}">📞 Chiama</a>`
         : "";
 
       card.innerHTML = `
         <div class="card-top">
           <div class="card-title-wrap">
             <h3 class="card-title">${escapeHtml(title)}</h3>
-            ${subtitle
-              ? `<div class="card-subtitle">
-                   ${escapeHtml(subtitle)}
-                 </div>`
-              : ""}
+            ${subtitle ? `<div class="card-subtitle">${escapeHtml(subtitle)}</div>` : ""}
           </div>
           ${right}
         </div>
-
-        ${notes || extra
-          ? `<div class="bullet-list">
-               ${notes}
-               ${extra}
-               ${key === "11. Budget" ? renderEuro(row) : ""}
-             </div>`
-          : ""}
-
-        ${maps || emergency
-          ? `<div class="button-row">
-               ${maps}
-               ${emergency}
-             </div>`
-          : ""}
-
-        <div class="button-row">
-          <button class="action-button small secondary" data-share>
-            📤 Condividi
-          </button>
-        </div>
+        ${notes || extra ? `<div class="bullet-list">${notes}${extra}${key === "11. Budget" ? renderEuro(row) : ""}</div>` : ""}
+        ${maps || emergency ? `<div class="button-row">${maps}${emergency}</div>` : ""}
+        <div class="button-row"><button class="action-button secondary" data-share>📤 Condividi</button></div>
       `;
 
       const select = card.querySelector("[data-status]");
@@ -1318,10 +1576,7 @@
 
       card.querySelector("[data-share]").onclick = (event) => {
         event.stopPropagation();
-        shareText(
-          title,
-          `${title}${subtitle ? ` · ${subtitle}` : ""}`
-        );
+        shareText(title, `${title}${subtitle ? ` · ${subtitle}` : ""}`);
       };
 
       return card;
@@ -1337,34 +1592,14 @@
             ? "state-booked"
             : "state-preparing";
 
-      return `
-        <select class="status-select ${className}" data-status>
-          ${STATUSES.map((option) => `
-            <option
-              value="${option}"
-              ${option === current ? "selected" : ""}
-            >
-              ${option}
-            </option>
-          `).join("")}
-        </select>
-      `;
+      return `<select class="status-select ${className}" data-status>${STATUSES.map((option) => `<option value="${option}" ${option === current ? "selected" : ""}>${option}</option>`).join("")}</select>`;
     }
 
     function renderEuro(row) {
       const value = Number(row["Budget Previsto (Yen)"]);
       if (Number.isNaN(value)) return "";
 
-      return `
-        <div class="bullet muted">
-          <span class="bullet-icon">💶</span>
-          <span>
-            Previsto: ≈ €${(
-              value / (state.settings.exchangeRate || 160)
-            ).toFixed(2)}
-          </span>
-        </div>
-      `;
+      return `<div class="bullet muted"><span class="bullet-icon">💶</span><span>Previsto: ≈ €${(value / (state.settings.exchangeRate || 160)).toFixed(2)}</span></div>`;
     }
 
     /* ================================================================
@@ -1436,27 +1671,15 @@
         <section class="map-hero">
           <div class="map-hero-kicker">📍 Travel map</div>
           <h2 class="map-hero-title">Mappa del viaggio</h2>
-          <div class="map-hero-subtitle">
-            Filtra, raggruppa e apri i luoghi in Google Maps.
-          </div>
+          <div class="map-hero-subtitle">Filtra, raggruppa e apri i luoghi in Google Maps.</div>
           <div class="map-counters" id="mapCounters"></div>
           <div class="map-mode-row">
-            <button class="map-mode-button active" data-map-mode="list">
-              📋 Elenco
-            </button>
-            <button class="map-mode-button" data-map-mode="zones">
-              🧭 Zone
-            </button>
+            <button class="map-mode-button active" data-map-mode="list">📋 Elenco</button>
+            <button class="map-mode-button" data-map-mode="zones">🧭 Zone</button>
           </div>
           <div class="map-search-row">
-            <input
-              id="mapSearch"
-              type="search"
-              placeholder="🔎 Cerca luogo o quartiere..."
-            >
-            <button class="action-button" id="mapOpenSearch">
-              🌐 Maps
-            </button>
+            <input id="mapSearch" type="search" placeholder="🔎 Cerca luogo o quartiere...">
+            <button class="action-button" id="mapOpenSearch">🌐 Maps</button>
           </div>
           <div class="map-filter-title">Città</div>
           <div class="map-filter-row" id="mapCities"></div>
@@ -1494,15 +1717,9 @@
       }
 
       function updateCounters(list) {
-        const attractions = list.filter((item) => {
-          return item.category === "Attrazioni";
-        }).length;
-        const food = list.filter((item) => {
-          return item.category === "Cibo";
-        }).length;
-        const shopping = list.filter((item) => {
-          return item.category === "Shopping";
-        }).length;
+        const attractions = list.filter((item) => item.category === "Attrazioni").length;
+        const food = list.filter((item) => item.category === "Cibo").length;
+        const shopping = list.filter((item) => item.category === "Shopping").length;
 
         wrapper.querySelector("#mapCounters").innerHTML = `
           <div class="map-counter">
@@ -1528,9 +1745,7 @@
 
         cities.forEach((city) => {
           const button = document.createElement("button");
-          button.className = `map-filter-chip${
-            filterState.city === city ? " active" : ""
-          }`;
+          button.className = `map-filter-chip${filterState.city === city ? " active" : ""}`;
           button.type = "button";
           button.textContent = city || "🌆 Tutte";
           button.onclick = () => {
@@ -1543,9 +1758,7 @@
 
         categories.forEach((category) => {
           const button = document.createElement("button");
-          button.className = `map-filter-chip${
-            filterState.category === category ? " active" : ""
-          }`;
+          button.className = `map-filter-chip${filterState.category === category ? " active" : ""}`;
           button.type = "button";
           button.textContent = category || "✨ Tutte";
           button.onclick = () => {
@@ -1603,9 +1816,7 @@
         card.innerHTML = `
           <div class="card-top">
             <div class="card-title-wrap">
-              <h3 class="card-title">
-                ${escapeHtml(item.title)}
-              </h3>
+              <h3 class="card-title">${escapeHtml(item.title)}</h3>
               <div class="card-subtitle">
                 ${escapeHtml(item.city || "")}
                 ${item.subtitle ? ` · ${escapeHtml(item.subtitle)}` : ""}
@@ -1614,15 +1825,8 @@
             <span class="badge">${escapeHtml(item.category)}</span>
           </div>
           <div class="button-row">
-            <a
-              class="action-button"
-              href="${item.url}"
-              target="_blank"
-              rel="noopener"
-            >📍 Apri in Maps</a>
-            <button class="action-button secondary" data-share>
-              📤 Condividi
-            </button>
+            <a class="action-button" href="${item.url}" target="_blank" rel="noopener">📍 Apri in Maps</a>
+            <button class="action-button secondary" data-share>📤 Condividi</button>
           </div>
         `;
 
@@ -1649,7 +1853,6 @@
           filterState.query,
           "Giappone"
         ].filter(Boolean);
-
         const query = encodeURIComponent(queryParts.join(" "));
         window.open(
           `https://www.google.com/maps/search/?api=1&query=${query}`,
@@ -1675,460 +1878,9 @@
       return wrapper;
     }
 
-    function addCalendar(row) {
-      const date = parseDate(row.Data);
-      if (!date) {
-        showToast("Data non valida");
-        return;
-      }
-
-      const start = row.Data.replace(/-/g, "");
-      const next = new Date(date.getTime() + 86400000);
-      const end = `${next.getFullYear()}${String(
-        next.getMonth() + 1
-      ).padStart(2, "0")}${String(next.getDate()).padStart(2, "0")}`;
-
-      const content = [
-        "BEGIN:VCALENDAR",
-        "VERSION:2.0",
-        "BEGIN:VEVENT",
-        `UID:giappone-${start}@local`,
-        `DTSTART;VALUE=DATE:${start}`,
-        `DTEND;VALUE=DATE:${end}`,
-        `SUMMARY:${row.Città}: ${row["Attività Principali"]}`,
-        `DESCRIPTION:${row.Spostamento || ""}`,
-        "END:VEVENT",
-        "END:VCALENDAR"
-      ].join("\r\n");
-
-      downloadFile(
-        content,
-        `giorno-${row.Data}.ics`,
-        "text/calendar;charset=utf-8"
-      );
-      showToast("📅 File calendario creato");
-    }
-
-    function shareText(title, text) {
-      if (navigator.share) {
-        navigator.share({ title, text }).catch(() => {});
-      } else if (navigator.clipboard) {
-        navigator.clipboard
-          .writeText(text)
-          .then(() => showToast("📋 Copiato"));
-      } else {
-        showToast("Condivisione non supportata");
-      }
-    }
-
     /* ================================================================
-       7. Modali e impostazioni
+       Avvio
        ================================================================ */
-
-    function openEditModal(key, index) {
-      const sheet = state.data[key];
-      const row = index === null ? {} : sheet.rows[index];
-      const meta = META[key];
-      const overlay = document.createElement("div");
-      overlay.className = "modal-overlay";
-      overlay.onclick = (event) => {
-        if (event.target === overlay) closeModal();
-      };
-
-      const modal = document.createElement("div");
-      modal.className = "modal";
-      modal.innerHTML = `
-        <h2 class="modal-title">
-          ${index === null ? "➕ Nuovo" : "✎ Modifica"}
-          · ${ICONS[key]} ${meta.label}
-        </h2>
-        ${sheet.headers.map((field) => renderField(
-          field,
-          row[field],
-          meta
-        )).join("")}
-        <div class="modal-actions">
-          <button class="cancel-button" data-cancel>
-            Annulla
-          </button>
-          <button class="save-button" data-save>
-            Salva
-          </button>
-        </div>
-        ${index === null
-          ? ""
-          : `<div class="modal-actions">
-               <button class="delete-button" data-delete>
-                 🗑️ Elimina
-               </button>
-             </div>`}
-      `;
-
-      overlay.appendChild(modal);
-      document.getElementById("modalRoot").appendChild(overlay);
-      modal.querySelector("[data-cancel]").onclick = closeModal;
-
-      modal.querySelector("[data-save]").onclick = () => {
-        const updated = {};
-        modal.querySelectorAll("[data-field]").forEach((field) => {
-          updated[field.dataset.field] = field.value;
-        });
-
-        if (index === null) sheet.rows.push(updated);
-        else sheet.rows[index] = updated;
-
-        saveData();
-        closeModal();
-        renderApp();
-        showToast("✅ Salvato");
-      };
-
-      const remove = modal.querySelector("[data-delete]");
-      if (remove) {
-        remove.onclick = () => {
-          sheet.rows.splice(index, 1);
-          saveData();
-          closeModal();
-          renderApp();
-          showToast("🗑️ Eliminato");
-        };
-      }
-    }
-
-    function renderField(field, value, meta) {
-      const current = value || "";
-      const label = `${iconFor(field)} ${field}`;
-
-      if (meta.status === field) {
-        return `
-          <div class="field">
-            <label class="field-label">
-              ${escapeHtml(label)}
-            </label>
-            <select data-field="${escapeHtml(field)}">
-              ${STATUSES.map((option) => `
-                <option
-                  value="${option}"
-                  ${option === current ? "selected" : ""}
-                >${option}</option>
-              `).join("")}
-            </select>
-          </div>
-        `;
-      }
-
-      if (field === "Urgenza" || field === "Urgenza Configurazione") {
-        return `
-          <div class="field">
-            <label class="field-label">
-              ${escapeHtml(label)}
-            </label>
-            <select data-field="${escapeHtml(field)}">
-              <option>Alta</option>
-              <option>Media</option>
-              <option>Bassa</option>
-            </select>
-          </div>
-        `;
-      }
-
-      const type = /^data$/i.test(field)
-        ? "date"
-        : /link|maps/i.test(field)
-          ? "url"
-          : "text";
-
-      const isLong = /note|dettagli|articolo mirato|attività/i.test(field);
-
-      if (isLong) {
-        return `
-          <div class="field">
-            <label class="field-label">
-              ${escapeHtml(label)}
-            </label>
-            <textarea data-field="${escapeHtml(field)}">${escapeHtml(current)}</textarea>
-          </div>
-        `;
-      }
-
-      return `
-        <div class="field">
-          <label class="field-label">
-            ${escapeHtml(label)}
-          </label>
-          <input
-            type="${type}"
-            data-field="${escapeHtml(field)}"
-            value="${escapeHtml(current)}"
-            ${type === "url"
-              ? "placeholder=\"https://maps.app.goo.gl/...\""
-              : ""}
-          >
-        </div>
-      `;
-    }
-
-    function closeModal() {
-      document.getElementById("modalRoot").innerHTML = "";
-    }
-
-    function renderSettings() {
-      const wrapper = document.createElement("div");
-      wrapper.innerHTML = `
-        <section class="settings-section">
-          <h2 class="settings-heading">🎨 Tema</h2>
-          <div class="theme-options">
-            <button class="pill-button" data-theme="light">☀️ Chiaro</button>
-            <button class="pill-button" data-theme="dark">🌙 Scuro</button>
-            <button class="pill-button" data-theme="auto">🔄 Automatico</button>
-          </div>
-        </section>
-        <section class="settings-section">
-          <h2 class="settings-heading">🖌️ Colore accento</h2>
-          <div class="accent-options">
-            <button class="color-swatch" data-accent="torii" style="background:#c94a5a"></button>
-            <button class="color-swatch" data-accent="ao" style="background:#3f6ea8"></button>
-            <button class="color-swatch" data-accent="matcha" style="background:#4f8a5e"></button>
-            <button class="color-swatch" data-accent="sakura" style="background:#d97ea0"></button>
-          </div>
-        </section>
-        <section class="settings-section">
-          <h2 class="settings-heading">💴 Cambio Yen / Euro</h2>
-          <label class="rate-box">
-            <span>1 € =</span>
-            <input id="exchangeRate" type="number" value="${state.settings.exchangeRate}" step="0.5">
-            <span>¥</span>
-          </label>
-        </section>
-        <section class="settings-section">
-          <h2 class="settings-heading">💾 Backup</h2>
-          <button class="settings-button" data-action="export-json">💾 Esporta JSON <span>›</span></button>
-          <button class="settings-button" data-action="import-json">📥 Importa JSON <span>›</span></button>
-          <button class="settings-button" data-action="export-xlsx">📤 Esporta Excel <span>›</span></button>
-          <button class="settings-button" data-action="import-xlsx">📊 Importa Excel <span>›</span></button>
-          <input id="jsonInput" type="file" accept="application/json">
-          <input id="xlsxInput" type="file" accept=".xlsx">
-        </section>
-      `;
-
-      wrapper.querySelectorAll("[data-theme]").forEach((button) => {
-        button.classList.toggle(
-          "active",
-          button.dataset.theme === state.settings.theme
-        );
-        button.onclick = () => {
-          state.settings.theme = button.dataset.theme;
-          saveSettings();
-          applyTheme();
-          renderApp();
-        };
-      });
-
-      wrapper.querySelectorAll("[data-accent]").forEach((button) => {
-        button.classList.toggle(
-          "active",
-          button.dataset.accent === state.settings.accent
-        );
-        button.onclick = () => {
-          state.settings.accent = button.dataset.accent;
-          saveSettings();
-          applyTheme();
-          renderApp();
-        };
-      });
-
-      wrapper.querySelector("#exchangeRate").onchange = (event) => {
-        const value = Number(event.target.value);
-        if (value > 0) {
-          state.settings.exchangeRate = value;
-          saveSettings();
-          showToast("💴 Cambio aggiornato");
-        }
-      };
-
-      wrapper.querySelector('[data-action="export-json"]').onclick = () => {
-        downloadFile(
-          JSON.stringify({ data: state.data, settings: state.settings }, null, 2),
-          "giappone-backup.json",
-          "application/json"
-        );
-        showToast("💾 Backup esportato");
-      };
-
-      wrapper.querySelector('[data-action="import-json"]').onclick = () => {
-        wrapper.querySelector("#jsonInput").click();
-      };
-
-      wrapper.querySelector("#jsonInput").onchange = importJson;
-      wrapper.querySelector('[data-action="export-xlsx"]').onclick = exportXlsx;
-      wrapper.querySelector('[data-action="import-xlsx"]').onclick = () => {
-        wrapper.querySelector("#xlsxInput").click();
-      };
-      wrapper.querySelector("#xlsxInput").onchange = importXlsx;
-
-      return wrapper;
-    }
-
-    function importJson(event) {
-      const file = event.target.files?.[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const payload = JSON.parse(reader.result);
-          if (payload.data) state.data = payload.data;
-          if (payload.settings) state.settings = payload.settings;
-          saveData();
-          saveSettings();
-          applyTheme();
-          renderApp();
-          showToast("✅ Backup importato");
-        } catch (error) {
-          alert(`Backup non valido: ${error.message}`);
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function exportXlsx() {
-      if (!window.XLSX) {
-        alert("Libreria Excel non disponibile.");
-        return;
-      }
-
-      const workbook = XLSX.utils.book_new();
-
-      SHEETS.forEach((key) => {
-        const sheet = state.data[key];
-        if (!sheet) return;
-
-        const values = [
-          sheet.headers,
-          ...sheet.rows.map((row) => {
-            return sheet.headers.map((header) => row[header] || "");
-          })
-        ];
-
-        XLSX.utils.book_append_sheet(
-          workbook,
-          XLSX.utils.aoa_to_sheet(values),
-          key.slice(0, 31)
-        );
-      });
-
-      XLSX.writeFile(workbook, "Giappone_Backup.xlsx");
-      showToast("📤 Excel esportato");
-    }
-
-    function importXlsx(event) {
-      const file = event.target.files?.[0];
-      if (!file || !window.XLSX) return;
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const workbook = XLSX.read(
-            new Uint8Array(reader.result),
-            { type: "array", cellDates: false }
-          );
-
-          const imported = {};
-          const missing = [];
-          let total = 0;
-
-          SHEETS.forEach((key) => {
-            const name = workbook.SheetNames.find((item) => {
-              return item.trim() === key.trim();
-            }) || workbook.SheetNames.find((item) => {
-              return item.replace(/^\d+\.\s*/, "").trim() ===
-                key.replace(/^\d+\.\s*/, "").trim();
-            });
-
-            if (!name) {
-              missing.push(key);
-              return;
-            }
-
-            const values = XLSX.utils.sheet_to_json(
-              workbook.Sheets[name],
-              { header: 1, defval: "", raw: false }
-            );
-
-            if (!values.length) {
-              missing.push(key);
-              return;
-            }
-
-            const headers = values[0].map((header) => {
-              return String(header).trim();
-            });
-
-            const rows = values.slice(1)
-              .filter((row) => {
-                return row.some((value) => {
-                  return value !== "" &&
-                    value !== null &&
-                    value !== undefined;
-                });
-              })
-              .map((row) => {
-                const result = {};
-                headers.forEach((header, index) => {
-                  result[header] = String(row[index] ?? "");
-                });
-                return result;
-              });
-
-            imported[key] = { headers, rows };
-            total += rows.length;
-          });
-
-          if (missing.length) {
-            alert(
-              "Importazione annullata per sicurezza. " +
-              "Fogli mancanti o vuoti:\n\n" +
-              missing.join("\n")
-            );
-            return;
-          }
-
-          state.data = imported;
-          saveData();
-          state.view = "1. Itinerario";
-          renderApp();
-          showToast(`✅ Importati ${total} elementi`);
-        } catch (error) {
-          alert(`Errore Excel: ${error.message}`);
-        }
-      };
-
-      reader.readAsArrayBuffer(file);
-    }
-
-    /* ================================================================
-       8. Avvio
-       ================================================================ */
-
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("sw.js")
-          .catch(() => {});
-      });
-    }
-
-    window.addEventListener("scroll", () => {
-      document.getElementById("topbar").classList.toggle(
-        "scrolled",
-        window.scrollY > 30
-      );
-    }, { passive: true });
-
-    matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", () => {
-        if (state.settings.theme === "auto") applyTheme();
-      });
 
     applyTheme();
     renderBackground();
