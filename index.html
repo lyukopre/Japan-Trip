@@ -10,16 +10,11 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Giappone">
-
   <title>Giappone 2026/27</title>
   <link rel="manifest" href="manifest.json">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
-    /* ================================================================
-       1. Tema nero e reset
-       ================================================================ */
-
     :root {
       --bg: #090a0d;
       --surface: #12151b;
@@ -67,6 +62,11 @@
     .city-kawaguchiko { --city: #62a4db; }
     .city-default { --city: var(--accent); }
 
+    .state-ready { --state-color: #36c477; --state-bg: #143824; --state-text: #9af0bc; }
+    .state-buy { --state-color: #e99a45; --state-bg: #3a2614; --state-text: #ffd08e; }
+    .state-preparing { --state-color: #8d939e; --state-bg: #282c34; --state-text: #d1d4db; }
+    .state-booked { --state-color: #5b96d9; --state-bg: #172c48; --state-text: #abd0ff; }
+
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
@@ -81,8 +81,7 @@
     body {
       margin: 0;
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       overscroll-behavior-y: none;
       -webkit-text-size-adjust: 100%;
     }
@@ -112,20 +111,6 @@
       isolation: isolate;
     }
 
-    #main {
-      position: relative;
-      z-index: 2;
-      flex: 1;
-      width: 100%;
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 12px 16px calc(148px + var(--safe-bottom));
-    }
-
-    /* ================================================================
-       2. Sfondo
-       ================================================================ */
-
     #backgroundLayer {
       position: fixed;
       inset: 0;
@@ -141,10 +126,6 @@
       opacity: 0.025;
       pointer-events: none !important;
     }
-
-    /* ================================================================
-       3. Header
-       ================================================================ */
 
     #topbar {
       position: sticky;
@@ -222,9 +203,24 @@
       text-align: center;
     }
 
-    /* ================================================================
-       4. Layout compatto
-       ================================================================ */
+    #main {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      width: 100%;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 12px 16px calc(148px + var(--safe-bottom));
+    }
+
+    .view-fade {
+      animation: viewFade 0.22s ease;
+    }
+
+    @keyframes viewFade {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     .dashboard-card,
     .card,
@@ -245,37 +241,210 @@
       box-shadow: var(--shadow);
     }
 
-    .dashboard-kicker { color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-    .dashboard-title { margin: 4px 0 0; font-size: 22px; font-weight: 850; }
-    .dashboard-subtitle { margin-top: 4px; color: var(--muted); font-size: 13px; }
-    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 13px; }
-    .dashboard-metric { padding: 11px; border: 1px solid var(--border); border-radius: 13px; background: var(--surface-soft); }
-    .dashboard-metric-label { color: var(--muted); font-size: 11px; font-weight: 700; }
-    .dashboard-metric-value { margin-top: 3px; font-size: 14px; font-weight: 850; }
-    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0 5px; }
-    .stat-box { padding: 12px 6px; border: 1px solid var(--border); border-radius: 16px; text-align: center; box-shadow: var(--shadow); }
-    .stat-label { color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
-    .stat-value { margin-top: 4px; font-size: 15px; font-weight: 800; line-height: 1.2; }
-    .progress-card { display: flex; align-items: center; gap: 14px; margin: 12px 0 5px; padding: 14px; border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); }
-    .progress-ring { flex: 0 0 auto; transform: rotate(-90deg); }
-    .progress-ring-background { fill: none; stroke: var(--border); stroke-width: 8; }
-    .progress-ring-value { fill: none; stroke: var(--accent); stroke-width: 8; stroke-linecap: round; }
-    .progress-ring-label { fill: var(--text); font-size: 13px; font-weight: 800; }
+    .dashboard-kicker {
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .dashboard-title {
+      margin: 4px 0 0;
+      font-size: 22px;
+      font-weight: 850;
+    }
+
+    .dashboard-subtitle {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 13px;
+    }
+
+    .dashboard-metric {
+      padding: 11px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: var(--surface-soft);
+    }
+
+    .dashboard-metric-label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .dashboard-metric-value {
+      margin-top: 3px;
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 12px 0 5px;
+    }
+
+    .stat-box {
+      padding: 12px 6px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      margin-top: 4px;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .progress-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 12px 0 5px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .progress-ring {
+      flex: 0 0 auto;
+      transform: rotate(-90deg);
+    }
+
+    .progress-ring-background {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 8;
+    }
+
+    .progress-ring-value {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 8;
+      stroke-linecap: round;
+    }
+
+    .progress-ring-label {
+      fill: var(--text);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
     .progress-title { font-size: 13px; font-weight: 800; }
     .progress-subtitle { margin-top: 3px; color: var(--muted); font-size: 12px; font-weight: 600; }
-    .filter-row { display: flex; gap: 6px; overflow-x: auto; margin: 10px 0 8px; padding: 1px 1px 4px; scrollbar-width: none; }
-    .filter-row::-webkit-scrollbar { display: none; }
-    .filter-chip { flex: 0 0 auto; padding: 7px 11px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); color: var(--muted-strong); font-size: 12px; font-weight: 750; }
-    .filter-chip.active { border-color: var(--accent); background: var(--accent); color: #fff; }
-    .toolbar { display: flex; flex-wrap: wrap; gap: 6px; margin: 11px 0 9px; }
-    .toolbar input[type="search"] { flex: 1 1 140px; min-width: 0; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; outline: none; color: var(--text); font-size: 13px; }
-    .dropdown select { max-width: 145px; padding: 10px 26px 10px 11px; border: 1px solid var(--border); border-radius: 10px; outline: none; color: var(--text); font-size: 12px; font-weight: 700; }
 
-    .card { position: relative; overflow: hidden; margin-bottom: 9px; padding: 14px 15px; border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); cursor: pointer; }
-    .card.city-card { border-left: 3px solid var(--city, var(--accent)); }
-    .card-top, .card-top-left { display: flex; align-items: center; }
-    .card-top { justify-content: space-between; gap: 8px; }
-    .card-top-left, .card-title-wrap { min-width: 0; }
+    .filter-row {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      margin: 10px 0 8px;
+      padding: 1px 1px 4px;
+      scrollbar-width: none;
+    }
+
+    .filter-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-chip {
+      flex: 0 0 auto;
+      padding: 7px 11px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--surface);
+      color: var(--muted-strong);
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .filter-chip.active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 11px 0 9px;
+    }
+
+    .toolbar input[type="search"] {
+      flex: 1 1 140px;
+      min-width: 0;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .dropdown select {
+      max-width: 145px;
+      padding: 10px 26px 10px 11px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 9px;
+      padding: 14px 15px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+    }
+
+    .card.city-card {
+      border-left: 3px solid var(--city, var(--accent));
+    }
+
+    .card-top,
+    .card-top-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .card-top {
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-top-left,
+    .card-title-wrap {
+      min-width: 0;
+    }
+
     .card-top-left { gap: 8px; }
     .card-title { margin: 0; font-size: 16px; font-weight: 800; line-height: 1.25; overflow-wrap: anywhere; }
     .card-subtitle { margin-top: 2px; color: var(--muted); font-size: 12px; font-weight: 600; }
@@ -287,7 +456,7 @@
     .group-title { display: flex; align-items: center; gap: 7px; margin: 17px 4px 8px; font-size: 13px; font-weight: 800; }
 
     /* ================================================================
-       5. Navigazione e modali
+       Navigazione fissa
        ================================================================ */
 
     #tabbar { position: fixed !important; right: 10px !important; bottom: calc(9px + var(--safe-bottom)) !important; left: 10px !important; z-index: 9999 !important; display: flex !important; gap: 4px; overflow-x: auto; padding: 5px; border: 1px solid var(--border); border-radius: 22px; background: var(--nav); box-shadow: 0 7px 20px rgba(0,0,0,.30); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); scrollbar-width: none; pointer-events: auto !important; transform: translateZ(0); }
@@ -296,6 +465,11 @@
     .tab-button-icon { font-size: 17px; line-height: 1; }
     .tab-button.active { background: var(--accent); color: #fff; }
     .floating-button { position: fixed; right: 16px; bottom: calc(94px + var(--safe-bottom)); z-index: 9998; width: 48px; height: 48px; border: 0; border-radius: 15px; background: var(--accent); color: #fff; font-size: 23px; box-shadow: 0 6px 16px var(--accent-dark); }
+
+    /* ================================================================
+       Impostazioni e modali
+       ================================================================ */
+
     .settings-section { margin-bottom: 24px; }
     .settings-heading { margin: 0 0 6px; color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
     .theme-options, .accent-options { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -322,6 +496,7 @@
     .toast.visible { opacity: 1; }
   </style>
 </head>
+
 <body>
   <div id="app">
     <div id="backgroundLayer" aria-hidden="true">
@@ -349,7 +524,7 @@
 
   <script>
     /* ================================================================
-       Versione finale: tema nero fisso e impostazioni funzionanti
+       Configurazione
        ================================================================ */
 
     const DATA_KEY = "giappone-data";
@@ -406,10 +581,7 @@
     const state = {
       data: JSON.parse(localStorage.getItem(DATA_KEY) || "{}"),
       settings: JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}"),
-      view: "1. Itinerario",
-      search: "",
-      city: "",
-      sort: "default"
+      view: "1. Itinerario", search: "", city: "", sort: "default"
     };
 
     state.settings.theme = "dark";
@@ -453,9 +625,7 @@
     }
 
     function parseDate(value) {
-      const match = String(value || "")
-        .match(/^(\d{4})-(\d{2})-(\d{2})/);
-
+      const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
       return match
         ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]))
         : null;
@@ -463,9 +633,7 @@
 
     function todayString() {
       const date = new Date();
-      return `${date.getFullYear()}-${String(
-        date.getMonth() + 1
-      ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
     }
 
     function shortDate(value) {
@@ -483,17 +651,12 @@
     }
 
     function cityClass(value) {
-      const city = String(value || "")
-        .split("/")[0]
-        .trim()
-        .toLowerCase();
-
+      const city = String(value || "").split("/")[0].trim().toLowerCase();
       const classes = {
         osaka: "city-osaka", kyoto: "city-kyoto", tokyo: "city-tokyo",
         takayama: "city-takayama", hiroshima: "city-hiroshima",
         kamakura: "city-kamakura", kawaguchiko: "city-kawaguchiko"
       };
-
       return classes[city] || "city-default";
     }
 
@@ -517,7 +680,7 @@
     }
 
     /* ================================================================
-       Background e tabbar
+       Background e navigazione
        ================================================================ */
 
     function renderBackground() {
@@ -607,14 +770,9 @@
       banner.hidden = false;
 
       if (today < first) {
-        banner.textContent = `🛫 Mancano ${Math.ceil(
-          (first - today) / 86400000
-        )} giorni alla partenza`;
+        banner.textContent = `🛫 Mancano ${Math.ceil((first - today) / 86400000)} giorni alla partenza`;
       } else if (today <= last) {
-        const index = Math.max(
-          rows.findIndex((row) => row.Data === todayString()) + 1,
-          1
-        );
+        const index = Math.max(rows.findIndex((row) => row.Data === todayString()) + 1, 1);
         banner.textContent = `📍 Sei in viaggio · Giorno ${index} di ${rows.length}`;
       } else {
         banner.textContent = "✅ Viaggio concluso · che ricordi! 🎌";
@@ -622,14 +780,11 @@
     }
 
     /* ================================================================
-       Filtri righe vuote e rendering
+       Rendering contenuti
        ================================================================ */
 
     function rowHasContent(key, meta, row) {
-      const title = String(
-        row[meta.title] || row[meta.fallback] || ""
-      ).trim();
-
+      const title = String(row[meta.title] || row[meta.fallback] || "").trim();
       if (title) return true;
 
       if (key === "1. Itinerario") {
@@ -642,6 +797,21 @@
       return false;
     }
 
+    function countMapLinks() {
+      let count = 0;
+
+      SHEETS.forEach((key) => {
+        const meta = META[key];
+        (meta.maps || []).forEach((map) => {
+          count += (state.data[key]?.rows || []).filter((row) => {
+            return rowHasContent(key, meta, row) && isUrl(row[map.field]);
+          }).length;
+        });
+      });
+
+      return count;
+    }
+
     function renderApp() {
       const main = document.getElementById("main");
       const title = document.getElementById("pageTitle");
@@ -649,10 +819,7 @@
       const addButton = document.getElementById("addButton");
 
       document.querySelectorAll(".tab-button").forEach((button) => {
-        button.classList.toggle(
-          "active",
-          button.dataset.tab === state.view
-        );
+        button.classList.toggle(button.dataset.tab === state.view);
       });
 
       main.innerHTML = "";
@@ -724,18 +891,10 @@
         <h2 class="dashboard-title">Giappone 2026/27</h2>
         <div class="dashboard-subtitle">Panoramica rapida del viaggio</div>
         <div class="dashboard-grid">
-          <div class="dashboard-metric">
-            <div class="dashboard-metric-label">📍 Prima tappa</div>
-            <div class="dashboard-metric-value">${escapeHtml(first?.Città || "—")}</div>
-          </div>
-          <div class="dashboard-metric">
-            <div class="dashboard-metric-label">🧳 Valigia</div>
-            <div class="dashboard-metric-value">${done}/${packing.length} pronta</div>
-          </div>
-          <div class="dashboard-metric">
-            <div class="dashboard-metric-label">💴 Budget</div>
-            <div class="dashboard-metric-value">${planned.toLocaleString("it-IT")} ¥</div>
-          </div>
+          <div class="dashboard-metric"><div class="dashboard-metric-label">📍 Prima tappa</div><div class="dashboard-metric-value">${escapeHtml(first?.Città || "—")}</div></div>
+          <div class="dashboard-metric"><div class="dashboard-metric-label">🧳 Valigia</div><div class="dashboard-metric-value">${done}/${packing.length} pronta</div></div>
+          <div class="dashboard-metric"><div class="dashboard-metric-label">💴 Budget</div><div class="dashboard-metric-value">${planned.toLocaleString("it-IT")} ¥</div></div>
+          <div class="dashboard-metric"><div class="dashboard-metric-label">📍 Maps</div><div class="dashboard-metric-value">${countMapLinks()}</div></div>
         </div>
       `;
 
@@ -755,8 +914,7 @@
 
       const first = rows[0]?.Data || "";
       const last = rows[rows.length - 1]?.Data || "";
-      document.getElementById("pageSubtitle").textContent =
-        `Giappone ${monthDay(first)} – ${monthDay(last)}`;
+      document.getElementById("pageSubtitle").textContent = `Giappone ${monthDay(first)} – ${monthDay(last)}`;
 
       const element = document.createElement("div");
       element.className = "stats-row";
@@ -786,6 +944,7 @@
         </svg>
         <div><div class="progress-title">🧳 Preparazione valigia</div><div class="progress-subtitle">${done} di ${rows.length} oggetti pronti</div></div>
       `;
+
       return element;
     }
 
@@ -935,10 +1094,7 @@
       const addButton = document.getElementById("addButton");
 
       document.querySelectorAll(".tab-button").forEach((button) => {
-        button.classList.toggle(
-          "active",
-          button.dataset.tab === state.view
-        );
+        button.classList.toggle(button.dataset.tab === state.view);
       });
 
       main.innerHTML = "";
@@ -1138,416 +1294,8 @@
     }
 
     /* ================================================================
-       Mappa avanzata
+       Impostazioni e backup
        ================================================================ */
-
-    function collectMapItems() {
-      const items = [];
-
-      SHEETS.forEach((key) => {
-        const meta = META[key];
-        if (!meta.maps) return;
-
-        (state.data[key]?.rows || []).forEach((row) => {
-          const title = String(row[meta.title] || row[meta.fallback] || "").trim();
-          if (!title) return;
-
-          meta.maps.forEach((map) => {
-            if (!isUrl(row[map.field])) return;
-
-            const category = key === "6. Attrazioni"
-              ? "Attrazioni"
-              : key === "8. Cibo e Ristoranti"
-                ? "Cibo"
-                : key === "9. Shopping"
-                  ? "Shopping"
-                  : key === "2. Hotel e Alloggi"
-                    ? "Alloggi"
-                    : "Trasporti";
-
-            items.push({
-              title,
-              subtitle: (meta.sub || []).map((field) => row[field]).filter(Boolean).join(" · "),
-              city: row[meta.city] || row["Città"] || "",
-              neighborhood: row["Quartiere"] || row["Città"] || "Senza zona",
-              category,
-              url: row[map.field]
-            });
-          });
-        });
-      });
-
-      return items;
-    }
-
-    function renderMap() {
-      const wrapper = document.createElement("div");
-      const items = collectMapItems();
-      const cities = ["", ...new Set(items.map((item) => item.city).filter(Boolean))];
-      const categories = ["", ...new Set(items.map((item) => item.category))];
-
-      wrapper.innerHTML = `
-        <section class="map-hero">
-          <div class="map-hero-kicker">📍 Travel map</div>
-          <h2 class="map-hero-title">Mappa del viaggio</h2>
-          <div class="map-hero-subtitle">Filtra, raggruppa e apri i luoghi in Google Maps.</div>
-          <div class="map-counters" id="mapCounters"></div>
-          <div class="map-mode-row">
-            <button class="map-mode-button active" data-map-mode="list">📋 Elenco</button>
-            <button class="map-mode-button" data-map-mode="zones">🧭 Zone</button>
-          </div>
-          <div class="map-search-row">
-            <input id="mapSearch" type="search" placeholder="🔎 Cerca luogo o quartiere...">
-            <button class="action-button" id="mapOpenSearch">🌐 Maps</button>
-          </div>
-          <div class="map-filter-title">Città</div>
-          <div class="map-filter-row" id="mapCities"></div>
-          <div class="map-filter-title">Categoria</div>
-          <div class="map-filter-row" id="mapCategories"></div>
-        </section>
-        <section id="mapResults"></section>
-      `;
-
-      const filterState = { city: "", category: "", query: "", mode: "list" };
-      const results = wrapper.querySelector("#mapResults");
-
-      function filteredItems() {
-        const query = filterState.query.toLowerCase().trim();
-
-        return items.filter((item) => {
-          const searchable = [
-            item.title,
-            item.subtitle,
-            item.city,
-            item.neighborhood,
-            item.category
-          ].join(" ").toLowerCase();
-
-          return (!filterState.city || item.city === filterState.city) &&
-            (!filterState.category || item.category === filterState.category) &&
-            (!query || searchable.includes(query));
-        });
-      }
-
-      function updateCounters(list) {
-        const attractions = list.filter((item) => item.category === "Attrazioni").length;
-        const food = list.filter((item) => item.category === "Cibo").length;
-        const shopping = list.filter((item) => item.category === "Shopping").length;
-
-        wrapper.querySelector("#mapCounters").innerHTML = `
-          <div class="map-counter"><div class="map-counter-value">${list.length}</div><div class="map-counter-label">Luoghi</div></div>
-          <div class="map-counter"><div class="map-counter-value">${attractions}</div><div class="map-counter-label">Attrazioni</div></div>
-          <div class="map-counter"><div class="map-counter-value">${food + shopping}</div><div class="map-counter-label">Cibo/Shopping</div></div>
-        `;
-      }
-
-      function renderFilters() {
-        const cityBox = wrapper.querySelector("#mapCities");
-        const categoryBox = wrapper.querySelector("#mapCategories");
-        cityBox.innerHTML = "";
-        categoryBox.innerHTML = "";
-
-        cities.forEach((city) => {
-          const button = document.createElement("button");
-          button.className = `map-filter-chip${filterState.city === city ? " active" : ""}`;
-          button.type = "button";
-          button.textContent = city || "🌆 Tutte";
-          button.onclick = () => {
-            filterState.city = city;
-            renderFilters();
-            renderResults();
-          };
-          cityBox.appendChild(button);
-        });
-
-        categories.forEach((category) => {
-          const button = document.createElement("button");
-          button.className = `map-filter-chip${filterState.category === category ? " active" : ""}`;
-          button.type = "button";
-          button.textContent = category || "✨ Tutte";
-          button.onclick = () => {
-            filterState.category = category;
-            renderFilters();
-            renderResults();
-          };
-          categoryBox.appendChild(button);
-        });
-      }
-
-      function renderResults() {
-        const list = filteredItems();
-        updateCounters(list);
-        results.innerHTML = "";
-
-        if (!list.length) {
-          results.innerHTML = `
-            <div class="empty-state">
-              🔍 Nessun luogo corrisponde ai filtri selezionati.
-            </div>
-          `;
-          return;
-        }
-
-        if (filterState.mode === "zones") {
-          const groups = {};
-
-          list.forEach((item) => {
-            const zone = item.neighborhood || "Senza zona";
-            if (!groups[zone]) groups[zone] = [];
-            groups[zone].push(item);
-          });
-
-          Object.entries(groups).forEach(([zone, zoneItems]) => {
-            const heading = document.createElement("div");
-            heading.className = "group-title";
-            heading.textContent = `🧭 ${zone}`;
-            results.appendChild(heading);
-
-            zoneItems.forEach((item) => {
-              results.appendChild(renderMapCard(item));
-            });
-          });
-        } else {
-          list.forEach((item) => {
-            results.appendChild(renderMapCard(item));
-          });
-        }
-      }
-
-      function renderMapCard(item) {
-        const card = document.createElement("article");
-        card.className = `card city-card ${cityClass(item.city)}`;
-        card.innerHTML = `
-          <div class="card-top">
-            <div class="card-title-wrap">
-              <h3 class="card-title">${escapeHtml(item.title)}</h3>
-              <div class="card-subtitle">
-                ${escapeHtml(item.city || "")}
-                ${item.subtitle ? ` · ${escapeHtml(item.subtitle)}` : ""}
-              </div>
-            </div>
-            <span class="badge">${escapeHtml(item.category)}</span>
-          </div>
-          <div class="button-row">
-            <a class="action-button" href="${item.url}" target="_blank" rel="noopener">📍 Apri in Maps</a>
-            <button class="action-button secondary" data-share>📤 Condividi</button>
-          </div>
-        `;
-
-        card.querySelector("[data-share]").onclick = (event) => {
-          event.stopPropagation();
-          shareText(
-            item.title,
-            `${item.title} · ${item.city} · ${item.category}\n${item.url}`
-          );
-        };
-
-        return card;
-      }
-
-      wrapper.querySelector("#mapSearch").oninput = (event) => {
-        filterState.query = event.target.value;
-        renderResults();
-      };
-
-      wrapper.querySelector("#mapOpenSearch").onclick = () => {
-        const queryParts = [
-          filterState.category,
-          filterState.city,
-          filterState.query,
-          "Giappone"
-        ].filter(Boolean);
-
-        const query = encodeURIComponent(queryParts.join(" "));
-        window.open(
-          `https://www.google.com/maps/search/?api=1&query=${query}`,
-          "_blank"
-        );
-      };
-
-      wrapper.querySelectorAll("[data-map-mode]").forEach((button) => {
-        button.onclick = () => {
-          filterState.mode = button.dataset.mapMode;
-          wrapper.querySelectorAll("[data-map-mode]").forEach((item) => {
-            item.classList.toggle(
-              "active",
-              item.dataset.mapMode === filterState.mode
-            );
-          });
-          renderResults();
-        };
-      });
-
-      renderFilters();
-      renderResults();
-      return wrapper;
-    }
-
-    function addCalendar(row) {
-      const date = parseDate(row.Data);
-      if (!date) {
-        showToast("Data non valida");
-        return;
-      }
-
-      const start = row.Data.replace(/-/g, "");
-      const next = new Date(date.getTime() + 86400000);
-      const end = `${next.getFullYear()}${String(
-        next.getMonth() + 1
-      ).padStart(2, "0")}${String(next.getDate()).padStart(2, "0")}`;
-
-      const content = [
-        "BEGIN:VCALENDAR",
-        "VERSION:2.0",
-        "BEGIN:VEVENT",
-        `UID:giappone-${start}@local`,
-        `DTSTART;VALUE=DATE:${start}`,
-        `DTEND;VALUE=DATE:${end}`,
-        `SUMMARY:${row.Città}: ${row["Attività Principali"]}`,
-        `DESCRIPTION:${row.Spostamento || ""}`,
-        "END:VEVENT",
-        "END:VCALENDAR"
-      ].join("\r\n");
-
-      downloadFile(content, `giorno-${row.Data}.ics`, "text/calendar;charset=utf-8");
-      showToast("📅 File calendario creato");
-    }
-
-    function shareText(title, text) {
-      if (navigator.share) {
-        navigator.share({ title, text }).catch(() => {});
-      } else if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => showToast("📋 Copiato"));
-      } else {
-        showToast("Condivisione non supportata");
-      }
-    }
-
-    /* ================================================================
-       8. Modali e impostazioni
-       ================================================================ */
-
-    function openEditModal(key, index) {
-      const sheet = state.data[key];
-      const row = index === null ? {} : sheet.rows[index];
-      const meta = META[key];
-      const overlay = document.createElement("div");
-      overlay.className = "modal-overlay";
-      overlay.onclick = (event) => {
-        if (event.target === overlay) closeModal();
-      };
-
-      const modal = document.createElement("div");
-      modal.className = "modal";
-      modal.innerHTML = `
-        <h2 class="modal-title">
-          ${index === null ? "➕ Nuovo" : "✎ Modifica"}
-          · ${ICONS[key]} ${meta.label}
-        </h2>
-        ${sheet.headers.map((field) => renderField(field, row[field], meta)).join("")}
-        <div class="modal-actions">
-          <button class="cancel-button" data-cancel>Annulla</button>
-          <button class="save-button" data-save>Salva</button>
-        </div>
-        ${index === null ? "" : `<div class="modal-actions"><button class="delete-button" data-delete>🗑️ Elimina</button></div>`}
-      `;
-
-      overlay.appendChild(modal);
-      document.getElementById("modalRoot").appendChild(overlay);
-      modal.querySelector("[data-cancel]").onclick = closeModal;
-
-      modal.querySelector("[data-save]").onclick = () => {
-        const updated = {};
-        modal.querySelectorAll("[data-field]").forEach((field) => {
-          updated[field.dataset.field] = field.value;
-        });
-
-        if (index === null) sheet.rows.push(updated);
-        else sheet.rows[index] = updated;
-
-        saveData();
-        closeModal();
-        renderApp();
-        showToast("✅ Salvato");
-      };
-
-      const remove = modal.querySelector("[data-delete]");
-      if (remove) {
-        remove.onclick = () => {
-          sheet.rows.splice(index, 1);
-          saveData();
-          closeModal();
-          renderApp();
-          showToast("🗑️ Eliminato");
-        };
-      }
-    }
-
-    function renderField(field, value, meta) {
-      const current = value || "";
-      const label = `${iconFor(field)} ${field}`;
-
-      if (meta.status === field) {
-        return `
-          <div class="field">
-            <label class="field-label">${escapeHtml(label)}</label>
-            <select data-field="${escapeHtml(field)}">
-              ${STATUSES.map((option) => `
-                <option value="${option}" ${option === current ? "selected" : ""}>
-                  ${option}
-                </option>
-              `).join("")}
-            </select>
-          </div>
-        `;
-      }
-
-      if (field === "Urgenza" || field === "Urgenza Configurazione") {
-        return `
-          <div class="field">
-            <label class="field-label">${escapeHtml(label)}</label>
-            <select data-field="${escapeHtml(field)}">
-              <option>Alta</option>
-              <option>Media</option>
-              <option>Bassa</option>
-            </select>
-          </div>
-        `;
-      }
-
-      const type = /^data$/i.test(field)
-        ? "date"
-        : /link|maps/i.test(field)
-          ? "url"
-          : "text";
-
-      const isLong = /note|dettagli|articolo mirato|attività/i.test(field);
-
-      if (isLong) {
-        return `
-          <div class="field">
-            <label class="field-label">${escapeHtml(label)}</label>
-            <textarea data-field="${escapeHtml(field)}">${escapeHtml(current)}</textarea>
-          </div>
-        `;
-      }
-
-      return `
-        <div class="field">
-          <label class="field-label">${escapeHtml(label)}</label>
-          <input
-            type="${type}"
-            data-field="${escapeHtml(field)}"
-            value="${escapeHtml(current)}"
-            ${type === "url" ? "placeholder=\"https://maps.app.goo.gl/...\"" : ""}
-          >
-        </div>
-      `;
-    }
-
-    function closeModal() {
-      document.getElementById("modalRoot").innerHTML = "";
-    }
 
     function renderSettings() {
       const wrapper = document.createElement("div");
@@ -1740,9 +1488,7 @@
             const rows = values.slice(1)
               .filter((row) => {
                 return row.some((value) => {
-                  return value !== "" &&
-                    value !== null &&
-                    value !== undefined;
+                  return value !== "" && value !== null && value !== undefined;
                 });
               })
               .map((row) => {
