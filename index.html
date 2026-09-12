@@ -1,926 +1,2453 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
-<title>Giappone 2026/27</title>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#12141a">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23c94a5a'/%3E%3Cpath d='M20 38h60M30 38v-8c0-4 4-7 8-7h24c4 0 8 3 8 7v8M30 38v40M70 38v40' stroke='%23fff' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<style>
-:root{
-  --bg:#f3f1ec; --card:#ffffff; --card2:#faf8f4; --text:#1c1a18; --text-dim:#7a746c;
-  --border:#e9e3d8; --accent:#c94a5a; --accent2:#2c4a6e; --gold:#c9a24a; --accent-soft:#faeceb; --nav-bg:rgba(255,255,255,.72);
-  --header-bg:rgba(243,241,236,.78);
-  --shadow-sm:0 1px 2px rgba(30,20,10,.05);
-  --shadow:0 1px 2px rgba(30,20,10,.06), 0 8px 20px -8px rgba(30,20,10,.12);
-  --safe-top:env(safe-area-inset-top,0px); --safe-bottom:env(safe-area-inset-bottom,0px);
-  --radius-lg:26px; --radius-md:20px; --radius-sm:12px;
-}
-html[data-theme="dark"]{
-  --bg:#121319; --card:#1c1e26; --card2:#22242d; --text:#f2f0ec; --text-dim:#94908a;
-  --border:#2c2e38; --accent-soft:#33222a; --nav-bg:rgba(18,19,25,.72); --header-bg:rgba(18,19,25,.78);
-  --shadow-sm:0 1px 2px rgba(0,0,0,.3);
-  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 24px -10px rgba(0,0,0,.55);
-}
-html[data-accent="ao"]{--accent:#3f6ea8;}
-html[data-accent="torii"]{--accent:#c94a5a;}
-html[data-accent="matcha"]{--accent:#4f8a5e;}
-html[data-accent="sakura"]{--accent:#d97ea0;}
-html[data-theme="dark"][data-accent="ao"]{--accent-soft:#1a2734;}
-html[data-theme="dark"][data-accent="matcha"]{--accent-soft:#182a1c;}
-html[data-theme="dark"][data-accent="sakura"]{--accent-soft:#2e2028;}
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+  <meta name="theme-color" content="#111318">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Giappone">
 
-.city-osaka{--city:#e08a3c;} .city-kyoto{--city:#4f8a5e;} .city-tokyo{--city:#2c4a6e;}
-.city-takayama{--city:#b5623f;} .city-hiroshima{--city:#7a6bb0;} .city-kamakura{--city:#3f9b9b;}
-.city-kawaguchiko{--city:#4f8fc9;} .city-partenza{--city:#8a8478;} .city-default{--city:#c9a24a;}
+  <title>Giappone 2026/27</title>
 
-*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-html,body{height:100%;}
-body{margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; overscroll-behavior-y:none; -webkit-text-size-adjust:100%; letter-spacing:-.005em;}
-#app{display:flex; flex-direction:column; min-height:100dvh; position:relative;}
+  <link rel="manifest" href="manifest.json">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-.seigaiha-bg{position:absolute; top:0; left:0; right:0; height:230px; overflow:hidden; pointer-events:none; z-index:0; opacity:.5;}
-.seigaiha-bg svg{width:100%; height:100%;}
+  <style>
+    /* ================================================================
+       1. Variabili e temi
+       ================================================================ */
 
-header.topbar{
-  position:sticky; top:0; z-index:30; background:var(--header-bg);
-  -webkit-backdrop-filter:blur(20px) saturate(160%); backdrop-filter:blur(20px) saturate(160%);
-  padding:max(14px, calc(var(--safe-top) + 10px)) 18px 10px;
-  transition:padding .25s ease;
-  border-bottom:1px solid transparent;
-}
-header.topbar.scrolled{padding-bottom:6px; border-bottom-color:var(--border);}
-header.topbar .head-row{display:flex; align-items:center; gap:10px;}
-.logo-mark{flex:0 0 auto; width:30px; height:30px; border-radius:9px; background:var(--accent); display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-sm); transition:width .25s,height .25s;}
-header.topbar.scrolled .logo-mark{width:24px; height:24px;}
-.logo-mark svg{width:60%; height:60%;}
-header.topbar h1{font-size:27px; margin:0; font-weight:800; letter-spacing:-.02em; transition:font-size .25s ease; flex:1;}
-header.topbar.scrolled h1{font-size:19px;}
-header.topbar .subtitle{color:var(--text-dim); font-size:13.5px; margin-top:3px; font-weight:500; padding-left:40px; transition:opacity .2s, max-height .25s; max-height:20px; overflow:hidden;}
-header.topbar.scrolled .subtitle{opacity:0; max-height:0; margin-top:0;}
-.trip-banner{margin:10px 0 0; background:linear-gradient(135deg, var(--accent-soft), var(--accent-soft) 60%, transparent); color:var(--accent); font-weight:800; font-size:13px; padding:11px 15px; border-radius:16px; text-align:center; box-shadow:var(--shadow-sm);}
+    :root {
+      --bg: #f3f1ec;
+      --surface: #ffffff;
+      --surface-soft: #faf8f4;
+      --text: #1c1a18;
+      --text-muted: #77716a;
+      --border: #e6e0d6;
+      --accent: #c94a5a;
+      --accent-soft: #fae9eb;
+      --gold: #c9a24a;
+      --nav-bg: rgba(255, 255, 255, 0.78);
+      --header-bg: rgba(243, 241, 236, 0.82);
+      --shadow-small: 0 1px 3px rgba(28, 20, 10, 0.07);
+      --shadow-card:
+        0 1px 2px rgba(28, 20, 10, 0.06),
+        0 10px 22px -12px rgba(28, 20, 10, 0.22);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --radius-large: 26px;
+      --radius-medium: 20px;
+      --radius-small: 12px;
+    }
 
-main{flex:1; padding:10px 16px calc(112px + var(--safe-bottom)); max-width:640px; margin:0 auto; width:100%; position:relative; z-index:1;}
-.view-fade{animation:fadeIn .28s ease;}
-@keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+    html[data-theme="dark"] {
+      --bg: #111318;
+      --surface: #1b1e26;
+      --surface-soft: #22252e;
+      --text: #f2f0ec;
+      --text-muted: #96939a;
+      --border: #2c2f39;
+      --accent-soft: #35232a;
+      --nav-bg: rgba(17, 19, 24, 0.8);
+      --header-bg: rgba(17, 19, 24, 0.82);
+      --shadow-small: 0 1px 3px rgba(0, 0, 0, 0.35);
+      --shadow-card:
+        0 1px 2px rgba(0, 0, 0, 0.4),
+        0 12px 24px -12px rgba(0, 0, 0, 0.65);
+    }
 
-.stats-row{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:14px 0 6px;}
-.stat-box{background:var(--card2); border-radius:var(--radius-md); padding:15px 8px; text-align:center; box-shadow:var(--shadow-sm); border:1px solid var(--border);}
-.stat-box .stat-label{font-size:11.5px; color:var(--text-dim); font-weight:700; text-transform:uppercase; letter-spacing:.04em;}
-.stat-box .stat-value{font-size:17px; font-weight:800; margin-top:5px; line-height:1.2; letter-spacing:-.01em;}
+    html[data-accent="ao"] {
+      --accent: #3f6ea8;
+      --accent-soft: #e8eef8;
+    }
 
-.progress-wrap{background:var(--card2); border-radius:var(--radius-md); padding:16px; margin:14px 0 6px; box-shadow:var(--shadow-sm); border:1px solid var(--border); display:flex; align-items:center; gap:16px;}
-.ring-svg{flex:0 0 auto; transform:rotate(-90deg);}
-.ring-bg{fill:none; stroke:var(--border); stroke-width:8;}
-.ring-fill{fill:none; stroke:var(--accent); stroke-width:8; stroke-linecap:round; transition:stroke-dashoffset .4s ease;}
-.ring-label{font-size:13px; font-weight:800;}
-.p-top{font-size:14px; font-weight:800;}
-.p-sub{font-size:12.5px; color:var(--text-dim); margin-top:3px; font-weight:600;}
+    html[data-accent="torii"] {
+      --accent: #c94a5a;
+      --accent-soft: #fae9eb;
+    }
 
-.toolbar{display:flex; gap:8px; margin:14px 0 12px; flex-wrap:wrap;}
-.toolbar input[type=search]{flex:1 1 140px; padding:12px 15px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--card); color:var(--text); font-size:15px; min-width:0; box-shadow:var(--shadow-sm);}
-.toolbar input::placeholder{color:var(--text-dim);}
-.dropdown{position:relative; flex:0 0 auto;}
-.dropdown select{
-  appearance:none; -webkit-appearance:none; border:1px solid var(--border); background:var(--card);
-  color:var(--text); font-size:14px; font-weight:700; padding:12px 30px 12px 14px; border-radius:var(--radius-sm);
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a746c'/%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:right 12px center; max-width:150px; box-shadow:var(--shadow-sm);
-}
+    html[data-accent="matcha"] {
+      --accent: #4f8a5e;
+      --accent-soft: #e8f2e9;
+    }
 
-.card{background:var(--card); border-radius:var(--radius-md); padding:17px 18px; margin-bottom:12px; box-shadow:var(--shadow); position:relative; cursor:pointer; border:1px solid var(--border); overflow:hidden; transition:transform .15s ease, box-shadow .15s ease;}
-.card.city-tinted{border-left:4px solid var(--city, var(--accent));}
-.card.today{box-shadow:0 0 0 2px var(--accent), var(--shadow);}
-.card:active{transform:scale(.985);}
-.card .row-top{display:flex; justify-content:space-between; align-items:center; gap:10px;}
-.card .row-top-left{display:flex; align-items:center; gap:10px; min-width:0;}
-.chip{font-size:11.5px; font-weight:800; padding:5px 11px; border-radius:9px; background:var(--city, var(--accent)); color:#fff; flex:0 0 auto; letter-spacing:.02em;}
-.chip.today-chip{background:#2ea86b;}
-.card h3{margin:0; font-size:17.5px; font-weight:800; line-height:1.3; word-break:break-word; min-width:0; letter-spacing:-.01em;}
-.card .sub{color:var(--text-dim); font-size:13px; margin-top:2px; font-weight:600;}
-.date-chevron{display:flex; align-items:center; gap:4px; color:var(--text-dim); font-size:12.5px; font-weight:700; flex:0 0 auto; white-space:nowrap; letter-spacing:.01em; font-variant-numeric:tabular-nums;}
-.date-chevron .chev{font-size:16px; color:var(--text-dim); opacity:.5;}
-.badge{font-size:11px; font-weight:800; padding:5px 11px; border-radius:20px; background:var(--accent-soft); color:var(--accent); white-space:nowrap; flex:0 0 auto; font-variant-numeric:tabular-nums;}
-.bullets{margin-top:12px; display:flex; flex-direction:column; gap:8px;}
-.bullet{display:flex; gap:10px; font-size:14.5px; color:var(--text); line-height:1.45; align-items:flex-start;}
-.bullet .ic{flex:0 0 auto; font-size:15px; margin-top:1px; width:20px; text-align:center;}
-.bullet.dim{color:var(--text-dim); font-size:13.5px;}
-.hotel-pill{display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--card2); border-radius:var(--radius-sm); padding:11px 13px; margin-top:12px; border:1px solid var(--border);}
-.hotel-pill .htxt{font-size:13.5px; font-weight:700; display:flex; align-items:center; gap:8px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-.maps-row,.quick-actions{display:flex; gap:8px; margin-top:11px; flex-wrap:wrap;}
-.maps-btn{display:inline-flex; align-items:center; gap:6px; background:var(--accent); color:#fff; border:none; padding:10px 15px; border-radius:var(--radius-sm); font-size:13px; font-weight:700; text-decoration:none; flex:0 0 auto; cursor:pointer; box-shadow:var(--shadow-sm);}
-.maps-btn.small{padding:8px 13px; font-size:12.5px; border-radius:10px;}
-.maps-btn.secondary{background:var(--accent-soft); color:var(--accent); box-shadow:none;}
-.status-select{
-  appearance:none; -webkit-appearance:none; border:none; background:var(--accent-soft);
-  color:var(--accent); font-size:12.5px; font-weight:800; padding:8px 28px 8px 13px; border-radius:20px;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23c94a5a'/%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:right 11px center; flex:0 0 auto; max-width:135px;
-}
-.section-head{font-size:13px; font-weight:800; color:var(--text-dim); text-transform:uppercase; letter-spacing:.06em; margin:20px 4px 10px;}
-.empty-state{text-align:center; color:var(--text-dim); padding:56px 20px; font-size:14px; line-height:1.6;}
-.fab{position:fixed; right:18px; bottom:calc(84px + var(--safe-bottom)); width:54px; height:54px; border-radius:18px; background:var(--accent); color:#fff; font-size:26px; border:none; box-shadow:0 8px 20px -4px color-mix(in srgb, var(--accent) 60%, transparent); z-index:15; transition:transform .15s;}
-.fab:active{transform:scale(.92);}
+    html[data-accent="sakura"] {
+      --accent: #d97ea0;
+      --accent-soft: #f9e9f0;
+    }
 
-nav.tabbar{
-  position:fixed; bottom:0; left:0; right:0; z-index:25; background:var(--nav-bg);
-  -webkit-backdrop-filter:blur(20px) saturate(160%); backdrop-filter:blur(20px) saturate(160%);
-  border-top:1px solid var(--border); padding:9px 0 calc(6px + var(--safe-bottom));
-  display:flex; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
-}
-nav.tabbar::-webkit-scrollbar{display:none;}
-nav.tabbar button{flex:0 0 auto; min-width:66px; background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text-dim); font-size:10.5px; padding:5px 8px; font-weight:700; transition:color .15s, transform .15s;}
-nav.tabbar button .ic{font-size:21px; transition:transform .15s;}
-nav.tabbar button.active{color:var(--accent);}
-nav.tabbar button.active .ic{transform:translateY(-1px) scale(1.08);}
+    html[data-theme="dark"][data-accent="ao"] {
+      --accent-soft: #1a293b;
+    }
 
-.theme-options,.accent-options{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;}
-.pill{padding:11px 17px; border-radius:20px; border:1px solid var(--border); background:var(--card); font-size:14px; font-weight:700; color:var(--text); box-shadow:var(--shadow-sm);}
-.pill.active{background:var(--accent); color:#fff; border-color:var(--accent);}
-.swatch{width:42px; height:42px; border-radius:50%; border:3px solid transparent; box-shadow:var(--shadow-sm);}
-.swatch.active{border-color:var(--text);}
-.settings-group{margin-bottom:26px;}
-.settings-group h4{margin:0 0 4px; font-size:13px; text-transform:uppercase; color:var(--text-dim); letter-spacing:.05em; font-weight:800;}
-.settings-btn{width:100%; text-align:left; background:var(--card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:15px 16px; font-size:15px; font-weight:700; color:var(--text); margin-top:8px; display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow-sm);}
-.settings-btn.danger{color:#c94a5a;}
-.settings-btn .arrow{color:var(--text-dim); font-weight:400;}
-.rate-box{background:var(--card); border-radius:var(--radius-sm); padding:14px 16px; margin-top:8px; box-shadow:var(--shadow-sm); border:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:10px;}
-.rate-box input{width:90px; padding:9px 10px; border-radius:10px; border:1px solid var(--border); background:var(--card2); color:var(--text); font-size:15px; text-align:right; font-variant-numeric:tabular-nums;}
-input[type=file]{display:none;}
-.modal-overlay{position:fixed; inset:0; background:rgba(20,15,10,.5); z-index:40; display:flex; align-items:flex-end;}
-.modal{background:var(--card); width:100%; max-height:88vh; overflow-y:auto; border-radius:28px 28px 0 0; padding:22px 20px calc(26px + var(--safe-bottom)); box-shadow:0 -10px 40px rgba(0,0,0,.25);}
-.modal h2{margin:0 0 16px; font-size:19px; font-weight:800; letter-spacing:-.01em;}
-.field{margin-bottom:13px;}
-.field label{display:block; font-size:12px; color:var(--text-dim); margin-bottom:5px; font-weight:700;}
-.field input,.field textarea,.field select{width:100%; padding:12px 13px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--card2); color:var(--text); font-size:16px; font-family:inherit;}
-.field textarea{min-height:64px; resize:vertical;}
-.modal-actions{display:flex; gap:10px; margin-top:18px;}
-.modal-actions button{flex:1; padding:14px; border-radius:16px; border:none; font-size:15px; font-weight:800;}
-.btn-save{background:var(--accent); color:#fff; box-shadow:var(--shadow-sm);}
-.btn-cancel{background:var(--card2); color:var(--text); border:1px solid var(--border);}
-.btn-delete{background:#c94a5a; color:#fff;}
-.toast{position:fixed; bottom:calc(100px + var(--safe-bottom)); left:50%; transform:translateX(-50%); background:var(--text); color:var(--bg); padding:12px 18px; border-radius:20px; font-size:13px; z-index:50; opacity:0; transition:opacity .3s; max-width:90vw; text-align:center; font-weight:700; display:flex; align-items:center; gap:10px; box-shadow:0 8px 24px rgba(0,0,0,.3);}
-.toast.show{opacity:1;}
-.toast button{background:none; border:none; color:var(--gold); font-weight:800; font-size:13px; white-space:nowrap;}
-a{color:var(--accent);}
-.maps-group-title{font-size:14px; font-weight:800; margin:20px 4px 10px; display:flex; align-items:center; gap:8px; letter-spacing:-.01em;}
-</style>
+    html[data-theme="dark"][data-accent="matcha"] {
+      --accent-soft: #192d1e;
+    }
+
+    html[data-theme="dark"][data-accent="sakura"] {
+      --accent-soft: #30212a;
+    }
+
+    /* Colori delle città */
+    .city-osaka { --city-color: #e08a3c; }
+    .city-kyoto { --city-color: #4f8a5e; }
+    .city-tokyo { --city-color: #2c4a6e; }
+    .city-takayama { --city-color: #b5623f; }
+    .city-hiroshima { --city-color: #7a6bb0; }
+    .city-kamakura { --city-color: #3f9b9b; }
+    .city-kawaguchiko { --city-color: #4f8fc9; }
+    .city-partenza { --city-color: #8a8478; }
+    .city-default { --city-color: var(--accent); }
+
+    /* ================================================================
+       2. Reset e struttura generale
+       ================================================================ */
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overscroll-behavior-y: none;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button,
+    select {
+      cursor: pointer;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      min-height: 100dvh;
+      position: relative;
+    }
+
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 12px 16px calc(116px + var(--safe-bottom));
+      position: relative;
+      z-index: 1;
+    }
+
+    .view-fade {
+      animation: viewFade 0.25s ease;
+    }
+
+    @keyframes viewFade {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ================================================================
+       3. Sfondo decorativo e header
+       ================================================================ */
+
+    .seigaiha-background {
+      position: absolute;
+      inset: 0 0 auto;
+      height: 230px;
+      overflow: hidden;
+      pointer-events: none;
+      opacity: 0.42;
+      z-index: 0;
+    }
+
+    .seigaiha-background svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      padding: max(14px, calc(var(--safe-top) + 10px)) 18px 10px;
+      background: var(--header-bg);
+      border-bottom: 1px solid transparent;
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      backdrop-filter: blur(20px) saturate(150%);
+      transition: padding 0.25s ease, border-color 0.25s ease;
+    }
+
+    .topbar.scrolled {
+      padding-bottom: 6px;
+      border-bottom-color: var(--border);
+    }
+
+    .topbar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-mark {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      flex: 0 0 auto;
+      border-radius: 9px;
+      background: var(--accent);
+      box-shadow: var(--shadow-small);
+      transition: width 0.25s ease, height 0.25s ease;
+    }
+
+    .logo-mark svg {
+      width: 62%;
+      height: 62%;
+    }
+
+    .topbar.scrolled .logo-mark {
+      width: 24px;
+      height: 24px;
+    }
+
+    .page-title {
+      flex: 1;
+      margin: 0;
+      font-size: 27px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      transition: font-size 0.25s ease;
+    }
+
+    .topbar.scrolled .page-title {
+      font-size: 19px;
+    }
+
+    .page-subtitle {
+      max-height: 24px;
+      padding-left: 40px;
+      margin-top: 3px;
+      overflow: hidden;
+      color: var(--text-muted);
+      font-size: 13.5px;
+      transition: opacity 0.2s ease, max-height 0.25s ease, margin 0.25s ease;
+    }
+
+    .topbar.scrolled .page-subtitle {
+      max-height: 0;
+      margin-top: 0;
+      opacity: 0;
+    }
+
+    .trip-banner {
+      margin-top: 10px;
+      padding: 11px 15px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--accent-soft), transparent);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+      box-shadow: var(--shadow-small);
+    }
+
+    /* ================================================================
+       4. Toolbar, statistiche e progressi
+       ================================================================ */
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 14px 0 6px;
+    }
+
+    .stat-box {
+      padding: 15px 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-medium);
+      background: var(--surface-soft);
+      text-align: center;
+      box-shadow: var(--shadow-small);
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      margin-top: 5px;
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .progress-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 14px 0 6px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-medium);
+      background: var(--surface-soft);
+      box-shadow: var(--shadow-small);
+    }
+
+    .progress-ring {
+      flex: 0 0 auto;
+      transform: rotate(-90deg);
+    }
+
+    .progress-ring-background {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 8;
+    }
+
+    .progress-ring-value {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.4s ease;
+    }
+
+    .progress-ring-label {
+      fill: var(--text);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .progress-title {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .progress-subtitle {
+      margin-top: 3px;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 12px;
+    }
+
+    .toolbar input[type="search"] {
+      flex: 1 1 140px;
+      min-width: 0;
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-small);
+      outline: none;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 15px;
+      box-shadow: var(--shadow-small);
+    }
+
+    .toolbar input:focus,
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .dropdown {
+      flex: 0 0 auto;
+    }
+
+    .dropdown select {
+      max-width: 155px;
+      padding: 12px 30px 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-small);
+      outline: none;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: var(--shadow-small);
+    }
+
+    /* ================================================================
+       5. Card e contenuti
+       ================================================================ */
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 12px;
+      padding: 17px 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-medium);
+      background: var(--surface);
+      box-shadow: var(--shadow-card);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .card:active {
+      transform: scale(0.985);
+    }
+
+    .card.city-card {
+      border-left: 4px solid var(--city-color, var(--accent));
+    }
+
+    .card.today {
+      box-shadow: 0 0 0 2px var(--accent), var(--shadow-card);
+    }
+
+    .card-top,
+    .card-top-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .card-top {
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .card-top-left {
+      min-width: 0;
+      gap: 10px;
+    }
+
+    .card-title-wrap {
+      min-width: 0;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 17.5px;
+      font-weight: 800;
+      line-height: 1.3;
+      letter-spacing: -0.015em;
+      overflow-wrap: anywhere;
+    }
+
+    .card-subtitle {
+      margin-top: 2px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .day-chip {
+      flex: 0 0 auto;
+      padding: 5px 11px;
+      border-radius: 9px;
+      background: var(--city-color, var(--accent));
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .day-chip.today-chip {
+      background: #2ea86b;
+    }
+
+    .date-chevron {
+      display: flex;
+      align-items: center;
+      flex: 0 0 auto;
+      gap: 4px;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .chevron {
+      color: var(--text-muted);
+      font-size: 17px;
+      opacity: 0.55;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      padding: 5px 11px;
+      border-radius: 20px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .bullet-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .bullet {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--text);
+      font-size: 14.5px;
+      line-height: 1.45;
+    }
+
+    .bullet-icon {
+      width: 20px;
+      flex: 0 0 auto;
+      margin-top: 1px;
+      text-align: center;
+    }
+
+    .bullet.muted {
+      color: var(--text-muted);
+      font-size: 13.5px;
+    }
+
+    .hotel-pill {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      padding: 11px 13px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-small);
+      background: var(--surface-soft);
+    }
+
+    .hotel-name {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--text);
+      font-size: 13.5px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 11px;
+    }
+
+    .action-button {
+      display: inline-flex;
+      align-items: center;
+      flex: 0 0 auto;
+      gap: 6px;
+      padding: 10px 15px;
+      border: 0;
+      border-radius: var(--radius-small);
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: var(--shadow-small);
+    }
+
+    .action-button.small {
+      padding: 8px 13px;
+      border-radius: 10px;
+      font-size: 12.5px;
+    }
+
+    .action-button.secondary {
+      background: var(--accent-soft);
+      color: var(--accent);
+      box-shadow: none;
+    }
+
+    .status-select {
+      max-width: 135px;
+      padding: 8px 27px 8px 13px;
+      border: 0;
+      border-radius: 20px;
+      outline: none;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12.5px;
+      font-weight: 800;
+    }
+
+    .empty-state {
+      padding: 56px 20px;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .group-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 20px 4px 10px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    /* ================================================================
+       6. Barra di navigazione e pulsante flottante
+       ================================================================ */
+
+    .floating-button {
+      position: fixed;
+      right: 18px;
+      bottom: calc(84px + var(--safe-bottom));
+      z-index: 15;
+      width: 54px;
+      height: 54px;
+      border: 0;
+      border-radius: 18px;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 26px;
+      box-shadow: 0 8px 20px -4px var(--accent);
+      transition: transform 0.15s ease;
+    }
+
+    .floating-button:active {
+      transform: scale(0.92);
+    }
+
+    .tabbar {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 25;
+      display: flex;
+      overflow-x: auto;
+      padding: 9px 0 calc(6px + var(--safe-bottom));
+      border-top: 1px solid var(--border);
+      background: var(--nav-bg);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      backdrop-filter: blur(20px) saturate(160%);
+      scrollbar-width: none;
+    }
+
+    .tabbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-button {
+      display: flex;
+      flex: 0 0 auto;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      min-width: 66px;
+      padding: 5px 8px;
+      border: 0;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+
+    .tab-button-icon {
+      font-size: 21px;
+      transition: transform 0.15s ease;
+    }
+
+    .tab-button.active {
+      color: var(--accent);
+    }
+
+    .tab-button.active .tab-button-icon {
+      transform: translateY(-1px) scale(1.08);
+    }
+
+    /* ================================================================
+       7. Impostazioni e modale
+       ================================================================ */
+
+    .settings-section {
+      margin-bottom: 26px;
+    }
+
+    .settings-heading {
+      margin: 0 0 6px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .theme-options,
+    .accent-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .pill-button {
+      padding: 11px 17px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: var(--shadow-small);
+    }
+
+    .pill-button.active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .color-swatch {
+      width: 42px;
+      height: 42px;
+      border: 3px solid transparent;
+      border-radius: 50%;
+      box-shadow: var(--shadow-small);
+    }
+
+    .color-swatch.active {
+      border-color: var(--text);
+    }
+
+    .settings-button,
+    .rate-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 10px;
+      margin-top: 8px;
+      padding: 15px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-small);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 700;
+      text-align: left;
+      box-shadow: var(--shadow-small);
+    }
+
+    .settings-button.danger {
+      color: var(--accent);
+    }
+
+    .rate-box input {
+      width: 90px;
+      padding: 9px 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      background: var(--surface-soft);
+      color: var(--text);
+      font-size: 15px;
+      text-align: right;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: flex;
+      align-items: flex-end;
+      background: rgba(20, 15, 10, 0.5);
+    }
+
+    .modal {
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 22px 20px calc(26px + var(--safe-bottom));
+      border-radius: 28px 28px 0 0;
+      background: var(--surface);
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-title {
+      margin: 0 0 16px;
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .field {
+      margin-bottom: 13px;
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-small);
+      outline: none;
+      background: var(--surface-soft);
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .field textarea {
+      min-height: 64px;
+      resize: vertical;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      padding: 14px;
+      border: 0;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .save-button {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .cancel-button {
+      border: 1px solid var(--border) !important;
+      background: var(--surface-soft);
+      color: var(--text);
+    }
+
+    .delete-button {
+      background: #c94a5a;
+      color: #ffffff;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: calc(100px + var(--safe-bottom));
+      left: 50%;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 90vw;
+      padding: 12px 18px;
+      border-radius: 20px;
+      background: var(--text);
+      color: var(--bg);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transform: translateX(-50%);
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .toast.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .toast button {
+      border: 0;
+      background: transparent;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 800;
+    }
+  </style>
 </head>
+
 <body>
-<div id="app">
-  <div class="seigaiha-bg" id="seigaihaBg"></div>
-  <header class="topbar" id="topbar">
-    <div class="head-row">
-      <div class="logo-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M3 9h18M6 9V6c0-1 1-2 2-2h8c1 0 2 1 2 2v3M6 9v11M18 9v11"/></svg>
+  <div id="app">
+    <div id="seigaihaBackground" class="seigaiha-background"></div>
+
+    <header id="topbar" class="topbar">
+      <div class="topbar-row">
+        <div class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round">
+            <path d="M3 9h18M6 9V6c0-1 1-2 2-2h8c1 0 2 1 2 2v3M6 9v11M18 9v11" />
+          </svg>
+        </div>
+        <h1 id="pageTitle" class="page-title">Itinerario</h1>
       </div>
-      <h1 id="pageTitle">Itinerario</h1>
-    </div>
-    <div class="subtitle" id="pageSubtitle"></div>
-    <div class="trip-banner" id="tripBanner" style="display:none"></div>
-  </header>
-  <main id="main"></main>
-  <button class="fab" id="fabAdd" style="display:none">+</button>
-  <nav class="tabbar" id="tabbar"></nav>
-</div>
-<div id="modalRoot"></div>
-<div class="toast" id="toast"></div>
+      <div id="pageSubtitle" class="page-subtitle"></div>
+      <div id="tripBanner" class="trip-banner" hidden></div>
+    </header>
 
-<script>
-if("serviceWorker" in navigator){
-  window.addEventListener("load", ()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); });
-}
+    <main id="main"></main>
 
-const DEFAULT_DATA = {"1. Itinerario":{"headers":["Data","Giorno","Città","Attività Principali","Pernottamento","Spostamento"],"rows":[{"Data":"2026-12-25","Giorno":"Venerdì","Città":"Osaka","Attività Principali":"Arrivo KIX, Dotonbori, primo ramen","Pernottamento":"Osaka","Spostamento":"KIX -> Osaka (Treno)"},{"Data":"2026-12-26","Giorno":"Sabato","Città":"Osaka","Attività Principali":"Castello di Osaka, Shinsekai, Umeda Sky","Pernottamento":"Osaka","Spostamento":"Metropolitana"},{"Data":"2026-12-27","Giorno":"Domenica","Città":"Osaka / Hiroshima","Attività Principali":"Parco della Pace, Traghetto per Miyajima","Pernottamento":"Osaka","Spostamento":"Shinkansen A/R"},{"Data":"2026-12-28","Giorno":"Lunedì","Città":"Kyoto","Attività Principali":"Fushimi Inari, acquisto Goshuincho","Pernottamento":"Kyoto","Spostamento":"JR Special Rapid"},{"Data":"2026-12-29","Giorno":"Martedì","Città":"Kyoto","Attività Principali":"Arashiyama (Bambù), Kinkaku-ji, Ryoan-ji","Pernottamento":"Kyoto","Spostamento":"Autobus / Metro"},{"Data":"2026-12-30","Giorno":"Mercoledì","Città":"Kyoto","Attività Principali":"Kiyomizu-dera, Higashiyama, Gion","Pernottamento":"Kyoto","Spostamento":"A piedi / Autobus"},{"Data":"2026-12-31","Giorno":"Giovedì","Città":"Kyoto","Attività Principali":"Capodanno, Joya no Kane (campane)","Pernottamento":"Kyoto","Spostamento":"Locale"},{"Data":"2027-01-01","Giorno":"Venerdì","Città":"Takayama","Attività Principali":"Spedizione valigie a Tokyo. Arrivo Alpi Giapponesi","Pernottamento":"Takayama","Spostamento":"Shinkansen + Hida Express"},{"Data":"2027-01-02","Giorno":"Sabato","Città":"Takayama / Shirakawa-go","Attività Principali":"Gita al villaggio innevato, cena manzo Hida (solo zaino)","Pernottamento":"Takayama","Spostamento":"Nohi Bus A/R"},{"Data":"2027-01-03","Giorno":"Domenica","Città":"Tokyo","Attività Principali":"Arrivo a Tokyo, check-in, recupero valigie grandi","Pernottamento":"Tokyo","Spostamento":"Hida Express + Shinkansen"},{"Data":"2027-01-04","Giorno":"Lunedì","Città":"Tokyo","Attività Principali":"Akihabara, Ueno (Parco e Ameyoko)","Pernottamento":"Tokyo","Spostamento":"Yamanote Line (Suica)"},{"Data":"2027-01-05","Giorno":"Martedì","Città":"Tokyo / Kawaguchiko","Attività Principali":"Escursione al Monte Fuji (Pagoda Chureito, Lago)","Pernottamento":"Tokyo","Spostamento":"Highway Bus A/R"},{"Data":"2027-01-06","Giorno":"Mercoledì","Città":"Tokyo","Attività Principali":"Shibuya, Harajuku, Meiji Jingu","Pernottamento":"Tokyo","Spostamento":"Metropolitana"},{"Data":"2027-01-07","Giorno":"Giovedì","Città":"Tokyo / Kamakura","Attività Principali":"Grande Buddha, Enoshima, location Slam Dunk","Pernottamento":"Tokyo","Spostamento":"Shonan-Shinjuku Line A/R"},{"Data":"2027-01-08","Giorno":"Venerdì","Città":"Tokyo","Attività Principali":"Asakusa, Odaiba e ultimi acquisti","Pernottamento":"Tokyo","Spostamento":"Metropolitana / Yurikamome"},{"Data":"2027-01-09","Giorno":"Sabato","Città":"Partenza","Attività Principali":"Trasferimento a Narita e volo di rientro","Pernottamento":"-","Spostamento":"Keisei Skyliner o N'EX"}]},"2. Hotel e Alloggi":{"headers":["Data","Città","Notte","Nome Hotel / Ryokan","Link Google Maps","Note / Conferma"],"rows":[{"Data":"2026-12-25","Città":"Osaka","Notte":"Notte tra il 25 e il 26 Dicembre","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2026-12-26","Città":"Osaka","Notte":"Notte tra il 26 e il 27 Dicembre","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2026-12-27","Città":"Osaka","Notte":"Notte tra il 27 e il 28 Dicembre","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2026-12-28","Città":"Kyoto","Notte":"Notte tra il 28 e il 29 Dicembre","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2026-12-29","Città":"Kyoto","Notte":"Notte tra il 29 e il 30 Dicembre","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2026-12-30","Città":"Kyoto","Notte":"Notte tra il 30 e il 31 Dicembre","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2026-12-31","Città":"Kyoto","Notte":"Notte tra il 31 Dicembre e l'1 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2027-01-01","Città":"Takayama","Notte":"Notte tra l'1 e il 2 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2027-01-02","Città":"Takayama","Notte":"Notte tra il 2 e il 3 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2027-01-03","Città":"Tokyo","Notte":"Notte tra il 3 e il 4 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2027-01-04","Città":"Tokyo","Notte":"Notte tra il 4 e il 5 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2027-01-05","Città":"Tokyo","Notte":"Notte tra il 5 e il 6 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2027-01-06","Città":"Tokyo","Notte":"Notte tra il 6 e il 7 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2027-01-07","Città":"Tokyo","Notte":"Notte tra il 7 e l'8 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""},{"Data":"2027-01-08","Città":"Tokyo","Notte":"Notte tra l'8 e il 9 Gennaio","Nome Hotel / Ryokan":"","Link Google Maps":"","Note / Conferma":""}]},"3. Trasporti":{"headers":["Tratta / Servizio","Mezzo / Vettore","Durata","Costo Stimato","Link Maps Partenza","Link Maps Arrivo"],"rows":[{"Tratta / Servizio":"KIX -> Osaka","Mezzo / Vettore":"Haruka Express o Nankai","Durata":"45 min","Costo Stimato":"€ 10 - 15","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Osaka <-> Hiroshima (A/R)","Mezzo / Vettore":"Shinkansen","Durata":"1h 25m a tratta","Costo Stimato":"€ 120 - 130","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Osaka -> Kyoto","Mezzo / Vettore":"JR Special Rapid","Durata":"29 min","Costo Stimato":"€ 3,50 - 4","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Kyoto -> Takayama","Mezzo / Vettore":"Shinkansen + Hida Express","Durata":"3h 15m","Costo Stimato":"€ 65 - 75","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Takayama <-> Shirakawa-go","Mezzo / Vettore":"Nohi Bus","Durata":"50 min a tratta","Costo Stimato":"€ 35","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Takayama -> Tokyo","Mezzo / Vettore":"Hida Express + Shinkansen","Durata":"4h 15m","Costo Stimato":"€ 90 - 100","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Tokyo <-> Kawaguchiko (A/R)","Mezzo / Vettore":"Highway Bus da Shinjuku","Durata":"1h 45m a tratta","Costo Stimato":"€ 25 - 30","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Tokyo <-> Kamakura (A/R)","Mezzo / Vettore":"Shonan-Shinjuku Line","Durata":"1h a tratta","Costo Stimato":"€ 12 - 15","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Tokyo -> Narita","Mezzo / Vettore":"Keisei Skyliner o N'EX","Durata":"41m - 1h 20m","Costo Stimato":"€ 16 - 20","Link Maps Partenza":"","Link Maps Arrivo":""},{"Tratta / Servizio":"Spostamenti urbani","Mezzo / Vettore":"Metro / Bus","Durata":"Giornaliero","Costo Stimato":"€ 5 - 8 al giorno","Link Maps Partenza":"N/A","Link Maps Arrivo":"N/A"},{"Tratta / Servizio":"Spedizione Bagagli","Mezzo / Vettore":"Yamato Transport (Ta-Q-Bin)","Durata":"Consegna 1-2 giorni","Costo Stimato":"€ 15 - 20 a valigia","Link Maps Partenza":"N/A","Link Maps Arrivo":"N/A"}]},"4. App":{"headers":["App","Categoria","Funzione Principale","Urgenza Configurazione","Note"],"rows":[{"App":"Saily","Categoria":"Connettività","Funzione Principale":"eSIM per la connessione dati in Giappone","Urgenza Configurazione":"Alta (Prima di partire)","Note":"Pulsante diretto inserito nell'app Glide"},{"App":"Revolut","Categoria":"Finanze","Funzione Principale":"Conto Joint per spese condivise","Urgenza Configurazione":"Alta (Prima di partire)","Note":"Caricare su Apple Pay per pagamenti e ricariche Suica"},{"App":"SmartEX","Categoria":"Trasporti","Funzione Principale":"Prenotazione biglietti Shinkansen","Urgenza Configurazione":"Alta (30 giorni prima)","Note":"Associare le carte Revolut e prenotare lato sinistro per Tokyo"},{"App":"Apple Wallet (Suica)","Categoria":"Trasporti","Funzione Principale":"Pagamento trasporti locali (metro/bus) e distributori","Urgenza Configurazione":"Alta (Prima di partire)","Note":"Aggiungere carta trasporti dal Wallet, ricarica via Apple Pay"},{"App":"Glide (App Personale)","Categoria":"Organizzazione","Funzione Principale":"Database itinerario, budget e documenti condivisi","Urgenza Configurazione":"Media (In corso)","Note":"Da salvare sulla Home dell'iPhone come PWA"}]},"5. Valigia":{"headers":["Messo in Valigia?","Categoria","Articolo","Urgenza","Note per il Giappone"],"rows":[{"Messo in Valigia?":"Da preparare","Categoria":"Logistica","Articolo":"Zaino da viaggio capiente","Urgenza":"Alta","Note per il Giappone":"Per i 2 giorni a Takayama mentre le valigie viaggiano a Tokyo."},{"Messo in Valigia?":"Da preparare","Categoria":"Capispalla","Articolo":"Piumino Columbia Labyrinth Loop II o similare","Urgenza":"Alta","Note per il Giappone":"Tecnologia termica, cappuccio regolabile, comprimibile nello zaino"},{"Messo in Valigia?":"Da preparare","Categoria":"Capispalla","Articolo":"Guanti touch-screen e Cappello di lana","Urgenza":"Alta","Note per il Giappone":"Essenziali per il freddo a Takayama e Kyoto"},{"Messo in Valigia?":"Da preparare","Categoria":"Abbigliamento","Articolo":"Maglie termiche (es. Heattech)","Urgenza":"Alta","Note per il Giappone":"Basi per la stratificazione"},{"Messo in Valigia?":"Da preparare","Categoria":"Tecnologia","Articolo":"Adattatore presa tipo A (pin piatti)","Urgenza":"Alta","Note per il Giappone":"Indispensabile in Giappone"},{"Messo in Valigia?":"Da preparare","Categoria":"Tecnologia","Articolo":"Powerbank capiente","Urgenza":"Alta","Note per il Giappone":"Navigazione e foto scaricano la batteria"},{"Messo in Valigia?":"Da preparare","Categoria":"Varie","Articolo":"Taccuino per Eki Stamp","Urgenza":"Media","Note per il Giappone":"Per i timbri Goshuin serve un quaderno apposito comprato ai templi"}]},"6. Attrazioni":{"headers":["Città","Attrazione","Categoria","Urgenza","Note","Link Google Maps"],"rows":[{"Città":"Osaka","Attrazione":"Dotonbori & Castello","Categoria":"Città/Cultura","Urgenza":"Alta","Note":"Street food e passeggiata al castello.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Dotonbori%2C%20Osaka%2C%20Giappone"},{"Città":"Osaka","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Osaka","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Hiroshima","Attrazione":"Parco della Pace","Categoria":"Storia","Urgenza":"Alta","Note":"Cupola e museo.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Hiroshima%20Peace%20Memorial%20Park%2C%20Hiroshima%2C%20Giappone"},{"Città":"Hiroshima","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Kyoto","Attrazione":"Fushimi Inari & Kinkaku-ji","Categoria":"Cultura","Urgenza":"Alta","Note":"Tunnel di torii e Padiglione d'oro.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Fushimi%20Inari%20Taisha%2C%20Kyoto%2C%20Giappone"},{"Città":"Kyoto","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Kyoto","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Takayama","Attrazione":"Sanmachi Suji","Categoria":"Cultura","Urgenza":"Alta","Note":"Città vecchia.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Sanmachi%20Suji%2C%20Takayama%2C%20Giappone"},{"Città":"Takayama","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Tokyo","Attrazione":"Akihabara & Nakano Broadway","Categoria":"Anime","Urgenza":"Alta","Note":"Elettronica, figures e manga.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Akihabara%2C%20Tokyo%2C%20Giappone"},{"Città":"Tokyo","Attrazione":"Incrocio di Shibuya","Categoria":"Vita Urbana","Urgenza":"Alta","Note":"L'incrocio pedonale più trafficato.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Shibuya%20Crossing%2C%20Tokyo%2C%20Giappone"},{"Città":"Tokyo","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Tokyo","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Kamakura","Attrazione":"Kamakurakoko-Mae","Categoria":"Anime/Pop","Urgenza":"Alta","Note":"Passaggio a livello Slam Dunk.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Kamakurakokomae%20Station%2C%20Giappone"},{"Città":"Kamakura","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""},{"Città":"Kawaguchiko","Attrazione":"Pagoda Chureito","Categoria":"Panoramico","Urgenza":"Alta","Note":"Fuji sullo sfondo.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Chureito%20Pagoda%2C%20Fujiyoshida%2C%20Giappone"},{"Città":"Kawaguchiko","Attrazione":"","Categoria":"","Urgenza":"","Note":"","Link Google Maps":""}]},"7. Guida":{"headers":["Argomento","Dettagli Operativi"],"rows":[{"Argomento":"Spedizione Bagagli","Dettagli Operativi":"Il 1 Gennaio spedire valigie da Kyoto a Tokyo con Yamato Transport (15-20€). A Takayama si viaggia leggeri con lo zaino."},{"Argomento":"Usanze","Dettagli Operativi":"Niente mance. Niente telefonate sui treni (usare spazi tra le carrozze). Non mangiare camminando."},{"Argomento":"Suica su iPhone","Dettagli Operativi":"Aggiungere Suica da Wallet e ricaricare con Apple Pay. Si passa ai tornelli appoggiando il telefono chiuso."},{"Argomento":"Shinkansen","Dettagli Operativi":"Prenotare su SmartEX. Per Tokyo da Nagoya chiedere lato sinistro (posti E) per vedere il Monte Fuji."}]},"8. Cibo e Ristoranti":{"headers":["Città","Specialità / Piatto","Categoria","Note e Suggerimenti","Link Google Maps"],"rows":[{"Città":"Osaka","Specialità / Piatto":"Okonomiyaki & Takoyaki","Categoria":"Street Food","Note e Suggerimenti":"Da provare a Dotonbori. Piatti ricchi e tipici della regione del Kansai.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Dotonbori%2C%20Osaka%2C%20Giappone"},{"Città":"Osaka","Specialità / Piatto":"Yakiniku (BBQ Giapponese)","Categoria":"Carne","Note e Suggerimenti":"Eccellente per mantenere un alto apporto proteico. Grigliate la carne direttamente al tavolo.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Yakiniku%20restaurant%2C%20Osaka%2C%20Giappone"},{"Città":"Osaka","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Osaka","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Kyoto","Specialità / Piatto":"Kaiseki","Categoria":"Cena Tradizionale","Note e Suggerimenti":"Cena multi-portata servita spesso nei Ryokan. Un'esperienza estetica e culinaria di altissimo livello.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Kaiseki%20restaurant%2C%20Kyoto%2C%20Giappone"},{"Città":"Kyoto","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Kyoto","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Takayama","Specialità / Piatto":"Manzo Hida (Hida-gyu)","Categoria":"Carne Premium","Note e Suggerimenti":"Pregiata carne locale. Si trova in spiedini per strada o servita in ristoranti specializzati (prenotare in anticipo).","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Hida%20beef%20restaurant%2C%20Takayama%2C%20Giappone"},{"Città":"Takayama","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Takayama","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Tokyo","Specialità / Piatto":"Yakitori (Omoide Yokocho)","Categoria":"Carne / Spiedini","Note e Suggerimenti":"Spiedini di pollo grigliati al momento nei vicoletti storici. Ottimi macro nutrizionali e atmosfera autentica.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Omoide%20Yokocho%2C%20Shinjuku%2C%20Tokyo%2C%20Giappone"},{"Città":"Tokyo","Specialità / Piatto":"Yakiniku (BBQ Giapponese)","Categoria":"Carne","Note e Suggerimenti":"Molti ristoranti a Shinjuku o Shibuya. Ottimo pasto post-allenamento.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Yakiniku%20restaurant%2C%20Shinjuku%2C%20Tokyo%2C%20Giappone"},{"Città":"Tokyo","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Tokyo","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Ovunque","Specialità / Piatto":"Sashimi e Sushi","Categoria":"Pesce","Note e Suggerimenti":"Pesce freschissimo e leggero. Perfetto per la ricomposizione corporea.","Link Google Maps":""},{"Città":"Ovunque","Specialità / Piatto":"Catene di backup (Sukiya, Yoshinoya)","Categoria":"Fast Food Locale","Note e Suggerimenti":"Aperte 24/7. Servono Gyudon (ciotole di riso e manzo) a circa 4-5€. Veloci, economiche e sazianti.","Link Google Maps":""},{"Città":"Ovunque","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""},{"Città":"Ovunque","Specialità / Piatto":"","Categoria":"","Note e Suggerimenti":"","Link Google Maps":""}]},"9. Shopping":{"headers":["Città","Quartiere","Brand / Negozio","Categoria","Articolo Mirato / Note","Link Google Maps"],"rows":[{"Città":"Osaka","Quartiere":"Den Den Town","Brand / Negozio":"Super Potato","Categoria":"Retrogaming","Articolo Mirato / Note":"Videogiochi vintage e console storiche.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Super%20Potato%20Den%20Den%20Town%2C%20Osaka%2C%20Giappone"},{"Città":"Osaka","Quartiere":"","Brand / Negozio":"","Categoria":"","Articolo Mirato / Note":"","Link Google Maps":""},{"Città":"Kyoto","Quartiere":"Higashiyama","Brand / Negozio":"Botteghe artigianali","Categoria":"Tradizionale","Articolo Mirato / Note":"Goshuincho di qualità.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Higashiyama%2C%20Kyoto%2C%20Giappone"},{"Città":"Kyoto","Quartiere":"","Brand / Negozio":"","Categoria":"","Articolo Mirato / Note":"","Link Google Maps":""},{"Città":"Tokyo","Quartiere":"Shibuya/Harajuku","Brand / Negozio":"Columbia / Patagonia","Categoria":"Abbigliamento Tecnico","Articolo Mirato / Note":"Flagship store per testare vestibilità.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Patagonia%20Harajuku%2C%20Tokyo%2C%20Giappone"},{"Città":"Tokyo","Quartiere":"Nakano","Brand / Negozio":"Nakano Broadway","Categoria":"Anime / Manga","Articolo Mirato / Note":"Più conveniente per vintage anime e cel originali.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Nakano%20Broadway%2C%20Tokyo%2C%20Giappone"},{"Città":"Tokyo","Quartiere":"Akihabara","Brand / Negozio":"Mandarake / Animate","Categoria":"Anime / Elettronica","Articolo Mirato / Note":"Nuove uscite, action figures, merchandise.","Link Google Maps":"https://www.google.com/maps/search/?api=1&query=Mandarake%20Akihabara%2C%20Tokyo%2C%20Giappone"},{"Città":"Tokyo","Quartiere":"","Brand / Negozio":"","Categoria":"","Articolo Mirato / Note":"","Link Google Maps":""},{"Città":"Tokyo","Quartiere":"","Brand / Negozio":"","Categoria":"","Articolo Mirato / Note":"","Link Google Maps":""}]},"10. Emergenze":{"headers":["Contatto / Servizio","Numero / Riferimento","Dettagli Operativi"],"rows":[{"Contatto / Servizio":"Polizia (Emergenze)","Numero / Riferimento":"110","Dettagli Operativi":"Per denunce di smarrimento (es. passaporto) rivolgersi ai 'Koban'."},{"Contatto / Servizio":"Ambulanza / Pompieri","Numero / Riferimento":"119","Dettagli Operativi":"Gli operatori sono solitamente in grado di gestire chiamate con un inglese di base."},{"Contatto / Servizio":"Ambasciata Italiana","Numero / Riferimento":"03-3453-5291","Dettagli Operativi":"Tokyo: 2-5-4 Mita, Minato-ku, Tokyo. Salvare il numero in rubrica."},{"Contatto / Servizio":"Blocco Carte / Revolut","Numero / Riferimento":"Tramite App","Dettagli Operativi":"Accedere a Revolut web o numeri verdi in caso di furto/smarrimento smartphone."},{"Contatto / Servizio":"Assicurazione Sanitaria","Numero / Riferimento":"Da compilare","Dettagli Operativi":"Inserire numero polizza e numero verde di emergenza."}]},"11. Budget":{"headers":["Data","Giorno","Budget Previsto (Yen)","Spesa Effettiva Revolut","Differenza","Note / Categoria"],"rows":[{"Data":"2026-12-25","Giorno":"Friday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2026-12-26","Giorno":"Saturday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2026-12-27","Giorno":"Sunday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2026-12-28","Giorno":"Monday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2026-12-29","Giorno":"Tuesday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2026-12-30","Giorno":"Wednesday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2026-12-31","Giorno":"Thursday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-01","Giorno":"Friday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-02","Giorno":"Saturday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-03","Giorno":"Sunday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-04","Giorno":"Monday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-05","Giorno":"Tuesday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-06","Giorno":"Wednesday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-07","Giorno":"Thursday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-08","Giorno":"Friday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""},{"Data":"2027-01-09","Giorno":"Saturday","Budget Previsto (Yen)":"15000","Spesa Effettiva Revolut":"","Differenza":"","Note / Categoria":""}]}};
+    <button id="addButton" class="floating-button" type="button" hidden aria-label="Aggiungi elemento">+</button>
+    <nav id="tabbar" class="tabbar" aria-label="Sezioni app"></nav>
+  </div>
 
-const SHEET_ORDER = ["1. Itinerario","2. Hotel e Alloggi","3. Trasporti","4. App","5. Valigia","6. Attrazioni","7. Guida","8. Cibo e Ristoranti","9. Shopping","10. Emergenze","11. Budget"];
-const VALIGIA_STATUS = ["Da preparare","Da comprare","In valigia","Fatto"];
-const URGENZA_ORDER = {"Alta":0,"Media":1,"Bassa":2};
-const MESI_IT = ["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
-const GIORNI_IT = ["dom","lun","mar","mer","gio","ven","sab"];
-const EXCLUDE_SORT = ["1. Itinerario","11. Budget"];
+  <div id="modalRoot"></div>
+  <div id="toast" class="toast"></div>
 
-const EMOJI_MAP = {
- "Città":"📍","Categoria":"🏷️","Note":"📝","Note e Suggerimenti":"📝","Note per il Giappone":"🎒",
- "Note / Categoria":"📝","Note / Conferma":"📝","Costo Stimato":"💰","Durata":"⏱️","Mezzo / Vettore":"🚆",
- "Nome Hotel / Ryokan":"🏨","Quartiere":"🧭","Articolo Mirato / Note":"🛍️","Dettagli Operativi":"📋",
- "Numero / Riferimento":"☎️","Funzione Principale":"⚙️","Urgenza Configurazione":"⏳","Urgenza":"⏳",
- "Spesa Effettiva Revolut":"💸","Differenza":"📊","Budget Previsto (Yen)":"💴","Pernottamento":"🏨",
- "Spostamento":"🚉","App":"📱","Contatto / Servizio":"🚨"
-};
-const SECTION_EMOJI = {
- "1. Itinerario":"🗺️","2. Hotel e Alloggi":"🏨","3. Trasporti":"🚄","4. App":"📱","5. Valigia":"🧳",
- "6. Attrazioni":"⛩️","7. Guida":"📖","8. Cibo e Ristoranti":"🍜","9. Shopping":"🛍️","10. Emergenze":"🚨","11. Budget":"💴"
-};
+  <script>
+    /* ================================================================
+       1. Configurazione e dati iniziali
+       ================================================================ */
 
-const META = {
- "1. Itinerario":{label:"Itinerario",title:"Attività Principali",badge:null,search:["Città","Attività Principali","Spostamento"]},
- "2. Hotel e Alloggi":{label:"Alloggi",title:"Nome Hotel / Ryokan",titleFallback:"Città",sub:["Città","Notte"],notes:["Note / Conferma"],maps:[{f:"Link Google Maps",l:"Maps"}],search:["Città","Nome Hotel / Ryokan"],cityField:"Città"},
- "3. Trasporti":{label:"Trasporti",title:"Tratta / Servizio",sub:["Mezzo / Vettore"],badge:"Costo Stimato",notes:[],maps:[{f:"Link Maps Partenza",l:"Partenza"},{f:"Link Maps Arrivo",l:"Arrivo"}],search:["Tratta / Servizio","Mezzo / Vettore"],extra:["Durata"]},
- "4. App":{label:"App",title:"App",sub:["Categoria"],badge:"Urgenza Configurazione",notes:["Funzione Principale","Note"],maps:[],search:["App","Categoria"]},
- "5. Valigia":{label:"Valigia",title:"Articolo",sub:["Categoria"],toggle:"Messo in Valigia?",notes:["Note per il Giappone"],maps:[],search:["Articolo","Categoria"],extra:["Urgenza"]},
- "6. Attrazioni":{label:"Attrazioni",title:"Attrazione",titleFallback:"Città",sub:["Città","Categoria"],badge:"Urgenza",notes:["Note"],maps:[{f:"Link Google Maps",l:"Maps"}],search:["Città","Attrazione","Categoria"],cityField:"Città"},
- "7. Guida":{label:"Guida",title:"Argomento",sub:[],badge:null,notes:["Dettagli Operativi"],maps:[],search:["Argomento"]},
- "8. Cibo e Ristoranti":{label:"Cibo",title:"Specialità / Piatto",titleFallback:"Città",sub:["Città","Categoria"],badge:null,notes:["Note e Suggerimenti"],maps:[{f:"Link Google Maps",l:"Maps"}],search:["Città","Specialità / Piatto","Categoria"],cityField:"Città"},
- "9. Shopping":{label:"Shopping",title:"Brand / Negozio",titleFallback:"Quartiere",sub:["Città","Quartiere","Categoria"],badge:null,notes:["Articolo Mirato / Note"],maps:[{f:"Link Google Maps",l:"Maps"}],search:["Città","Quartiere","Brand / Negozio"],cityField:"Città"},
- "10. Emergenze":{label:"Emergenze",title:"Contatto / Servizio",sub:["Numero / Riferimento"],badge:null,notes:["Dettagli Operativi"],maps:[],search:["Contatto / Servizio"]},
- "11. Budget":{label:"Budget",title:"Data",sub:["Giorno"],badge:"Budget Previsto (Yen)",notes:["Note / Categoria"],maps:[],search:["Data","Giorno"],extra:["Spesa Effettiva Revolut","Differenza"]},
-};
-const TAB_ORDER = ["1. Itinerario","mappa","6. Attrazioni","8. Cibo e Ristoranti","2. Hotel e Alloggi","3. Trasporti","9. Shopping","4. App","5. Valigia","7. Guida","10. Emergenze","11. Budget","settings"];
+    const SHEET_ORDER = [
+      "1. Itinerario",
+      "2. Hotel e Alloggi",
+      "3. Trasporti",
+      "4. App",
+      "5. Valigia",
+      "6. Attrazioni",
+      "7. Guida",
+      "8. Cibo e Ristoranti",
+      "9. Shopping",
+      "10. Emergenze",
+      "11. Budget"
+    ];
 
-let STATE = { data:null, settings:null, view:"1. Itinerario", searchTerm:"", cityFilter:"", sortKey:"default" };
+    const TAB_ORDER = [
+      "1. Itinerario",
+      "mappa",
+      "6. Attrazioni",
+      "8. Cibo e Ristoranti",
+      "2. Hotel e Alloggi",
+      "3. Trasporti",
+      "9. Shopping",
+      "4. App",
+      "5. Valigia",
+      "7. Guida",
+      "10. Emergenze",
+      "11. Budget",
+      "settings"
+    ];
 
-function loadState(){
-  let d = localStorage.getItem("ggwtDB");
-  STATE.data = d ? JSON.parse(d) : JSON.parse(JSON.stringify(DEFAULT_DATA));
-  let s = localStorage.getItem("ggwtSettings");
-  STATE.settings = s ? JSON.parse(s) : {theme:"auto", accent:"torii", exchangeRate:160};
-  if(!STATE.settings.exchangeRate) STATE.settings.exchangeRate = 160;
-  applyTheme();
-}
-function saveData(){ localStorage.setItem("ggwtDB", JSON.stringify(STATE.data)); }
-function saveSettings(){ localStorage.setItem("ggwtSettings", JSON.stringify(STATE.settings)); }
-function applyTheme(){
-  let t = STATE.settings.theme;
-  if(t==="auto") t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark":"light";
-  document.documentElement.setAttribute("data-theme", t);
-  document.documentElement.setAttribute("data-accent", STATE.settings.accent);
-}
-function toast(msg){
-  const el = document.getElementById("toast"); el.innerHTML=""; el.textContent = msg; el.classList.add("show");
-  setTimeout(()=>el.classList.remove("show"), 2200);
-}
-function showUndoToast(msg, undoFn){
-  const el = document.getElementById("toast");
-  el.innerHTML = `<span>${msg}</span><button id="undoBtn">ANNULLA</button>`;
-  el.classList.add("show");
-  let undone=false;
-  el.querySelector("#undoBtn").onclick=()=>{ undone=true; undoFn(); el.classList.remove("show"); };
-  setTimeout(()=>{ if(!undone) el.classList.remove("show"); }, 5000);
-}
-function isMapsUrl(v){ return v && /^https?:\/\//.test(v.trim()); }
-function isPhoneLike(v){ return v && /^[\d+\-\s()]{3,}$/.test(v.trim()); }
-function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function emojiFor(field){ return EMOJI_MAP[field] || "•"; }
+    const VALIGIA_STATUS = [
+      "Da preparare",
+      "Da comprare",
+      "In valigia",
+      "Fatto"
+    ];
 
-function cityClass(cityRaw){
-  if(!cityRaw) return "city-default";
-  const c = cityRaw.split("/")[0].trim().toLowerCase();
-  const map = {osaka:"city-osaka", kyoto:"city-kyoto", tokyo:"city-tokyo", takayama:"city-takayama",
-    hiroshima:"city-hiroshima", kamakura:"city-kamakura", kawaguchiko:"city-kawaguchiko", partenza:"city-partenza"};
-  return map[c] || "city-default";
-}
+    const URGENZA_ORDER = {
+      Alta: 0,
+      Media: 1,
+      Bassa: 2
+    };
 
-function parseDate(str){
-  if(!str) return null;
-  const m = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if(!m) return null;
-  return new Date(+m[1], +m[2]-1, +m[3]);
-}
-function fmtShort(str){
-  const d = parseDate(str); if(!d) return str;
-  return `${GIORNI_IT[d.getDay()]} ${d.getDate()} ${MESI_IT[d.getMonth()]}`;
-}
-function fmtDayMonth(str){
-  const d = parseDate(str); if(!d) return str;
-  return `${d.getDate()} ${MESI_IT[d.getMonth()]}`;
-}
-function todayStr(){
-  const d = new Date();
-  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-}
+    const MONTHS_IT = [
+      "gen", "feb", "mar", "apr", "mag", "giu",
+      "lug", "ago", "set", "ott", "nov", "dic"
+    ];
 
-function shareItem(title, text, url){
-  if(navigator.share){
-    navigator.share({title, text: text + (url? "\n"+url : "")}).catch(()=>{});
-  } else if(navigator.clipboard){
-    navigator.clipboard.writeText(text + (url? " "+url : "")).then(()=>toast("📋 Copiato negli appunti"));
-  } else {
-    toast("Condivisione non supportata su questo browser");
-  }
-}
+    const WEEKDAYS_IT = [
+      "dom", "lun", "mar", "mer", "gio", "ven", "sab"
+    ];
 
-function buildICS(row){
-  const dateStr = row["Data"];
-  const d0 = parseDate(dateStr); if(!d0) return null;
-  const dd = dateStr.replace(/-/g,"");
-  const nextDate = new Date(d0.getTime()+86400000);
-  const nd = nextDate.getFullYear()+String(nextDate.getMonth()+1).padStart(2,"0")+String(nextDate.getDate()).padStart(2,"0");
-  const summary = `${row["Città"]||"Giappone"}: ${(row["Attività Principali"]||"").slice(0,70)}`;
-  const desc = (row["Attività Principali"]||"") + (row["Spostamento"] && row["Spostamento"]!=="-" ? " | Spostamento: "+row["Spostamento"] : "");
-  const uid = "giappone-"+dd+"@ggwt.local";
-  return `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\nUID:${uid}\r\nDTSTAMP:${dd}T000000Z\r\nDTSTART;VALUE=DATE:${dd}\r\nDTEND;VALUE=DATE:${nd}\r\nSUMMARY:${summary.replace(/\r?\n/g," ")}\r\nDESCRIPTION:${desc.replace(/\r?\n/g," ")}\r\nEND:VEVENT\r\nEND:VCALENDAR`;
-}
-function addToCalendar(row){
-  const ics = buildICS(row);
-  if(!ics){ toast("Data non valida"); return; }
-  downloadBlob(ics, `giorno-${row["Data"]}.ics`, "text/calendar;charset=utf-8");
-  toast("📅 Evento scaricato — apri il file per aggiungerlo al Calendario");
-}
+    const SECTION_EMOJI = {
+      "1. Itinerario": "🗺️",
+      "2. Hotel e Alloggi": "🏨",
+      "3. Trasporti": "🚄",
+      "4. App": "📱",
+      "5. Valigia": "🧳",
+      "6. Attrazioni": "⛩️",
+      "7. Guida": "📖",
+      "8. Cibo e Ristoranti": "🍜",
+      "9. Shopping": "🛍️",
+      "10. Emergenze": "🚨",
+      "11. Budget": "💴"
+    };
 
-function buildSeigaiha(){
-  const el = document.getElementById("seigaihaBg");
-  const rows = 3, cols = 10, r = 46;
-  let arcs = "";
-  for(let row=0; row<rows; row++){
-    for(let col=0; col<cols; col++){
-      const cx = col*r*1.05 + (row%2? r*0.52:0);
-      const cy = row*r*0.55;
-      arcs += `<path d="M${cx-r} ${cy} a${r} ${r} 0 0 1 ${r*2} 0" fill="none" stroke="var(--accent)" stroke-width="1.4"/>`;
+    const FIELD_EMOJI = {
+      "Città": "📍",
+      "Categoria": "🏷️",
+      "Note": "📝",
+      "Note e Suggerimenti": "📝",
+      "Note per il Giappone": "🎒",
+      "Note / Categoria": "📝",
+      "Note / Conferma": "📝",
+      "Costo Stimato": "💰",
+      "Durata": "⏱️",
+      "Mezzo / Vettore": "🚆",
+      "Nome Hotel / Ryokan": "🏨",
+      "Quartiere": "🧭",
+      "Articolo Mirato / Note": "🛍️",
+      "Dettagli Operativi": "📋",
+      "Numero / Riferimento": "☎️",
+      "Funzione Principale": "⚙️",
+      "Urgenza Configurazione": "⏳",
+      "Urgenza": "⏳",
+      "Spesa Effettiva Revolut": "💸",
+      "Differenza": "📊",
+      "Budget Previsto (Yen)": "💴",
+      "Pernottamento": "🏨",
+      "Spostamento": "🚉",
+      "App": "📱",
+      "Contatto / Servizio": "🚨"
+    };
+
+    const SECTION_META = {
+      "1. Itinerario": {
+        label: "Itinerario",
+        title: "Attività Principali",
+        search: ["Città", "Attività Principali", "Spostamento"]
+      },
+      "2. Hotel e Alloggi": {
+        label: "Alloggi",
+        title: "Nome Hotel / Ryokan",
+        fallbackTitle: "Città",
+        sub: ["Città", "Notte"],
+        notes: ["Note / Conferma"],
+        maps: [{ field: "Link Google Maps", label: "Maps" }],
+        search: ["Città", "Nome Hotel / Ryokan"],
+        cityField: "Città"
+      },
+      "3. Trasporti": {
+        label: "Trasporti",
+        title: "Tratta / Servizio",
+        sub: ["Mezzo / Vettore"],
+        badge: "Costo Stimato",
+        extra: ["Durata"],
+        maps: [
+          { field: "Link Maps Partenza", label: "Partenza" },
+          { field: "Link Maps Arrivo", label: "Arrivo" }
+        ],
+        search: ["Tratta / Servizio", "Mezzo / Vettore"]
+      },
+      "4. App": {
+        label: "App",
+        title: "App",
+        sub: ["Categoria"],
+        badge: "Urgenza Configurazione",
+        notes: ["Funzione Principale", "Note"],
+        search: ["App", "Categoria"]
+      },
+      "5. Valigia": {
+        label: "Valigia",
+        title: "Articolo",
+        sub: ["Categoria"],
+        statusField: "Messo in Valigia?",
+        notes: ["Note per il Giappone"],
+        extra: ["Urgenza"],
+        search: ["Articolo", "Categoria"]
+      },
+      "6. Attrazioni": {
+        label: "Attrazioni",
+        title: "Attrazione",
+        fallbackTitle: "Città",
+        sub: ["Città", "Categoria"],
+        badge: "Urgenza",
+        notes: ["Note"],
+        maps: [{ field: "Link Google Maps", label: "Maps" }],
+        search: ["Città", "Attrazione", "Categoria"],
+        cityField: "Città"
+      },
+      "7. Guida": {
+        label: "Guida",
+        title: "Argomento",
+        notes: ["Dettagli Operativi"],
+        search: ["Argomento"]
+      },
+      "8. Cibo e Ristoranti": {
+        label: "Cibo",
+        title: "Specialità / Piatto",
+        fallbackTitle: "Città",
+        sub: ["Città", "Categoria"],
+        notes: ["Note e Suggerimenti"],
+        maps: [{ field: "Link Google Maps", label: "Maps" }],
+        search: ["Città", "Specialità / Piatto", "Categoria"],
+        cityField: "Città"
+      },
+      "9. Shopping": {
+        label: "Shopping",
+        title: "Brand / Negozio",
+        fallbackTitle: "Quartiere",
+        sub: ["Città", "Quartiere", "Categoria"],
+        notes: ["Articolo Mirato / Note"],
+        maps: [{ field: "Link Google Maps", label: "Maps" }],
+        search: ["Città", "Quartiere", "Brand / Negozio"],
+        cityField: "Città"
+      },
+      "10. Emergenze": {
+        label: "Emergenze",
+        title: "Contatto / Servizio",
+        sub: ["Numero / Riferimento"],
+        notes: ["Dettagli Operativi"],
+        search: ["Contatto / Servizio"]
+      },
+      "11. Budget": {
+        label: "Budget",
+        title: "Data",
+        sub: ["Giorno"],
+        badge: "Budget Previsto (Yen)",
+        notes: ["Note / Categoria"],
+        extra: ["Spesa Effettiva Revolut", "Differenza"],
+        search: ["Data", "Giorno"]
+      }
+    };
+
+    const DEFAULT_DATA = {
+      "1. Itinerario": {
+        headers: ["Data", "Giorno", "Città", "Attività Principali", "Pernottamento", "Spostamento"],
+        rows: [
+          { "Data": "2026-12-25", "Giorno": "Venerdì", "Città": "Osaka", "Attività Principali": "Arrivo KIX, Dotonbori, primo ramen", "Pernottamento": "Osaka", "Spostamento": "KIX -> Osaka (Treno)" },
+          { "Data": "2026-12-26", "Giorno": "Sabato", "Città": "Osaka", "Attività Principali": "Castello di Osaka, Shinsekai, Umeda Sky", "Pernottamento": "Osaka", "Spostamento": "Metropolitana" },
+          { "Data": "2026-12-27", "Giorno": "Domenica", "Città": "Osaka / Hiroshima", "Attività Principali": "Parco della Pace, Traghetto per Miyajima", "Pernottamento": "Osaka", "Spostamento": "Shinkansen A/R" },
+          { "Data": "2026-12-28", "Giorno": "Lunedì", "Città": "Kyoto", "Attività Principali": "Fushimi Inari, acquisto Goshuincho", "Pernottamento": "Kyoto", "Spostamento": "JR Special Rapid" },
+          { "Data": "2026-12-29", "Giorno": "Martedì", "Città": "Kyoto", "Attività Principali": "Arashiyama (Bambù), Kinkaku-ji, Ryoan-ji", "Pernottamento": "Kyoto", "Spostamento": "Autobus / Metro" },
+          { "Data": "2026-12-30", "Giorno": "Mercoledì", "Città": "Kyoto", "Attività Principali": "Kiyomizu-dera, Higashiyama, Gion", "Pernottamento": "Kyoto", "Spostamento": "A piedi / Autobus" },
+          { "Data": "2026-12-31", "Giorno": "Giovedì", "Città": "Kyoto", "Attività Principali": "Capodanno, Joya no Kane (campane)", "Pernottamento": "Kyoto", "Spostamento": "Locale" },
+          { "Data": "2027-01-01", "Giorno": "Venerdì", "Città": "Takayama", "Attività Principali": "Spedizione valigie a Tokyo. Arrivo Alpi Giapponesi", "Pernottamento": "Takayama", "Spostamento": "Shinkansen + Hida Express" },
+          { "Data": "2027-01-02", "Giorno": "Sabato", "Città": "Takayama / Shirakawa-go", "Attività Principali": "Gita al villaggio innevato, cena manzo Hida (solo zaino)", "Pernottamento": "Takayama", "Spostamento": "Nohi Bus A/R" },
+          { "Data": "2027-01-03", "Giorno": "Domenica", "Città": "Tokyo", "Attività Principali": "Arrivo a Tokyo, check-in, recupero valigie grandi", "Pernottamento": "Tokyo", "Spostamento": "Hida Express + Shinkansen" },
+          { "Data": "2027-01-04", "Giorno": "Lunedì", "Città": "Tokyo", "Attività Principali": "Akihabara, Ueno (Parco e Ameyoko)", "Pernottamento": "Tokyo", "Spostamento": "Yamanote Line (Suica)" },
+          { "Data": "2027-01-05", "Giorno": "Martedì", "Città": "Tokyo / Kawaguchiko", "Attività Principali": "Escursione al Monte Fuji (Pagoda Chureito, Lago)", "Pernottamento": "Tokyo", "Spostamento": "Highway Bus A/R" },
+          { "Data": "2027-01-06", "Giorno": "Mercoledì", "Città": "Tokyo", "Attività Principali": "Shibuya, Harajuku, Meiji Jingu", "Pernottamento": "Tokyo", "Spostamento": "Metropolitana" },
+          { "Data": "2027-01-07", "Giorno": "Giovedì", "Città": "Tokyo / Kamakura", "Attività Principali": "Grande Buddha, Enoshima, location Slam Dunk", "Pernottamento": "Tokyo", "Spostamento": "Shonan-Shinjuku Line A/R" },
+          { "Data": "2027-01-08", "Giorno": "Venerdì", "Città": "Tokyo", "Attività Principali": "Asakusa, Odaiba e ultimi acquisti", "Pernottamento": "Tokyo", "Spostamento": "Metropolitana / Yurikamome" },
+          { "Data": "2027-01-09", "Giorno": "Sabato", "Città": "Partenza", "Attività Principali": "Trasferimento a Narita e volo di rientro", "Pernottamento": "-", "Spostamento": "Keisei Skyliner o N'EX" }
+        ]
+      },
+      "2. Hotel e Alloggi": {
+        headers: ["Data", "Città", "Notte", "Nome Hotel / Ryokan", "Link Google Maps", "Note / Conferma"],
+        rows: [
+          { "Data": "2026-12-25", "Città": "Osaka", "Notte": "Notte tra il 25 e il 26 Dicembre", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
+          { "Data": "2026-12-26", "Città": "Osaka", "Notte": "Notte tra il 26 e il 27 Dicembre", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
+          { "Data": "2026-12-27", "Città": "Osaka", "Notte": "Notte tra il 27 e il 28 Dicembre", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
+          { "Data": "2026-12-28", "Città": "Kyoto", "Notte": "Notte tra il 28 e il 29 Dicembre", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
+          { "Data": "2026-12-29", "Città": "Kyoto", "Notte": "Notte tra il 29 e il 30 Dicembre", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
+          { "Data": "2026-12-30", "Città": "Kyoto", "Notte": "Notte tra il 30 e il 31 Dicembre", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
+          { "Data": "2026-12-31", "Città": "Kyoto", "Notte": "Notte tra il 31 Dicembre e l'1 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
+          { "Data": "2027-01-01", "Città": "Takayama", "Notte": "Notte tra l'1 e il 2 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
+          { "Data": "2027-01-02", "Città": "Takayama", "Notte": "Notte tra il 2 e il 3 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
+          { "Data": "2027-01-03", "Città": "Tokyo", "Notte": "Notte tra il 3 e il 4 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
+          { "Data": "2027-01-04", "Città": "Tokyo", "Notte": "Notte tra il 4 e il 5 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
+          { "Data": "2027-01-05", "Città": "Tokyo", "Notte": "Notte tra il 5 e il 6 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
+          { "Data": "2027-01-06", "Città": "Tokyo", "Notte": "Notte tra il 6 e il 7 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
+          { "Data": "2027-01-07", "Città": "Tokyo", "Notte": "Notte tra il 7 e l'8 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" },
+          { "Data": "2027-01-08", "Città": "Tokyo", "Notte": "Notte tra l'8 e il 9 Gennaio", "Nome Hotel / Ryokan": "", "Link Google Maps": "", "Note / Conferma": "" }
+        ]
+      },
+      "3. Trasporti": {
+        headers: ["Tratta / Servizio", "Mezzo / Vettore", "Durata", "Costo Stimato", "Link Maps Partenza", "Link Maps Arrivo"],
+        rows: [
+          { "Tratta / Servizio": "KIX -> Osaka", "Mezzo / Vettore": "Haruka Express o Nankai", "Durata": "45 min", "Costo Stimato": "€ 10 - 15", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
+          { "Tratta / Servizio": "Osaka <-> Hiroshima (A/R)", "Mezzo / Vettore": "Shinkansen", "Durata": "1h 25m a tratta", "Costo Stimato": "€ 120 - 130", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
+          { "Tratta / Servizio": "Osaka -> Kyoto", "Mezzo / Vettore": "JR Special Rapid", "Durata": "29 min", "Costo Stimato": "€ 3,50 - 4", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
+          { "Tratta / Servizio": "Kyoto -> Takayama", "Mezzo / Vettore": "Shinkansen + Hida Express", "Durata": "3h 15m", "Costo Stimato": "€ 65 - 75", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
+          { "Tratta / Servizio": "Takayama <-> Shirakawa-go", "Mezzo / Vettore": "Nohi Bus", "Durata": "50 min a tratta", "Costo Stimato": "€ 35", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
+          { "Tratta / Servizio": "Takayama -> Tokyo", "Mezzo / Vettore": "Hida Express + Shinkansen", "Durata": "4h 15m", "Costo Stimato": "€ 90 - 100", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
+          { "Tratta / Servizio": "Tokyo <-> Kawaguchiko (A/R)", "Mezzo / Vettore": "Highway Bus da Shinjuku", "Durata": "1h 45m a tratta", "Costo Stimato": "€ 25 - 30", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
+          { "Tratta / Servizio": "Tokyo <-> Kamakura (A/R)", "Mezzo / Vettore": "Shonan-Shinjuku Line", "Durata": "1h a tratta", "Costo Stimato": "€ 12 - 15", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
+          { "Tratta / Servizio": "Tokyo -> Narita", "Mezzo / Vettore": "Keisei Skyliner o N'EX", "Durata": "41m - 1h 20m", "Costo Stimato": "€ 16 - 20", "Link Maps Partenza": "", "Link Maps Arrivo": "" },
+          { "Tratta / Servizio": "Spostamenti urbani", "Mezzo / Vettore": "Metro / Bus", "Durata": "Giornaliero", "Costo Stimato": "€ 5 - 8 al giorno", "Link Maps Partenza": "N/A", "Link Maps Arrivo": "N/A" },
+          { "Tratta / Servizio": "Spedizione Bagagli", "Mezzo / Vettore": "Yamato Transport (Ta-Q-Bin)", "Durata": "Consegna 1-2 giorni", "Costo Stimato": "€ 15 - 20 a valigia", "Link Maps Partenza": "N/A", "Link Maps Arrivo": "N/A" }
+        ]
+      },
+      "4. App": {
+        headers: ["App", "Categoria", "Funzione Principale", "Urgenza Configurazione", "Note"],
+        rows: [
+          { "App": "Saily", "Categoria": "Connettività", "Funzione Principale": "eSIM per la connessione dati in Giappone", "Urgenza Configurazione": "Alta (Prima di partire)", "Note": "Pulsante diretto inserito nell'app Glide" },
+          { "App": "Revolut", "Categoria": "Finanze", "Funzione Principale": "Conto Joint per spese condivise", "Urgenza Configurazione": "Alta (Prima di partire)", "Note": "Caricare su Apple Pay per pagamenti e ricariche Suica" },
+          { "App": "SmartEX", "Categoria": "Trasporti", "Funzione Principale": "Prenotazione biglietti Shinkansen", "Urgenza Configurazione": "Alta (30 giorni prima)", "Note": "Associare le carte Revolut e prenotare lato sinistro per Tokyo" },
+          { "App": "Apple Wallet (Suica)", "Categoria": "Trasporti", "Funzione Principale": "Pagamento trasporti locali (metro/bus) e distributori", "Urgenza Configurazione": "Alta (Prima di partire)", "Note": "Aggiungere carta trasporti dal Wallet, ricarica via Apple Pay" },
+          { "App": "Glide (App Personale)", "Categoria": "Organizzazione", "Funzione Principale": "Database itinerario, budget e documenti condivisi", "Urgenza Configurazione": "Media (In corso)", "Note": "Da salvare sulla Home dell'iPhone come PWA" }
+        ]
+      },
+      "5. Valigia": {
+        headers: ["Messo in Valigia?", "Categoria", "Articolo", "Urgenza", "Note per il Giappone"],
+        rows: [
+          { "Messo in Valigia?": "Da preparare", "Categoria": "Logistica", "Articolo": "Zaino da viaggio capiente", "Urgenza": "Alta", "Note per il Giappone": "Per i 2 giorni a Takayama mentre le valigie viaggiano a Tokyo." },
+          { "Messo in Valigia?": "Da preparare", "Categoria": "Capispalla", "Articolo": "Piumino Columbia Labyrinth Loop II o similare", "Urgenza": "Alta", "Note per il Giappone": "Tecnologia termica, cappuccio regolabile, comprimibile nello zaino" },
+          { "Messo in Valigia?": "Da preparare", "Categoria": "Capispalla", "Articolo": "Guanti touch-screen e Cappello di lana", "Urgenza": "Alta", "Note per il Giappone": "Essenziali per il freddo a Takayama e Kyoto" },
+          { "Messo in Valigia?": "Da preparare", "Categoria": "Abbigliamento", "Articolo": "Maglie termiche (es. Heattech)", "Urgenza": "Alta", "Note per il Giappone": "Basi per la stratificazione" },
+          { "Messo in Valigia?": "Da preparare", "Categoria": "Tecnologia", "Articolo": "Adattatore presa tipo A (pin piatti)", "Urgenza": "Alta", "Note per il Giappone": "Indispensabile in Giappone" },
+          { "Messo in Valigia?": "Da preparare", "Categoria": "Tecnologia", "Articolo": "Powerbank capiente", "Urgenza": "Alta", "Note per il Giappone": "Navigazione e foto scaricano la batteria" },
+          { "Messo in Valigia?": "Da preparare", "Categoria": "Varie", "Articolo": "Taccuino per Eki Stamp", "Urgenza": "Media", "Note per il Giappone": "Per i timbri Goshuin serve un quaderno apposito comprato ai templi" }
+        ]
+      },
+      "6. Attrazioni": {
+        headers: ["Città", "Attrazione", "Categoria", "Urgenza", "Note", "Link Google Maps"],
+        rows: [
+          { "Città": "Osaka", "Attrazione": "Dotonbori & Castello", "Categoria": "Città/Cultura", "Urgenza": "Alta", "Note": "Street food e passeggiata al castello.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Dotonbori%2C%20Osaka%2C%20Giappone" },
+          { "Città": "Hiroshima", "Attrazione": "Parco della Pace", "Categoria": "Storia", "Urgenza": "Alta", "Note": "Cupola e museo.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Hiroshima%20Peace%20Memorial%20Park%2C%20Hiroshima%2C%20Giappone" },
+          { "Città": "Kyoto", "Attrazione": "Fushimi Inari & Kinkaku-ji", "Categoria": "Cultura", "Urgenza": "Alta", "Note": "Tunnel di torii e Padiglione d'oro.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Fushimi%20Inari%20Taisha%2C%20Kyoto%2C%20Giappone" },
+          { "Città": "Takayama", "Attrazione": "Sanmachi Suji", "Categoria": "Cultura", "Urgenza": "Alta", "Note": "Città vecchia.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Sanmachi%20Suji%2C%20Takayama%2C%20Giappone" },
+          { "Città": "Tokyo", "Attrazione": "Akihabara & Nakano Broadway", "Categoria": "Anime", "Urgenza": "Alta", "Note": "Elettronica, figures e manga.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Akihabara%2C%20Tokyo%2C%20Giappone" },
+          { "Città": "Tokyo", "Attrazione": "Incrocio di Shibuya", "Categoria": "Vita Urbana", "Urgenza": "Alta", "Note": "L'incrocio pedonale più trafficato.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Shibuya%20Crossing%2C%20Tokyo%2C%20Giappone" },
+          { "Città": "Kamakura", "Attrazione": "Kamakurakoko-Mae", "Categoria": "Anime/Pop", "Urgenza": "Alta", "Note": "Passaggio a livello Slam Dunk.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Kamakurakokomae%20Station%2C%20Giappone" },
+          { "Città": "Kawaguchiko", "Attrazione": "Pagoda Chureito", "Categoria": "Panoramico", "Urgenza": "Alta", "Note": "Fuji sullo sfondo.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Chureito%20Pagoda%2C%20Fujiyoshida%2C%20Giappone" }
+        ]
+      },
+      "7. Guida": {
+        headers: ["Argomento", "Dettagli Operativi"],
+        rows: [
+          { "Argomento": "Spedizione Bagagli", "Dettagli Operativi": "Il 1 Gennaio spedire valigie da Kyoto a Tokyo con Yamato Transport (15-20€). A Takayama si viaggia leggeri con lo zaino." },
+          { "Argomento": "Usanze", "Dettagli Operativi": "Niente mance. Niente telefonate sui treni (usare spazi tra le carrozze). Non mangiare camminando." },
+          { "Argomento": "Suica su iPhone", "Dettagli Operativi": "Aggiungere Suica da Wallet e ricaricare con Apple Pay. Si passa ai tornelli appoggiando il telefono chiuso." },
+          { "Argomento": "Shinkansen", "Dettagli Operativi": "Prenotare su SmartEX. Per Tokyo da Nagoya chiedere lato sinistro (posti E) per vedere il Monte Fuji." }
+        ]
+      },
+      "8. Cibo e Ristoranti": {
+        headers: ["Città", "Specialità / Piatto", "Categoria", "Note e Suggerimenti", "Link Google Maps"],
+        rows: [
+          { "Città": "Osaka", "Specialità / Piatto": "Okonomiyaki & Takoyaki", "Categoria": "Street Food", "Note e Suggerimenti": "Da provare a Dotonbori. Piatti ricchi e tipici della regione del Kansai.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Dotonbori%2C%20Osaka%2C%20Giappone" },
+          { "Città": "Osaka", "Specialità / Piatto": "Yakiniku (BBQ Giapponese)", "Categoria": "Carne", "Note e Suggerimenti": "Eccellente per mantenere un alto apporto proteico. Grigliate la carne direttamente al tavolo.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Yakiniku%20restaurant%2C%20Osaka%2C%20Giappone" },
+          { "Città": "Kyoto", "Specialità / Piatto": "Kaiseki", "Categoria": "Cena Tradizionale", "Note e Suggerimenti": "Cena multi-portata servita spesso nei Ryokan. Un'esperienza estetica e culinaria di altissimo livello.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Kaiseki%20restaurant%2C%20Kyoto%2C%20Giappone" },
+          { "Città": "Takayama", "Specialità / Piatto": "Manzo Hida (Hida-gyu)", "Categoria": "Carne Premium", "Note e Suggerimenti": "Pregiata carne locale. Si trova in spiedini per strada o servita in ristoranti specializzati.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Hida%20beef%20restaurant%2C%20Takayama%2C%20Giappone" },
+          { "Città": "Tokyo", "Specialità / Piatto": "Yakitori (Omoide Yokocho)", "Categoria": "Carne / Spiedini", "Note e Suggerimenti": "Spiedini di pollo grigliati al momento nei vicoletti storici.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Omoide%20Yokocho%2C%20Shinjuku%2C%20Tokyo%2C%20Giappone" },
+          { "Città": "Tokyo", "Specialità / Piatto": "Yakiniku (BBQ Giapponese)", "Categoria": "Carne", "Note e Suggerimenti": "Molti ristoranti a Shinjuku o Shibuya. Ottimo pasto post-allenamento.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Yakiniku%20restaurant%2C%20Shinjuku%2C%20Tokyo%2C%20Giappone" },
+          { "Città": "Ovunque", "Specialità / Piatto": "Sashimi e Sushi", "Categoria": "Pesce", "Note e Suggerimenti": "Pesce freschissimo e leggero. Perfetto per la ricomposizione corporea.", "Link Google Maps": "" },
+          { "Città": "Ovunque", "Specialità / Piatto": "Catene di backup (Sukiya, Yoshinoya)", "Categoria": "Fast Food Locale", "Note e Suggerimenti": "Aperte 24/7. Servono Gyudon: veloci, economiche e sazianti.", "Link Google Maps": "" }
+        ]
+      },
+      "9. Shopping": {
+        headers: ["Città", "Quartiere", "Brand / Negozio", "Categoria", "Articolo Mirato / Note", "Link Google Maps"],
+        rows: [
+          { "Città": "Osaka", "Quartiere": "Den Den Town", "Brand / Negozio": "Super Potato", "Categoria": "Retrogaming", "Articolo Mirato / Note": "Videogiochi vintage e console storiche.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Super%20Potato%20Den%20Den%20Town%2C%20Osaka%2C%20Giappone" },
+          { "Città": "Kyoto", "Quartiere": "Higashiyama", "Brand / Negozio": "Botteghe artigianali", "Categoria": "Tradizionale", "Articolo Mirato / Note": "Goshuincho di qualità.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Higashiyama%2C%20Kyoto%2C%20Giappone" },
+          { "Città": "Tokyo", "Quartiere": "Shibuya/Harajuku", "Brand / Negozio": "Columbia / Patagonia", "Categoria": "Abbigliamento Tecnico", "Articolo Mirato / Note": "Flagship store per testare vestibilità.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Patagonia%20Harajuku%2C%20Tokyo%2C%20Giappone" },
+          { "Città": "Tokyo", "Quartiere": "Nakano", "Brand / Negozio": "Nakano Broadway", "Categoria": "Anime / Manga", "Articolo Mirato / Note": "Più conveniente per vintage anime e cel originali.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Nakano%20Broadway%2C%20Tokyo%2C%20Giappone" },
+          { "Città": "Tokyo", "Quartiere": "Akihabara", "Brand / Negozio": "Mandarake / Animate", "Categoria": "Anime / Elettronica", "Articolo Mirato / Note": "Nuove uscite, action figures, merchandise.", "Link Google Maps": "https://www.google.com/maps/search/?api=1&query=Mandarake%20Akihabara%2C%20Tokyo%2C%20Giappone" }
+        ]
+      },
+      "10. Emergenze": {
+        headers: ["Contatto / Servizio", "Numero / Riferimento", "Dettagli Operativi"],
+        rows: [
+          { "Contatto / Servizio": "Polizia (Emergenze)", "Numero / Riferimento": "110", "Dettagli Operativi": "Per denunce di smarrimento rivolgersi ai Koban." },
+          { "Contatto / Servizio": "Ambulanza / Pompieri", "Numero / Riferimento": "119", "Dettagli Operativi": "Gli operatori gestiscono normalmente chiamate con un inglese di base." },
+          { "Contatto / Servizio": "Ambasciata Italiana", "Numero / Riferimento": "03-3453-5291", "Dettagli Operativi": "Tokyo: 2-5-4 Mita, Minato-ku, Tokyo." },
+          { "Contatto / Servizio": "Blocco Carte / Revolut", "Numero / Riferimento": "Tramite App", "Dettagli Operativi": "Accedere a Revolut web o numeri verdi in caso di furto." },
+          { "Contatto / Servizio": "Assicurazione Sanitaria", "Numero / Riferimento": "Da compilare", "Dettagli Operativi": "Inserire numero polizza e numero verde di emergenza." }
+        ]
+      },
+      "11. Budget": {
+        headers: ["Data", "Giorno", "Budget Previsto (Yen)", "Spesa Effettiva Revolut", "Differenza", "Note / Categoria"],
+        rows: [
+          { "Data": "2026-12-25", "Giorno": "Friday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
+          { "Data": "2026-12-26", "Giorno": "Saturday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
+          { "Data": "2026-12-27", "Giorno": "Sunday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
+          { "Data": "2026-12-28", "Giorno": "Monday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
+          { "Data": "2026-12-29", "Giorno": "Tuesday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
+          { "Data": "2026-12-30", "Giorno": "Wednesday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
+          { "Data": "2026-12-31", "Giorno": "Thursday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
+          { "Data": "2027-01-01", "Giorno": "Friday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
+          { "Data": "2027-01-02", "Giorno": "Saturday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
+          { "Data": "2027-01-03", "Giorno": "Sunday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
+          { "Data": "2027-01-04", "Giorno": "Monday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
+          { "Data": "2027-01-05", "Giorno": "Tuesday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
+          { "Data": "2027-01-06", "Giorno": "Wednesday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
+          { "Data": "2027-01-07", "Giorno": "Thursday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
+          { "Data": "2027-01-08", "Giorno": "Friday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" },
+          { "Data": "2027-01-09", "Giorno": "Saturday", "Budget Previsto (Yen)": "15000", "Spesa Effettiva Revolut": "", "Differenza": "", "Note / Categoria": "" }
+        ]
+      }
+    };
+
+    /* ================================================================
+       2. Stato e utility
+       ================================================================ */
+
+    const state = {
+      data: null,
+      settings: null,
+      view: "1. Itinerario",
+      search: "",
+      city: "",
+      sort: "default"
+    };
+
+    function clone(value) {
+      return JSON.parse(JSON.stringify(value));
     }
-  }
-  el.innerHTML = `<svg viewBox="0 0 460 230" preserveAspectRatio="xMidYMin slice">${arcs}</svg>`;
-}
 
-function buildTabbar(){
-  const nav = document.getElementById("tabbar");
-  nav.innerHTML="";
-  TAB_ORDER.forEach(key=>{
-    const btn=document.createElement("button");
-    btn.dataset.tab=key;
-    let icon, label;
-    if(key==="mappa"){ icon="🗺️📍"; label="Mappa"; }
-    else if(key==="settings"){ icon="⚙️"; label="Impostazioni"; }
-    else { icon=SECTION_EMOJI[key]; label=META[key].label; }
-    btn.innerHTML=`<span class="ic">${icon}</span>${label}`;
-    btn.onclick=()=>{ STATE.view=key; STATE.searchTerm=""; STATE.cityFilter=""; STATE.sortKey="default"; render(); };
-    nav.appendChild(btn);
-  });
-}
+    function loadState() {
+      const savedData = localStorage.getItem("giappone-data");
+      const savedSettings = localStorage.getItem("giappone-settings");
 
-function renderTripBanner(){
-  const el = document.getElementById("tripBanner");
-  const rows = STATE.data["1. Itinerario"].rows;
-  if(!rows.length){ el.style.display="none"; return; }
-  const today = new Date(); today.setHours(0,0,0,0);
-  const first = parseDate(rows[0].Data);
-  const last = parseDate(rows[rows.length-1].Data);
-  if(!first || !last){ el.style.display="none"; return; }
-  el.style.display="block";
-  if(today < first){
-    const diff = Math.ceil((first-today)/86400000);
-    el.textContent = `🛫 Mancano ${diff} giorni alla partenza!`;
-  } else if(today <= last){
-    let idx = rows.findIndex(r=>{ const d=parseDate(r.Data); return d && d.getTime()===today.getTime(); });
-    if(idx<0){
-      idx = 0;
-      rows.forEach((r,i)=>{ const d=parseDate(r.Data); if(d && d<=today) idx=i; });
+      state.data = savedData ? JSON.parse(savedData) : clone(DEFAULT_DATA);
+      state.settings = savedSettings
+        ? JSON.parse(savedSettings)
+        : { theme: "auto", accent: "torii", exchangeRate: 160 };
+
+      if (!state.settings.exchangeRate) {
+        state.settings.exchangeRate = 160;
+      }
+
+      applyTheme();
     }
-    el.textContent = `📍 Sei in viaggio! Giorno ${idx+1} di ${rows.length}`;
-  } else {
-    el.textContent = `✅ Viaggio concluso — che ricordi! 🎌`;
-  }
-}
 
-function render(){
-  const main = document.getElementById("main");
-  const title = document.getElementById("pageTitle");
-  const subtitle = document.getElementById("pageSubtitle");
-  const fab = document.getElementById("fabAdd");
-  document.querySelectorAll("nav.tabbar button").forEach(b=>{
-    b.classList.toggle("active", b.dataset.tab===STATE.view);
-  });
-  main.innerHTML=""; main.classList.remove("view-fade"); void main.offsetWidth; main.classList.add("view-fade");
-  fab.style.display="none"; subtitle.textContent="";
-  renderTripBanner();
-
-  if(STATE.view==="settings"){
-    title.textContent="⚙️ Impostazioni";
-    main.appendChild(renderSettings());
-    return;
-  }
-  if(STATE.view==="mappa"){
-    title.textContent="🗺️ Mappa rapida";
-    subtitle.textContent="Tutti i luoghi con link Google Maps";
-    main.appendChild(renderMappa());
-    return;
-  }
-
-  const key = STATE.view;
-  const meta = META[key];
-  title.textContent = `${SECTION_EMOJI[key]} ${meta.label}`;
-
-  if(key==="1. Itinerario"){
-    main.appendChild(renderItinerarioStats());
-  }
-  if(key==="5. Valigia"){
-    main.appendChild(renderValigiaProgress());
-  }
-  fab.style.display="block";
-  fab.onclick=()=>openEditModal(key,null);
-
-  const wrap = document.createElement("div");
-  const toolbar = document.createElement("div"); toolbar.className="toolbar";
-  toolbar.innerHTML = `<input type="search" placeholder="🔎 Cerca in ${meta.label}..." value="${escapeHtml(STATE.searchTerm||"")}">`;
-  toolbar.querySelector("input").oninput = (e)=>{ STATE.searchTerm = e.target.value; renderList(key, listContainer); };
-
-  if(meta.cityField){
-    const cities = Array.from(new Set((STATE.data[key].rows||[]).map(r=>r[meta.cityField]).filter(v=>v))).sort();
-    const dd = document.createElement("div"); dd.className="dropdown";
-    dd.innerHTML = `<select><option value="">🌆 Tutte le città</option>${cities.map(c=>`<option value="${escapeHtml(c)}" ${STATE.cityFilter===c?'selected':''}>${escapeHtml(c)}</option>`).join("")}</select>`;
-    dd.querySelector("select").onchange=(e)=>{ STATE.cityFilter=e.target.value; renderList(key, listContainer); };
-    toolbar.appendChild(dd);
-  }
-  if(!EXCLUDE_SORT.includes(key)){
-    const headers = STATE.data[key].headers;
-    const sortOpts = [{v:"default",l:"↕️ Originale"},{v:"alpha",l:"🔤 A-Z"}];
-    if(headers.includes("Urgenza")) sortOpts.push({v:"urgenza",l:"⏳ Urgenza"});
-    const sdd = document.createElement("div"); sdd.className="dropdown";
-    sdd.innerHTML = `<select>${sortOpts.map(o=>`<option value="${o.v}" ${STATE.sortKey===o.v?'selected':''}>${o.l}</option>`).join("")}</select>`;
-    sdd.querySelector("select").onchange=(e)=>{ STATE.sortKey=e.target.value; renderList(key, listContainer); };
-    toolbar.appendChild(sdd);
-  }
-  wrap.appendChild(toolbar);
-  const listContainer = document.createElement("div");
-  wrap.appendChild(listContainer);
-  main.appendChild(wrap);
-  renderList(key, listContainer);
-
-  if(key==="1. Itinerario"){
-    setTimeout(()=>{
-      const t = document.querySelector(".card.today");
-      if(t) t.scrollIntoView({behavior:"smooth", block:"center"});
-    }, 60);
-  }
-}
-
-function renderItinerarioStats(){
-  const rows = STATE.data["1. Itinerario"].rows;
-  const cities = new Set();
-  rows.forEach(r=>{
-    (r["Città"]||"").split("/").forEach(c=>{ c=c.trim(); if(c && c!=="Partenza" && c!=="-") cities.add(c); });
-  });
-  const firstDate = rows[0]?.Data, lastDate = rows[rows.length-1]?.Data;
-  document.getElementById("pageSubtitle").textContent =
-    firstDate && lastDate ? `Giappone ${fmtDayMonth(firstDate)} – ${fmtDayMonth(lastDate)}` : "";
-  const box = document.createElement("div"); box.className="stats-row";
-  box.innerHTML = `
-    <div class="stat-box"><div class="stat-label">Durata</div><div class="stat-value">${rows.length} giorni</div></div>
-    <div class="stat-box"><div class="stat-label">Tappe</div><div class="stat-value">${cities.size} città</div></div>
-    <div class="stat-box"><div class="stat-label">Periodo</div><div class="stat-value">${firstDate?fmtDayMonth(firstDate):""} – ${lastDate?fmtDayMonth(lastDate):""}</div></div>`;
-  return box;
-}
-
-function renderValigiaProgress(){
-  const rows = STATE.data["5. Valigia"].rows;
-  const done = rows.filter(r=>r["Messo in Valigia?"]==="Fatto").length;
-  const pct = rows.length ? Math.round(done/rows.length*100) : 0;
-  const box = document.createElement("div"); box.className="progress-wrap";
-  const R = 30, C = 2*Math.PI*R, off = C - (pct/100)*C;
-  box.innerHTML = `
-    <svg class="ring-svg" width="72" height="72" viewBox="0 0 72 72">
-      <circle class="ring-bg" cx="36" cy="36" r="${R}"/>
-      <circle class="ring-fill" cx="36" cy="36" r="${R}" stroke-dasharray="${C}" stroke-dashoffset="${off}"/>
-      <text x="36" y="41" text-anchor="middle" transform="rotate(90 36 36)" class="ring-label" fill="var(--text)">${pct}%</text>
-    </svg>
-    <div><div class="p-top">🧳 Preparazione valigia</div><div class="p-sub">${done} di ${rows.length} oggetti pronti</div></div>`;
-  return box;
-}
-
-function getHotelForDate(dateStr){
-  const hotelRows = STATE.data["2. Hotel e Alloggi"]?.rows || [];
-  return hotelRows.find(h=>h["Data"]===dateStr);
-}
-
-function applySort(key, meta, items){
-  if(STATE.sortKey==="alpha"){
-    items.sort((a,b)=>{
-      const av = (a.r[meta.title]||a.r[meta.titleFallback]||"").toLowerCase();
-      const bv = (b.r[meta.title]||b.r[meta.titleFallback]||"").toLowerCase();
-      return av.localeCompare(bv);
-    });
-  } else if(STATE.sortKey==="urgenza"){
-    items.sort((a,b)=>{
-      const av = URGENZA_ORDER[a.r["Urgenza"]] ?? 99;
-      const bv = URGENZA_ORDER[b.r["Urgenza"]] ?? 99;
-      return av-bv;
-    });
-  }
-  return items;
-}
-
-function renderList(key, container){
-  const meta = META[key];
-  const rows = STATE.data[key]?.rows || [];
-  const term = (STATE.searchTerm||"").toLowerCase().trim();
-  let filtered = [];
-  rows.forEach((r, idx)=>{
-    const matchesSearch = !term || (meta.search||[]).some(f => (r[f]||"").toLowerCase().includes(term));
-    const matchesCity = !meta.cityField || !STATE.cityFilter || r[meta.cityField]===STATE.cityFilter;
-    if(matchesSearch && matchesCity) filtered.push({r, idx});
-  });
-  if(!EXCLUDE_SORT.includes(key)) filtered = applySort(key, meta, filtered);
-
-  container.innerHTML="";
-  if(filtered.length===0){
-    container.innerHTML = `<div class="empty-state">🔍 Nessun elemento trovato.<br>Tocca + per aggiungerne uno.</div>`;
-    return;
-  }
-  filtered.forEach(({r, idx})=>{
-    container.appendChild(key==="1. Itinerario" ? renderItinerarioCard(r, idx) : renderCard(key, meta, r, idx));
-  });
-}
-
-function renderItinerarioCard(r, idx){
-  const card = document.createElement("div"); card.className="card city-tinted "+cityClass(r["Città"]);
-  const isToday = r["Data"]===todayStr();
-  if(isToday) card.classList.add("today");
-  card.onclick=(e)=>{ if(e.target.closest("a")||e.target.closest("button")) return; openEditModal("1. Itinerario", idx); };
-  const top = document.createElement("div"); top.className="row-top";
-  const left = document.createElement("div"); left.className="row-top-left";
-  const chip = document.createElement("span"); chip.className="chip"+(isToday?" today-chip":""); chip.textContent = isToday ? "OGGI" : "G"+(idx+1);
-  const titleWrap = document.createElement("div");
-  titleWrap.innerHTML = `<h3>${escapeHtml(r["Città"]||"—")}</h3>`;
-  left.appendChild(chip); left.appendChild(titleWrap);
-  top.appendChild(left);
-  const dc = document.createElement("div"); dc.className="date-chevron";
-  dc.innerHTML = `${escapeHtml(fmtShort(r["Data"]))} <span class="chev">›</span>`;
-  top.appendChild(dc);
-  card.appendChild(top);
-
-  const bullets = document.createElement("div"); bullets.className="bullets";
-  const acts = (r["Attività Principali"]||"").split(/,|;/).map(s=>s.trim()).filter(Boolean);
-  const icons = ["☀️","🏙️","🌙","✨"];
-  acts.slice(0,4).forEach((a,i)=>{
-    const b=document.createElement("div"); b.className="bullet";
-    b.innerHTML = `<span class="ic">${icons[i%icons.length]}</span><span>${escapeHtml(a)}</span>`;
-    bullets.appendChild(b);
-  });
-  if(r["Spostamento"] && r["Spostamento"]!=="-"){
-    const b=document.createElement("div"); b.className="bullet dim";
-    b.innerHTML = `<span class="ic">🚉</span><span>${escapeHtml(r["Spostamento"])}</span>`;
-    bullets.appendChild(b);
-  }
-  card.appendChild(bullets);
-
-  const hotel = getHotelForDate(r["Data"]);
-  const hotelName = hotel && hotel["Nome Hotel / Ryokan"] ? hotel["Nome Hotel / Ryokan"] : (r["Pernottamento"] && r["Pernottamento"]!=="-" ? r["Pernottamento"] : null);
-  if(hotelName){
-    const pill = document.createElement("div"); pill.className="hotel-pill";
-    pill.innerHTML = `<span class="htxt">🏨 ${escapeHtml(hotelName)}</span>`;
-    const link = hotel && hotel["Link Google Maps"];
-    if(isMapsUrl(link)){
-      const a=document.createElement("a"); a.className="maps-btn small"; a.href=link; a.target="_blank"; a.rel="noopener";
-      a.innerHTML="📍 Maps";
-      pill.appendChild(a);
+    function saveData() {
+      localStorage.setItem("giappone-data", JSON.stringify(state.data));
     }
-    card.appendChild(pill);
-  }
 
-  const qa = document.createElement("div"); qa.className="quick-actions";
-  const calBtn = document.createElement("button"); calBtn.className="maps-btn secondary small";
-  calBtn.innerHTML="📅 Calendario";
-  calBtn.onclick=(e)=>{ e.stopPropagation(); addToCalendar(r); };
-  qa.appendChild(calBtn);
-  const shareBtn = document.createElement("button"); shareBtn.className="maps-btn secondary small";
-  shareBtn.innerHTML="📤 Condividi";
-  shareBtn.onclick=(e)=>{ e.stopPropagation(); shareItem(`Giappone - ${r["Città"]}`, `${fmtShort(r["Data"])}: ${r["Attività Principali"]||""}`, ""); };
-  qa.appendChild(shareBtn);
-  card.appendChild(qa);
-  return card;
-}
-
-function renderCard(key, meta, r, idx){
-  const card = document.createElement("div"); card.className="card";
-  if(meta.cityField && r[meta.cityField]){ card.classList.add("city-tinted", cityClass(r[meta.cityField])); }
-  card.onclick=(e)=>{ if(e.target.closest("select")||e.target.closest("a")||e.target.closest("button")) return; openEditModal(key, idx); };
-  let titleVal = r[meta.title] || (meta.titleFallback ? r[meta.titleFallback] : "") || "(senza titolo)";
-  let subParts = (meta.sub||[]).map(f=>r[f]).filter(v=>v);
-
-  const top = document.createElement("div"); top.className="row-top";
-  const left = document.createElement("div"); left.className="row-top-left"; left.style.minWidth="0";
-  const titleWrap = document.createElement("div"); titleWrap.style.minWidth="0";
-  titleWrap.innerHTML = `<h3>${escapeHtml(titleVal)}</h3>` + (subParts.length? `<div class="sub">${escapeHtml(subParts.join(" · "))}</div>`:"");
-  left.appendChild(titleWrap);
-  top.appendChild(left);
-
-  if(meta.toggle){
-    const sel = document.createElement("select"); sel.className="status-select";
-    let opts = VALIGIA_STATUS.includes(r[meta.toggle]) ? VALIGIA_STATUS : [r[meta.toggle]||"Da preparare", ...VALIGIA_STATUS];
-    opts.forEach(opt=>{
-      const o=document.createElement("option"); o.value=opt; o.textContent=opt;
-      if((r[meta.toggle]||"Da preparare")===opt) o.selected=true;
-      sel.appendChild(o);
-    });
-    sel.onclick=(e)=>e.stopPropagation();
-    sel.onchange=(e)=>{ r[meta.toggle]=e.target.value; saveData(); if(STATE.view==="5. Valigia"){ const box=document.querySelector(".progress-wrap"); if(box) box.replaceWith(renderValigiaProgress()); } };
-    top.appendChild(sel);
-  } else if(meta.badge && r[meta.badge]){
-    const b=document.createElement("span"); b.className="badge"; b.textContent=`${emojiFor(meta.badge)} ${r[meta.badge]}`;
-    top.appendChild(b);
-  } else {
-    const chev=document.createElement("span"); chev.className="date-chevron"; chev.innerHTML=`<span class="chev">›</span>`;
-    top.appendChild(chev);
-  }
-  card.appendChild(top);
-
-  const bullets = document.createElement("div"); bullets.className="bullets";
-  (meta.notes||[]).forEach(f=>{
-    if(r[f]) { const b=document.createElement("div"); b.className="bullet"; b.innerHTML=`<span class="ic">${emojiFor(f)}</span><span>${escapeHtml(r[f])}</span>`; bullets.appendChild(b); }
-  });
-  (meta.extra||[]).forEach(f=>{
-    if(r[f]){ const b=document.createElement("div"); b.className="bullet dim"; b.innerHTML=`<span class="ic">${emojiFor(f)}</span><span>${f}: ${escapeHtml(r[f])}</span>`; bullets.appendChild(b); }
-  });
-  if(key==="11. Budget"){
-    const rate = STATE.settings.exchangeRate || 160;
-    const bp = parseFloat(r["Budget Previsto (Yen)"]); const sp = parseFloat(r["Spesa Effettiva Revolut"]);
-    if(!isNaN(bp)){ const b=document.createElement("div"); b.className="bullet dim"; b.innerHTML=`<span class="ic">💶</span><span>Previsto: ≈ €${(bp/rate).toFixed(2)}</span>`; bullets.appendChild(b); }
-    if(!isNaN(sp) && sp>0){ const b=document.createElement("div"); b.className="bullet dim"; b.innerHTML=`<span class="ic">💶</span><span>Spesa: ≈ €${(sp/rate).toFixed(2)}</span>`; bullets.appendChild(b); }
-  }
-  if(bullets.children.length) card.appendChild(bullets);
-
-  const mapsRow = document.createElement("div"); mapsRow.className="maps-row";
-  (meta.maps||[]).forEach(m=>{
-    const url = r[m.f];
-    if(isMapsUrl(url)){
-      const a=document.createElement("a"); a.className="maps-btn"; a.href=url; a.target="_blank"; a.rel="noopener";
-      a.innerHTML = `📍 ${m.l==="Maps"?"Apri in Maps":m.l}`;
-      mapsRow.appendChild(a);
+    function saveSettings() {
+      localStorage.setItem("giappone-settings", JSON.stringify(state.settings));
     }
-  });
-  if(key==="10. Emergenze" && isPhoneLike(r["Numero / Riferimento"])){
-    const num = r["Numero / Riferimento"].trim();
-    const call=document.createElement("a"); call.className="maps-btn"; call.href="tel:"+num.replace(/\s/g,"");
-    call.innerHTML="📞 Chiama"; mapsRow.appendChild(call);
-    const copy=document.createElement("button"); copy.className="maps-btn secondary";
-    copy.innerHTML="📋 Copia";
-    copy.onclick=(e)=>{ e.stopPropagation(); navigator.clipboard?.writeText(num).then(()=>toast("📋 Numero copiato")); };
-    mapsRow.appendChild(copy);
-  }
-  if(mapsRow.children.length) card.appendChild(mapsRow);
 
-  const qa = document.createElement("div"); qa.className="quick-actions";
-  const shareBtn = document.createElement("button"); shareBtn.className="maps-btn secondary small";
-  shareBtn.innerHTML="📤 Condividi";
-  shareBtn.onclick=(e)=>{ e.stopPropagation(); shareItem(titleVal, `${titleVal}${subParts.length?" — "+subParts.join(" · "):""}${(meta.notes||[]).map(f=>r[f]).filter(Boolean).join(" | ")}`, ""); };
-  qa.appendChild(shareBtn);
-  card.appendChild(qa);
-  return card;
-}
+    function applyTheme() {
+      let theme = state.settings.theme;
 
-function renderMappa(){
-  const wrap = document.createElement("div");
-  const groups = [];
-  SHEET_ORDER.forEach(key=>{
-    const meta = META[key];
-    if(!meta.maps || !meta.maps.length) return;
-    const rows = STATE.data[key].rows;
-    const items = [];
-    rows.forEach(r=>{
-      meta.maps.forEach(m=>{
-        const url = r[m.f];
-        if(isMapsUrl(url)){
-          let t = r[meta.title] || (meta.titleFallback?r[meta.titleFallback]:"") || "—";
-          if(meta.maps.length>1) t += ` (${m.l})`;
-          items.push({title:t, sub:(meta.sub||[]).map(f=>r[f]).filter(Boolean).join(" · "), url, city:meta.cityField?r[meta.cityField]:null});
+      if (theme === "auto") {
+        theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      }
+
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.dataset.accent = state.settings.accent;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (character) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[character]);
+    }
+
+    function fieldEmoji(field) {
+      return FIELD_EMOJI[field] || "•";
+    }
+
+    function isHttpUrl(value) {
+      return /^https?:\/\//i.test(String(value || "").trim());
+    }
+
+    function isPhoneNumber(value) {
+      return /^[\d+\-\s()]{3,}$/.test(String(value || "").trim());
+    }
+
+    function parseDate(value) {
+      const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (!match) return null;
+      return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+    }
+
+    function todayString() {
+      const date = new Date();
+      return [
+        date.getFullYear(),
+        String(date.getMonth() + 1).padStart(2, "0"),
+        String(date.getDate()).padStart(2, "0")
+      ].join("-");
+    }
+
+    function shortDate(value) {
+      const date = parseDate(value);
+      if (!date) return value || "";
+      return `${WEEKDAYS_IT[date.getDay()]} ${date.getDate()} ${MONTHS_IT[date.getMonth()]}`;
+    }
+
+    function dayMonth(value) {
+      const date = parseDate(value);
+      if (!date) return value || "";
+      return `${date.getDate()} ${MONTHS_IT[date.getMonth()]}`;
+    }
+
+    function cityClass(value) {
+      const city = String(value || "").split("/")[0].trim().toLowerCase();
+      const map = {
+        osaka: "city-osaka",
+        kyoto: "city-kyoto",
+        tokyo: "city-tokyo",
+        takayama: "city-takayama",
+        hiroshima: "city-hiroshima",
+        kamakura: "city-kamakura",
+        kawaguchiko: "city-kawaguchiko",
+        partenza: "city-partenza"
+      };
+      return map[city] || "city-default";
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.innerHTML = "";
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2300);
+    }
+
+    function showUndoToast(message, undo) {
+      const toast = document.getElementById("toast");
+      toast.innerHTML = `<span>${escapeHtml(message)}</span><button type="button">ANNULLA</button>`;
+      toast.classList.add("visible");
+
+      let undone = false;
+      toast.querySelector("button").onclick = () => {
+        undone = true;
+        undo();
+        toast.classList.remove("visible");
+      };
+
+      setTimeout(() => {
+        if (!undone) toast.classList.remove("visible");
+      }, 5000);
+    }
+
+    function downloadFile(content, filename, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 3000);
+    }
+
+    /* ================================================================
+       3. Rendering dell'interfaccia
+       ================================================================ */
+
+    function renderPattern() {
+      const target = document.getElementById("seigaihaBackground");
+      let paths = "";
+      const radius = 46;
+
+      for (let row = 0; row < 3; row += 1) {
+        for (let column = 0; column < 11; column += 1) {
+          const offset = row % 2 ? radius * 0.52 : 0;
+          const x = column * radius * 1.05 + offset;
+          const y = row * radius * 0.55;
+          paths += `<path d="M${x - radius} ${y}a${radius} ${radius} 0 0 1 ${radius * 2} 0" fill="none" stroke="var(--accent)" stroke-width="1.4"/>`;
         }
+      }
+
+      target.innerHTML = `<svg viewBox="0 0 460 230" preserveAspectRatio="xMidYMin slice">${paths}</svg>`;
+    }
+
+    function renderTabs() {
+      const tabbar = document.getElementById("tabbar");
+      tabbar.innerHTML = "";
+
+      TAB_ORDER.forEach((key) => {
+        const button = document.createElement("button");
+        button.className = "tab-button";
+        button.dataset.tab = key;
+        button.type = "button";
+
+        const icon = key === "mappa"
+          ? "🗺️📍"
+          : key === "settings"
+            ? "⚙️"
+            : SECTION_EMOJI[key];
+
+        const label = key === "mappa"
+          ? "Mappa"
+          : key === "settings"
+            ? "Impostazioni"
+            : SECTION_META[key].label;
+
+        button.innerHTML = `<span class="tab-button-icon">${icon}</span>${label}`;
+        button.onclick = () => {
+          state.view = key;
+          state.search = "";
+          state.city = "";
+          state.sort = "default";
+          render();
+        };
+
+        tabbar.appendChild(button);
       });
-    });
-    if(items.length) groups.push({key, meta, items});
-  });
-
-  if(groups.length===0){
-    wrap.innerHTML = `<div class="empty-state">📍 Nessun link Google Maps ancora inserito.<br>Aggiungili tramite l'Excel o dal modulo di modifica di ogni sezione.</div>`;
-    return wrap;
-  }
-  groups.forEach(g=>{
-    const h = document.createElement("div"); h.className="maps-group-title";
-    h.innerHTML = `${SECTION_EMOJI[g.key]} ${g.meta.label}`;
-    wrap.appendChild(h);
-    g.items.forEach(it=>{
-      const card = document.createElement("div"); card.className="card"+(it.city?" city-tinted "+cityClass(it.city):""); card.style.cursor="default";
-      card.innerHTML = `<div class="row-top"><div class="row-top-left"><div><h3>${escapeHtml(it.title)}</h3>${it.sub?`<div class="sub">${escapeHtml(it.sub)}</div>`:""}</div></div></div>
-        <div class="maps-row"><a class="maps-btn" href="${it.url}" target="_blank" rel="noopener">📍 Apri in Maps</a></div>`;
-      wrap.appendChild(card);
-    });
-  });
-  return wrap;
-}
-
-function openEditModal(key, idx){
-  const headers = STATE.data[key].headers;
-  const row = idx!==null ? STATE.data[key].rows[idx] : {};
-  const meta = META[key];
-  const root = document.getElementById("modalRoot");
-  const overlay = document.createElement("div"); overlay.className="modal-overlay";
-  overlay.onclick=(e)=>{ if(e.target===overlay) closeModal(); };
-  const modal = document.createElement("div"); modal.className="modal";
-  let fieldsHtml = headers.map(h=>{
-    const val = row[h] || "";
-    if(meta.toggle && h===meta.toggle){
-      const opts = VALIGIA_STATUS.includes(val) ? VALIGIA_STATUS : [val, ...VALIGIA_STATUS];
-      return `<div class="field"><label>${emojiFor(h)} ${escapeHtml(h)}</label><select data-field="${escapeHtml(h)}">${opts.map(o=>`<option value="${escapeHtml(o)}" ${o===val?'selected':''}>${escapeHtml(o)}</option>`).join("")}</select></div>`;
     }
-    if(h==="Urgenza" || h==="Urgenza Configurazione"){
-      const opts2 = ["Alta","Media","Bassa"];
-      const has = opts2.includes(val) ? opts2 : (val? [val, ...opts2] : opts2);
-      return `<div class="field"><label>${emojiFor(h)} ${escapeHtml(h)}</label><select data-field="${escapeHtml(h)}">${has.map(o=>`<option value="${escapeHtml(o)}" ${o===val?'selected':''}>${escapeHtml(o)}</option>`).join("")}</select></div>`;
+
+    function renderCountdown() {
+      const banner = document.getElementById("tripBanner");
+      const rows = state.data["1. Itinerario"]?.rows || [];
+
+      if (!rows.length) {
+        banner.hidden = true;
+        return;
+      }
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const start = parseDate(rows[0].Data);
+      const end = parseDate(rows[rows.length - 1].Data);
+
+      if (!start || !end) {
+        banner.hidden = true;
+        return;
+      }
+
+      banner.hidden = false;
+
+      if (today < start) {
+        const days = Math.ceil((start - today) / 86400000);
+        banner.textContent = `🛫 Mancano ${days} giorni alla partenza`;
+      } else if (today <= end) {
+        let index = rows.findIndex((row) => row.Data === todayString());
+        if (index < 0) index = rows.findIndex((row) => parseDate(row.Data) >= today);
+        banner.textContent = `📍 Sei in viaggio · Giorno ${Math.max(index + 1, 1)} di ${rows.length}`;
+      } else {
+        banner.textContent = "✅ Viaggio concluso · che ricordi! 🎌";
+      }
     }
-    const isLink = /link|maps/i.test(h);
-    const isDate = /^data$/i.test(h);
-    const type = isLink ? "url" : isDate ? "date" : "text";
-    const long = /note|dettagli|articolo mirato|attività/i.test(h);
-    if(long){
-      return `<div class="field"><label>${emojiFor(h)} ${escapeHtml(h)}</label><textarea data-field="${escapeHtml(h)}">${escapeHtml(val)}</textarea></div>`;
+
+    function render() {
+      const main = document.getElementById("main");
+      const title = document.getElementById("pageTitle");
+      const subtitle = document.getElementById("pageSubtitle");
+      const addButton = document.getElementById("addButton");
+
+      document.querySelectorAll(".tab-button").forEach((button) => {
+        button.classList.toggle("active", button.dataset.tab === state.view);
+      });
+
+      main.innerHTML = "";
+      main.classList.remove("view-fade");
+      void main.offsetWidth;
+      main.classList.add("view-fade");
+      addButton.hidden = true;
+      subtitle.textContent = "";
+      renderCountdown();
+
+      if (state.view === "settings") {
+        title.textContent = "⚙️ Impostazioni";
+        main.appendChild(renderSettings());
+        return;
+      }
+
+      if (state.view === "mappa") {
+        title.textContent = "🗺️ Mappa rapida";
+        subtitle.textContent = "Luoghi con link Google Maps";
+        main.appendChild(renderMap());
+        return;
+      }
+
+      const meta = SECTION_META[state.view];
+      title.textContent = `${SECTION_EMOJI[state.view]} ${meta.label}`;
+
+      if (state.view === "1. Itinerario") {
+        main.appendChild(renderItineraryStats());
+      }
+
+      if (state.view === "5. Valigia") {
+        main.appendChild(renderPackingProgress());
+      }
+
+      addButton.hidden = false;
+      addButton.onclick = () => openEditModal(state.view, null);
+
+      const container = document.createElement("div");
+      const toolbar = renderToolbar(state.view, meta);
+      const list = document.createElement("div");
+
+      toolbar.onchange = () => renderList(state.view, list);
+      container.append(toolbar, list);
+      main.appendChild(container);
+      renderList(state.view, list);
     }
-    return `<div class="field"><label>${emojiFor(h)} ${escapeHtml(h)}</label><input type="${type}" data-field="${escapeHtml(h)}" value="${escapeHtml(val)}" placeholder="${isLink?'https://maps.app.goo.gl/...':''}"></div>`;
-  }).join("");
-  modal.innerHTML = `<h2>${idx!==null?"✎ Modifica":"➕ Nuovo"} — ${SECTION_EMOJI[key]} ${meta.label}</h2>
-    <div id="fieldsHolder">${fieldsHtml}</div>
-    <div class="modal-actions">
-      <button class="btn-cancel" id="cancelBtn">Annulla</button>
-      <button class="btn-save" id="saveBtn">Salva</button>
-    </div>
-    ${idx!==null?'<div class="modal-actions"><button class="btn-delete" id="delBtn">🗑️ Elimina elemento</button></div>':''}`;
-  overlay.appendChild(modal); root.appendChild(overlay);
 
-  modal.querySelector("#cancelBtn").onclick=closeModal;
-  modal.querySelector("#saveBtn").onclick=()=>{
-    const newRow = {};
-    modal.querySelectorAll("[data-field]").forEach(inp=>{ newRow[inp.dataset.field] = inp.value; });
-    if(idx!==null){ STATE.data[key].rows[idx] = newRow; }
-    else { STATE.data[key].rows.push(newRow); }
-    saveData(); closeModal(); render(); toast("✅ Salvato");
-  };
-  const delBtn = modal.querySelector("#delBtn");
-  if(delBtn) delBtn.onclick=()=>{
-    const removedRow = STATE.data[key].rows[idx];
-    STATE.data[key].rows.splice(idx,1);
-    saveData(); closeModal(); render();
-    showUndoToast("🗑️ Elemento eliminato", ()=>{
-      STATE.data[key].rows.splice(idx,0,removedRow); saveData(); render(); toast("↩️ Ripristinato");
-    });
-  };
-}
-function closeModal(){ document.getElementById("modalRoot").innerHTML=""; }
+    function renderItineraryStats() {
+      const rows = state.data["1. Itinerario"].rows;
+      const cities = new Set();
 
-function renderSettings(){
-  const wrap = document.createElement("div");
-  wrap.innerHTML = `
-  <div class="settings-group">
-    <h4>🎨 Tema</h4>
-    <div class="theme-options">
-      <button class="pill" data-theme="light">☀️ Chiaro</button>
-      <button class="pill" data-theme="dark">🌙 Scuro</button>
-      <button class="pill" data-theme="auto">🔄 Automatico</button>
-    </div>
-  </div>
-  <div class="settings-group">
-    <h4>🖌️ Colore accento</h4>
-    <div class="accent-options">
-      <button class="swatch" data-accent="torii" style="background:#c94a5a"></button>
-      <button class="swatch" data-accent="ao" style="background:#3f6ea8"></button>
-      <button class="swatch" data-accent="matcha" style="background:#4f8a5e"></button>
-      <button class="swatch" data-accent="sakura" style="background:#d97ea0"></button>
-    </div>
-  </div>
-  <div class="settings-group">
-    <h4>💴 Cambio Yen / Euro</h4>
-    <div class="rate-box">
-      <span>1 € =</span>
-      <input type="number" id="rateInput" value="${STATE.settings.exchangeRate}" step="0.5">
-      <span>¥</span>
-    </div>
-  </div>
-  <div class="settings-group">
-    <h4>💾 Backup e ripristino</h4>
-    <button class="settings-btn" id="exportJson">💾 Esporta backup (JSON) <span class="arrow">›</span></button>
-    <button class="settings-btn" id="importJson">📥 Importa backup (JSON) <span class="arrow">›</span></button>
-    <button class="settings-btn" id="exportXlsx">📤 Esporta come Excel (.xlsx) <span class="arrow">›</span></button>
-    <button class="settings-btn" id="importXlsx">📊 Importa foglio Excel (.xlsx) <span class="arrow">›</span></button>
-    <button class="settings-btn danger" id="resetData">♻️ Ripristina dati originali <span class="arrow">›</span></button>
-    <input type="file" id="fileJson" accept="application/json">
-    <input type="file" id="fileXlsx" accept=".xlsx">
-  </div>
-  <div class="settings-group">
-    <h4>ℹ️ Info</h4>
-    <div style="font-size:13px;color:var(--text-dim);line-height:1.6">
-      App Viaggio Giappone 2026/27 — dati salvati localmente sul dispositivo, funziona anche offline dopo il primo caricamento.<br>
-      📲 Per aggiungerla alla Home: Safari → icona Condividi → "Aggiungi alla schermata Home".<br>
-      🔄 Dopo un aggiornamento del codice, rimuovi e ri-aggiungi l'icona dalla Home.
-    </div>
-  </div>`;
-
-  wrap.querySelectorAll('[data-theme]').forEach(b=>{
-    if(b.dataset.theme===STATE.settings.theme) b.classList.add("active");
-    b.onclick=()=>{ STATE.settings.theme=b.dataset.theme; saveSettings(); applyTheme(); render(); };
-  });
-  wrap.querySelectorAll('[data-accent]').forEach(b=>{
-    if(b.dataset.accent===STATE.settings.accent) b.classList.add("active");
-    b.onclick=()=>{ STATE.settings.accent=b.dataset.accent; saveSettings(); applyTheme(); render(); };
-  });
-  wrap.querySelector("#rateInput").onchange=(e)=>{
-    const v = parseFloat(e.target.value);
-    if(!isNaN(v) && v>0){ STATE.settings.exchangeRate=v; saveSettings(); toast("💴 Cambio aggiornato"); }
-  };
-
-  wrap.querySelector("#exportJson").onclick=()=>{
-    const payload = { exportedAt:new Date().toISOString(), data:STATE.data, settings:STATE.settings };
-    downloadBlob(JSON.stringify(payload,null,2), "giappone-backup.json", "application/json");
-    toast("💾 Backup JSON esportato");
-  };
-  wrap.querySelector("#importJson").onclick=()=>wrap.querySelector("#fileJson").click();
-  wrap.querySelector("#fileJson").onchange=(e)=>{
-    const file=e.target.files[0]; if(!file) return;
-    const reader=new FileReader();
-    reader.onload=(ev)=>{
-      try{
-        const payload=JSON.parse(ev.target.result);
-        if(payload.data){ STATE.data=payload.data; saveData(); }
-        if(payload.settings){ STATE.settings=payload.settings; if(!STATE.settings.exchangeRate) STATE.settings.exchangeRate=160; saveSettings(); applyTheme(); }
-        toast("✅ Backup importato"); render();
-      }catch(err){ alert("File non valido: "+err.message); }
-    };
-    reader.readAsText(file);
-  };
-
-  wrap.querySelector("#exportXlsx").onclick=()=>{
-    const wb = XLSX.utils.book_new();
-    SHEET_ORDER.forEach(key=>{
-      const sheet = STATE.data[key];
-      const aoa = [sheet.headers, ...sheet.rows.map(r=>sheet.headers.map(h=>r[h]||""))];
-      const ws = XLSX.utils.aoa_to_sheet(aoa);
-      XLSX.utils.book_append_sheet(wb, ws, key.length>31?key.slice(0,31):key);
-    });
-    XLSX.writeFile(wb, "Giappone_Backup.xlsx");
-    toast("📤 Excel esportato");
-  };
-
-  wrap.querySelector("#importXlsx").onclick=()=>wrap.querySelector("#fileXlsx").click();
-  wrap.querySelector("#fileXlsx").onchange=(e)=>{
-    const file=e.target.files[0]; if(!file) return;
-    const reader=new FileReader();
-    reader.onload=(ev)=>{
-      try{
-        const data=new Uint8Array(ev.target.result);
-        const wb=XLSX.read(data,{type:"array",cellDates:false});
-        let imported=0, sheetsOk=[], sheetsMissing=[];
-        SHEET_ORDER.forEach(key=>{
-          const wsName = wb.SheetNames.find(n=>n.trim()===key.trim()) || wb.SheetNames.find(n=>n.replace(/^\d+\.\s*/,'').trim()===key.replace(/^\d+\.\s*/,'').trim());
-          if(!wsName){ sheetsMissing.push(key); return; }
-          const ws = wb.Sheets[wsName];
-          const aoa = XLSX.utils.sheet_to_json(ws,{header:1,defval:"",raw:false});
-          if(aoa.length<1) return;
-          const headers = aoa[0].map(h=>String(h).trim());
-          const rows=[];
-          for(let i=1;i<aoa.length;i++){
-            const line=aoa[i];
-            if(line.every(v=>v===""||v===undefined||v===null)) continue;
-            const rec={};
-            headers.forEach((h,ci)=>{ rec[h]= line[ci]!==undefined && line[ci]!==null ? String(line[ci]) : ""; });
-            rows.push(rec);
-          }
-          STATE.data[key] = { headers, rows };
-          imported += rows.length; sheetsOk.push(key);
+      rows.forEach((row) => {
+        String(row["Città"] || "").split("/").forEach((city) => {
+          const clean = city.trim();
+          if (clean && clean !== "Partenza" && clean !== "-") cities.add(clean);
         });
-        saveData();
-        let msg = `Importati ${imported} elementi da ${sheetsOk.length} fogli.`;
-        if(sheetsMissing.length) msg += `\nFogli non trovati: ${sheetsMissing.join(", ")}`;
-        alert(msg);
-        STATE.view="1. Itinerario"; render();
-      }catch(err){ alert("Errore durante l'importazione: "+err.message); }
-    };
-    reader.readAsArrayBuffer(file);
-  };
+      });
 
-  wrap.querySelector("#resetData").onclick=()=>{
-    if(confirm("Questo sovrascriverà tutti i dati correnti con quelli originali del foglio caricato. Continuare?")){
-      STATE.data = JSON.parse(JSON.stringify(DEFAULT_DATA));
-      saveData(); render(); toast("♻️ Dati ripristinati");
+      const start = rows[0]?.Data || "";
+      const end = rows[rows.length - 1]?.Data || "";
+      document.getElementById("pageSubtitle").textContent = `Giappone ${dayMonth(start)} – ${dayMonth(end)}`;
+
+      const element = document.createElement("div");
+      element.className = "stats-row";
+      element.innerHTML = `
+        <div class="stat-box">
+          <div class="stat-label">Durata</div>
+          <div class="stat-value">${rows.length} giorni</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Tappe</div>
+          <div class="stat-value">${cities.size} città</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Periodo</div>
+          <div class="stat-value">${dayMonth(start)} – ${dayMonth(end)}</div>
+        </div>
+      `;
+      return element;
     }
-  };
-  return wrap;
-}
 
-function downloadBlob(content, filename, mime){
-  const blob = new Blob([content], {type:mime});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a"); a.href=url; a.download=filename;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  setTimeout(()=>URL.revokeObjectURL(url), 3000);
-}
+    function renderPackingProgress() {
+      const rows = state.data["5. Valigia"].rows;
+      const completed = rows.filter((row) => row["Messo in Valigia?"] === "Fatto").length;
+      const percent = rows.length ? Math.round((completed / rows.length) * 100) : 0;
+      const radius = 30;
+      const circumference = 2 * Math.PI * radius;
+      const offset = circumference - (percent / 100) * circumference;
 
-const mainScrollTarget = document.getElementById("main");
-let lastScrollY = 0;
-window.addEventListener("scroll", ()=>{
-  const topbar = document.getElementById("topbar");
-  if(window.scrollY > 30) topbar.classList.add("scrolled");
-  else topbar.classList.remove("scrolled");
-}, {passive:true});
+      const element = document.createElement("div");
+      element.className = "progress-card";
+      element.innerHTML = `
+        <svg class="progress-ring" width="72" height="72" viewBox="0 0 72 72">
+          <circle class="progress-ring-background" cx="36" cy="36" r="${radius}"></circle>
+          <circle
+            class="progress-ring-value"
+            cx="36"
+            cy="36"
+            r="${radius}"
+            stroke-dasharray="${circumference}"
+            stroke-dashoffset="${offset}"
+          ></circle>
+          <text class="progress-ring-label" x="36" y="41" text-anchor="middle" transform="rotate(90 36 36)">${percent}%</text>
+        </svg>
+        <div>
+          <div class="progress-title">🧳 Preparazione valigia</div>
+          <div class="progress-subtitle">${completed} di ${rows.length} oggetti pronti</div>
+        </div>
+      `;
+      return element;
+    }
 
-if(window.matchMedia){
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ()=>{ if(STATE.settings.theme==="auto") applyTheme(); });
-}
+    function renderToolbar(key, meta) {
+      const toolbar = document.createElement("div");
+      toolbar.className = "toolbar";
 
-loadState();
-buildSeigaiha();
-buildTabbar();
-render();
-</script>
+      const search = document.createElement("input");
+      search.type = "search";
+      search.placeholder = `🔎 Cerca in ${meta.label}...`;
+      search.value = state.search;
+      search.oninput = () => {
+        state.search = search.value;
+        const list = toolbar.nextElementSibling;
+        renderList(key, list);
+      };
+      toolbar.appendChild(search);
+
+      if (meta.cityField) {
+        const cities = [...new Set(
+          state.data[key].rows.map((row) => row[meta.cityField]).filter(Boolean)
+        )].sort();
+
+        toolbar.appendChild(createSelect(
+          "🌆 Tutte le città",
+          cities.map((city) => ({ value: city, label: city })),
+          state.city,
+          (value) => {
+            state.city = value;
+            renderList(key, toolbar.nextElementSibling);
+          }
+        ));
+      }
+
+      if (key !== "1. Itinerario" && key !== "11. Budget") {
+        const sortOptions = [
+          { value: "default", label: "↕️ Originale" },
+          { value: "alpha", label: "🔤 A-Z" }
+        ];
+
+        if (state.data[key].headers.includes("Urgenza")) {
+          sortOptions.push({ value: "urgency", label: "⏳ Urgenza" });
+        }
+
+        toolbar.appendChild(createSelect(
+          "↕️ Originale",
+          sortOptions,
+          state.sort,
+          (value) => {
+            state.sort = value;
+            renderList(key, toolbar.nextElementSibling);
+          },
+          true
+        ));
+      }
+
+      return toolbar;
+    }
+
+    function createSelect(firstLabel, options, selectedValue, onChange, customOptions = false) {
+      const wrapper = document.createElement("div");
+      wrapper.className = "dropdown";
+
+      const select = document.createElement("select");
+      const firstOption = document.createElement("option");
+
+      if (customOptions) {
+        options.forEach((option) => {
+          const element = document.createElement("option");
+          element.value = option.value;
+          element.textContent = option.label;
+          element.selected = option.value === selectedValue;
+          select.appendChild(element);
+        });
+      } else {
+        firstOption.value = "";
+        firstOption.textContent = firstLabel;
+        firstOption.selected = !selectedValue;
+        select.appendChild(firstOption);
+
+        options.forEach((option) => {
+          const element = document.createElement("option");
+          element.value = option.value;
+          element.textContent = option.label;
+          element.selected = option.value === selectedValue;
+          select.appendChild(element);
+        });
+      }
+
+      select.onchange = () => onChange(select.value);
+      wrapper.appendChild(select);
+      return wrapper;
+    }
+
+    function renderList(key, container) {
+      if (!container) return;
+
+      const meta = SECTION_META[key];
+      const rows = state.data[key]?.rows || [];
+      const query = state.search.toLowerCase().trim();
+      let items = rows.map((row, index) => ({ row, index }));
+
+      items = items.filter(({ row }) => {
+        const matchesSearch = !query || meta.search.some((field) => {
+          return String(row[field] || "").toLowerCase().includes(query);
+        });
+
+        const matchesCity = !meta.cityField || !state.city || row[meta.cityField] === state.city;
+        return matchesSearch && matchesCity;
+      });
+
+      if (state.sort === "alpha") {
+        items.sort((a, b) => {
+          const aValue = String(a.row[meta.title] || a.row[meta.fallbackTitle] || "");
+          const bValue = String(b.row[meta.title] || b.row[meta.fallbackTitle] || "");
+          return aValue.localeCompare(bValue);
+        });
+      }
+
+      if (state.sort === "urgency") {
+        items.sort((a, b) => {
+          return (URGENZA_ORDER[a.row.Urgenza] ?? 99) - (URGENZA_ORDER[b.row.Urgenza] ?? 99);
+        });
+      }
+
+      container.innerHTML = "";
+
+      if (!items.length) {
+        container.innerHTML = `<div class="empty-state">🔍 Nessun elemento trovato.<br>Tocca + per aggiungerne uno.</div>`;
+        return;
+      }
+
+      items.forEach(({ row, index }) => {
+        const card = key === "1. Itinerario"
+          ? renderItineraryCard(row, index)
+          : renderDataCard(key, meta, row, index);
+        container.appendChild(card);
+      });
+
+      if (key === "1. Itinerario") {
+        setTimeout(() => {
+          document.querySelector(".card.today")?.scrollIntoView({ block: "center", behavior: "smooth" });
+        }, 60);
+      }
+    }
+
+    /* ================================================================
+       4. Card itinerario e card dati
+       ================================================================ */
+
+    function renderItineraryCard(row, index) {
+      const card = document.createElement("article");
+      const today = row.Data === todayString();
+      card.className = `card city-card ${cityClass(row["Città"])}${today ? " today" : ""}`;
+      card.onclick = (event) => {
+        if (!event.target.closest("button") && !event.target.closest("a")) {
+          openEditModal("1. Itinerario", index);
+        }
+      };
+
+      const activities = String(row["Attività Principali"] || "")
+        .split(/,|;/)
+        .map((item) => item.trim())
+        .filter(Boolean)
+        .slice(0, 4);
+
+      const activityIcons = ["☀️", "🏙️", "🌙", "✨"];
+      const activityHtml = activities.map((activity, activityIndex) => `
+        <div class="bullet">
+          <span class="bullet-icon">${activityIcons[activityIndex % activityIcons.length]}</span>
+          <span>${escapeHtml(activity)}</span>
+        </div>
+      `).join("");
+
+      const transferHtml = row["Spostamento"] && row["Spostamento"] !== "-"
+        ? `<div class="bullet muted"><span class="bullet-icon">🚉</span><span>${escapeHtml(row["Spostamento"])}</span></div>`
+        : "";
+
+      const hotel = state.data["2. Hotel e Alloggi"].rows.find((item) => item.Data === row.Data);
+      const hotelName = hotel?.["Nome Hotel / Ryokan"] || (row["Pernottamento"] !== "-" ? row["Pernottamento"] : "");
+      const hotelLink = hotel?.["Link Google Maps"];
+
+      const hotelHtml = hotelName ? `
+        <div class="hotel-pill">
+          <span class="hotel-name">🏨 ${escapeHtml(hotelName)}</span>
+          ${isHttpUrl(hotelLink) ? `<a class="action-button small" href="${hotelLink}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📍 Maps</a>` : ""}
+        </div>
+      ` : "";
+
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="card-top-left">
+            <span class="day-chip${today ? " today-chip" : ""}">${today ? "OGGI" : `G${index + 1}`}</span>
+            <div class="card-title-wrap">
+              <h3 class="card-title">${escapeHtml(row["Città"] || "—")}</h3>
+            </div>
+          </div>
+          <div class="date-chevron">${escapeHtml(shortDate(row.Data))}<span class="chevron">›</span></div>
+        </div>
+        <div class="bullet-list">${activityHtml}${transferHtml}</div>
+        ${hotelHtml}
+        <div class="button-row">
+          <button class="action-button small secondary" type="button" data-calendar>📅 Calendario</button>
+          <button class="action-button small secondary" type="button" data-share>📤 Condividi</button>
+        </div>
+      `;
+
+      card.querySelector("[data-calendar]").onclick = (event) => {
+        event.stopPropagation();
+        addToCalendar(row);
+      };
+
+      card.querySelector("[data-share]").onclick = (event) => {
+        event.stopPropagation();
+        shareText(`Giappone · ${row.Città}`, `${shortDate(row.Data)}: ${row["Attività Principali"] || ""}`);
+      };
+
+      return card;
+    }
+
+    function renderDataCard(key, meta, row, index) {
+      const title = row[meta.title] || row[meta.fallbackTitle] || "(senza titolo)";
+      const subtitle = (meta.sub || []).map((field) => row[field]).filter(Boolean).join(" · ");
+      const card = document.createElement("article");
+      const city = meta.cityField ? row[meta.cityField] : "";
+
+      card.className = `card${city ? ` city-card ${cityClass(city)}` : ""}`;
+      card.onclick = (event) => {
+        if (!event.target.closest("button, a, select")) openEditModal(key, index);
+      };
+
+      const statusHtml = meta.statusField
+        ? renderStatusSelect(row, meta.statusField)
+        : meta.badge && row[meta.badge]
+          ? `<span class="badge">${fieldEmoji(meta.badge)} ${escapeHtml(row[meta.badge])}</span>`
+          : `<span class="chevron">›</span>`;
+
+      const notesHtml = (meta.notes || []).map((field) => row[field] ? `
+        <div class="bullet"><span class="bullet-icon">${fieldEmoji(field)}</span><span>${escapeHtml(row[field])}</span></div>
+      ` : "").join("");
+
+      const extraHtml = (meta.extra || []).map((field) => row[field] ? `
+        <div class="bullet muted"><span class="bullet-icon">${fieldEmoji(field)}</span><span>${escapeHtml(field)}: ${escapeHtml(row[field])}</span></div>
+      ` : "").join("");
+
+      const mapsHtml = (meta.maps || []).map((map) => {
+        if (!isHttpUrl(row[map.field])) return "";
+        return `<a class="action-button" href="${row[map.field]}" target="_blank" rel="noopener">📍 ${map.label === "Maps" ? "Apri in Maps" : map.label}</a>`;
+      }).join("");
+
+      const emergencyHtml = key === "10. Emergenze" && isPhoneNumber(row["Numero / Riferimento"])
+        ? `
+          <a class="action-button" href="tel:${row["Numero / Riferimento"].replace(/\s/g, "")}">📞 Chiama</a>
+          <button class="action-button secondary" type="button" data-copy-phone>📋 Copia</button>
+        `
+        : "";
+
+      const budgetHtml = key === "11. Budget" ? renderBudgetEuro(row) : "";
+
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="card-top-left">
+            <div class="card-title-wrap">
+              <h3 class="card-title">${escapeHtml(title)}</h3>
+              ${subtitle ? `<div class="card-subtitle">${escapeHtml(subtitle)}</div>` : ""}
+            </div>
+          </div>
+          ${statusHtml}
+        </div>
+        ${(notesHtml || extraHtml || budgetHtml) ? `<div class="bullet-list">${notesHtml}${extraHtml}${budgetHtml}</div>` : ""}
+        ${(mapsHtml || emergencyHtml) ? `<div class="button-row">${mapsHtml}${emergencyHtml}</div>` : ""}
+        <div class="button-row">
+          <button class="action-button small secondary" type="button" data-share>📤 Condividi</button>
+        </div>
+      `;
+
+      const select = card.querySelector("select[data-status]");
+      if (select) {
+        select.onclick = (event) => event.stopPropagation();
+        select.onchange = () => {
+          row[meta.statusField] = select.value;
+          saveData();
+          if (key === "5. Valigia") refreshPackingProgress();
+        };
+      }
+
+      const copyButton = card.querySelector("[data-copy-phone]");
+      if (copyButton) {
+        copyButton.onclick = (event) => {
+          event.stopPropagation();
+          navigator.clipboard?.writeText(row["Numero / Riferimento"])
+            .then(() => showToast("📋 Numero copiato"));
+        };
+      }
+
+      card.querySelector("[data-share]").onclick = (event) => {
+        event.stopPropagation();
+        shareText(title, `${title}${subtitle ? ` · ${subtitle}` : ""}`);
+      };
+
+      return card;
+    }
+
+    function renderStatusSelect(row, field) {
+      const current = row[field] || VALIGIA_STATUS[0];
+      const options = VALIGIA_STATUS.includes(current)
+        ? VALIGIA_STATUS
+        : [current, ...VALIGIA_STATUS];
+
+      return `
+        <select class="status-select" data-status aria-label="Stato elemento">
+          ${options.map((option) => `<option value="${escapeHtml(option)}" ${option === current ? "selected" : ""}>${escapeHtml(option)}</option>`).join("")}
+        </select>
+      `;
+    }
+
+    function renderBudgetEuro(row) {
+      const rate = state.settings.exchangeRate || 160;
+      const planned = Number(row["Budget Previsto (Yen)"]);
+      const spent = Number(row["Spesa Effettiva Revolut"]);
+      let html = "";
+
+      if (!Number.isNaN(planned) && planned > 0) {
+        html += `<div class="bullet muted"><span class="bullet-icon">💶</span><span>Previsto: ≈ €${(planned / rate).toFixed(2)}</span></div>`;
+      }
+
+      if (!Number.isNaN(spent) && spent > 0) {
+        html += `<div class="bullet muted"><span class="bullet-icon">💶</span><span>Spesa: ≈ €${(spent / rate).toFixed(2)}</span></div>`;
+      }
+
+      return html;
+    }
+
+    /* ================================================================
+       5. Mappa, calendario e condivisione
+       ================================================================ */
+
+    function renderMap() {
+      const wrapper = document.createElement("div");
+      let found = false;
+
+      SHEET_ORDER.forEach((key) => {
+        const meta = SECTION_META[key];
+        if (!meta.maps) return;
+
+        const links = [];
+        state.data[key].rows.forEach((row) => {
+          meta.maps.forEach((map) => {
+            if (!isHttpUrl(row[map.field])) return;
+            found = true;
+            links.push({
+              title: row[meta.title] || row[meta.fallbackTitle] || "—",
+              subtitle: (meta.sub || []).map((field) => row[field]).filter(Boolean).join(" · "),
+              url: row[map.field],
+              city: meta.cityField ? row[meta.cityField] : ""
+            });
+          });
+        });
+
+        if (!links.length) return;
+
+        const heading = document.createElement("div");
+        heading.className = "group-title";
+        heading.innerHTML = `${SECTION_EMOJI[key]} ${meta.label}`;
+        wrapper.appendChild(heading);
+
+        links.forEach((item) => {
+          const card = document.createElement("article");
+          card.className = `card${item.city ? ` city-card ${cityClass(item.city)}` : ""}`;
+          card.innerHTML = `
+            <h3 class="card-title">${escapeHtml(item.title)}</h3>
+            ${item.subtitle ? `<div class="card-subtitle">${escapeHtml(item.subtitle)}</div>` : ""}
+            <div class="button-row"><a class="action-button" href="${item.url}" target="_blank" rel="noopener">📍 Apri in Maps</a></div>
+          `;
+          wrapper.appendChild(card);
+        });
+      });
+
+      if (!found) {
+        wrapper.innerHTML = `<div class="empty-state">📍 Nessun link Google Maps inserito.</div>`;
+      }
+
+      return wrapper;
+    }
+
+    function buildCalendarFile(row) {
+      const date = parseDate(row.Data);
+      if (!date) return null;
+
+      const start = row.Data.replace(/-/g, "");
+      const next = new Date(date.getTime() + 86400000);
+      const end = [
+        next.getFullYear(),
+        String(next.getMonth() + 1).padStart(2, "0"),
+        String(next.getDate()).padStart(2, "0")
+      ].join("");
+
+      const summary = `${row.Città || "Giappone"}: ${(row["Attività Principali"] || "").slice(0, 70)}`;
+      const description = `${row["Attività Principali"] || ""}${row.Spostamento ? ` | Spostamento: ${row.Spostamento}` : ""}`;
+
+      return [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "BEGIN:VEVENT",
+        `UID:giappone-${start}@local`,
+        `DTSTAMP:${start}T000000Z`,
+        `DTSTART;VALUE=DATE:${start}`,
+        `DTEND;VALUE=DATE:${end}`,
+        `SUMMARY:${summary.replace(/\r?\n/g, " ")}`,
+        `DESCRIPTION:${description.replace(/\r?\n/g, " ")}`,
+        "END:VEVENT",
+        "END:VCALENDAR"
+      ].join("\r\n");
+    }
+
+    function addToCalendar(row) {
+      const calendar = buildCalendarFile(row);
+      if (!calendar) {
+        showToast("Data non valida");
+        return;
+      }
+
+      downloadFile(calendar, `giorno-${row.Data}.ics`, "text/calendar;charset=utf-8");
+      showToast("📅 File calendario creato");
+    }
+
+    function shareText(title, text) {
+      if (navigator.share) {
+        navigator.share({ title, text }).catch(() => {});
+        return;
+      }
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => showToast("📋 Copiato negli appunti"));
+        return;
+      }
+
+      showToast("Condivisione non supportata");
+    }
+
+    /* ================================================================
+       6. Modifica, eliminazione e backup
+       ================================================================ */
+
+    function openEditModal(key, index) {
+      const sheet = state.data[key];
+      const row = index === null ? {} : sheet.rows[index];
+      const meta = SECTION_META[key];
+      const overlay = document.createElement("div");
+      overlay.className = "modal-overlay";
+      overlay.onclick = (event) => {
+        if (event.target === overlay) closeModal();
+      };
+
+      const modal = document.createElement("div");
+      modal.className = "modal";
+
+      const fields = sheet.headers.map((field) => renderField(field, row[field], meta)).join("");
+      modal.innerHTML = `
+        <h2 class="modal-title">${index === null ? "➕ Nuovo" : "✎ Modifica"} · ${SECTION_EMOJI[key]} ${meta.label}</h2>
+        ${fields}
+        <div class="modal-actions">
+          <button class="cancel-button" type="button" data-cancel>Annulla</button>
+          <button class="save-button" type="button" data-save>Salva</button>
+        </div>
+        ${index !== null ? `<div class="modal-actions"><button class="delete-button" type="button" data-delete>🗑️ Elimina</button></div>` : ""}
+      `;
+
+      overlay.appendChild(modal);
+      document.getElementById("modalRoot").appendChild(overlay);
+
+      modal.querySelector("[data-cancel]").onclick = closeModal;
+      modal.querySelector("[data-save]").onclick = () => {
+        const updated = {};
+        modal.querySelectorAll("[data-field]").forEach((field) => {
+          updated[field.dataset.field] = field.value;
+        });
+
+        if (index === null) sheet.rows.push(updated);
+        else sheet.rows[index] = updated;
+
+        saveData();
+        closeModal();
+        render();
+        showToast("✅ Salvato");
+      };
+
+      const deleteButton = modal.querySelector("[data-delete]");
+      if (deleteButton) {
+        deleteButton.onclick = () => {
+          const removed = sheet.rows.splice(index, 1)[0];
+          saveData();
+          closeModal();
+          render();
+          showUndoToast("🗑️ Elemento eliminato", () => {
+            sheet.rows.splice(index, 0, removed);
+            saveData();
+            render();
+            showToast("↩️ Ripristinato");
+          });
+        };
+      }
+    }
+
+    function renderField(field, value, meta) {
+      const current = value || "";
+      const label = `${fieldEmoji(field)} ${field}`;
+      const isLong = /note|dettagli|articolo mirato|attività/i.test(field);
+
+      if (meta.statusField === field) {
+        return `
+          <div class="field">
+            <label class="field-label">${escapeHtml(label)}</label>
+            <select data-field="${escapeHtml(field)}">
+              ${VALIGIA_STATUS.map((option) => `<option value="${escapeHtml(option)}" ${option === current ? "selected" : ""}>${escapeHtml(option)}</option>`).join("")}
+            </select>
+          </div>
+        `;
+      }
+
+      if (field === "Urgenza" || field === "Urgenza Configurazione") {
+        const options = ["Alta", "Media", "Bassa"];
+        return `
+          <div class="field">
+            <label class="field-label">${escapeHtml(label)}</label>
+            <select data-field="${escapeHtml(field)}">
+              ${options.map((option) => `<option value="${option}" ${current.startsWith(option) ? "selected" : ""}>${option}</option>`).join("")}
+            </select>
+          </div>
+        `;
+      }
+
+      const type = /^data$/i.test(field) ? "date" : /link|maps/i.test(field) ? "url" : "text";
+
+      if (isLong) {
+        return `
+          <div class="field">
+            <label class="field-label">${escapeHtml(label)}</label>
+            <textarea data-field="${escapeHtml(field)}">${escapeHtml(current)}</textarea>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="field">
+          <label class="field-label">${escapeHtml(label)}</label>
+          <input type="${type}" data-field="${escapeHtml(field)}" value="${escapeHtml(current)}" ${type === "url" ? "placeholder=\"https://maps.app.goo.gl/...\"" : ""}>
+        </div>
+      `;
+    }
+
+    function closeModal() {
+      document.getElementById("modalRoot").innerHTML = "";
+    }
+
+    function refreshPackingProgress() {
+      const progress = document.querySelector(".progress-card");
+      if (progress) progress.replaceWith(renderPackingProgress());
+    }
+
+    function renderSettings() {
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = `
+        <section class="settings-section">
+          <h2 class="settings-heading">🎨 Tema</h2>
+          <div class="theme-options">
+            <button class="pill-button" data-theme="light" type="button">☀️ Chiaro</button>
+            <button class="pill-button" data-theme="dark" type="button">🌙 Scuro</button>
+            <button class="pill-button" data-theme="auto" type="button">🔄 Automatico</button>
+          </div>
+        </section>
+
+        <section class="settings-section">
+          <h2 class="settings-heading">🖌️ Colore accento</h2>
+          <div class="accent-options">
+            <button class="color-swatch" data-accent="torii" style="background:#c94a5a" type="button" aria-label="Torii"></button>
+            <button class="color-swatch" data-accent="ao" style="background:#3f6ea8" type="button" aria-label="Indaco"></button>
+            <button class="color-swatch" data-accent="matcha" style="background:#4f8a5e" type="button" aria-label="Matcha"></button>
+            <button class="color-swatch" data-accent="sakura" style="background:#d97ea0" type="button" aria-label="Sakura"></button>
+          </div>
+        </section>
+
+        <section class="settings-section">
+          <h2 class="settings-heading">💴 Cambio Yen / Euro</h2>
+          <label class="rate-box">
+            <span>1 € =</span>
+            <input id="exchangeRate" type="number" min="1" step="0.5" value="${state.settings.exchangeRate}">
+            <span>¥</span>
+          </label>
+        </section>
+
+        <section class="settings-section">
+          <h2 class="settings-heading">💾 Backup e ripristino</h2>
+          <button class="settings-button" data-action="export-json" type="button">💾 Esporta backup JSON <span>›</span></button>
+          <button class="settings-button" data-action="import-json" type="button">📥 Importa backup JSON <span>›</span></button>
+          <button class="settings-button" data-action="export-xlsx" type="button">📤 Esporta Excel <span>›</span></button>
+          <button class="settings-button" data-action="import-xlsx" type="button">📊 Importa Excel <span>›</span></button>
+          <button class="settings-button danger" data-action="reset" type="button">♻️ Ripristina dati originali <span>›</span></button>
+          <input id="jsonInput" type="file" accept="application/json">
+          <input id="xlsxInput" type="file" accept=".xlsx">
+        </section>
+
+        <section class="settings-section">
+          <h2 class="settings-heading">ℹ️ Informazioni</h2>
+          <p style="color:var(--text-muted);font-size:13px;line-height:1.6;margin:0">
+            I dati vengono salvati localmente sul dispositivo. Dopo il primo caricamento l'app può funzionare offline.
+            Per aggiornare l'app dalla Home, chiudila completamente e riaprila.
+          </p>
+        </section>
+      `;
+
+      wrapper.querySelectorAll("[data-theme]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.theme === state.settings.theme);
+        button.onclick = () => {
+          state.settings.theme = button.dataset.theme;
+          saveSettings();
+          applyTheme();
+          render();
+        };
+      });
+
+      wrapper.querySelectorAll("[data-accent]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.accent === state.settings.accent);
+        button.onclick = () => {
+          state.settings.accent = button.dataset.accent;
+          saveSettings();
+          applyTheme();
+          render();
+        };
+      });
+
+      wrapper.querySelector("#exchangeRate").onchange = (event) => {
+        const value = Number(event.target.value);
+        if (value > 0) {
+          state.settings.exchangeRate = value;
+          saveSettings();
+          showToast("💴 Cambio aggiornato");
+        }
+      };
+
+      wrapper.querySelector('[data-action="export-json"]').onclick = exportJson;
+      wrapper.querySelector('[data-action="import-json"]').onclick = () => wrapper.querySelector("#jsonInput").click();
+      wrapper.querySelector('[data-action="export-xlsx"]').onclick = exportXlsx;
+      wrapper.querySelector('[data-action="import-xlsx"]').onclick = () => wrapper.querySelector("#xlsxInput").click();
+      wrapper.querySelector('[data-action="reset"]').onclick = resetData;
+
+      wrapper.querySelector("#jsonInput").onchange = importJson;
+      wrapper.querySelector("#xlsxInput").onchange = importXlsx;
+
+      return wrapper;
+    }
+
+    function exportJson() {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        data: state.data,
+        settings: state.settings
+      };
+      downloadFile(JSON.stringify(payload, null, 2), "giappone-backup.json", "application/json");
+      showToast("💾 Backup JSON esportato");
+    }
+
+    function importJson(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const payload = JSON.parse(reader.result);
+          if (payload.data) state.data = payload.data;
+          if (payload.settings) state.settings = payload.settings;
+          saveData();
+          saveSettings();
+          applyTheme();
+          render();
+          showToast("✅ Backup importato");
+        } catch (error) {
+          alert(`Backup non valido: ${error.message}`);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function exportXlsx() {
+      if (!window.XLSX) {
+        alert("Libreria Excel non disponibile. Riprova quando hai una connessione.");
+        return;
+      }
+
+      const workbook = XLSX.utils.book_new();
+
+      SHEET_ORDER.forEach((key) => {
+        const sheet = state.data[key];
+        const rows = [
+          sheet.headers,
+          ...sheet.rows.map((row) => sheet.headers.map((header) => row[header] || ""))
+        ];
+        const worksheet = XLSX.utils.aoa_to_sheet(rows);
+        XLSX.utils.book_append_sheet(workbook, worksheet, key.slice(0, 31));
+      });
+
+      XLSX.writeFile(workbook, "Giappone_Backup.xlsx");
+      showToast("📤 Excel esportato");
+    }
+
+    function importXlsx(event) {
+      const file = event.target.files?.[0];
+      if (!file || !window.XLSX) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const workbook = XLSX.read(new Uint8Array(reader.result), { type: "array", cellDates: false });
+          let importedRows = 0;
+
+          SHEET_ORDER.forEach((key) => {
+            const sheetName = workbook.SheetNames.find((name) => name.trim() === key.trim());
+            if (!sheetName) return;
+
+            const values = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
+              header: 1,
+              defval: "",
+              raw: false
+            });
+
+            if (!values.length) return;
+
+            const headers = values[0].map((header) => String(header).trim());
+            const rows = values.slice(1)
+              .filter((row) => row.some((value) => value !== "" && value !== null && value !== undefined))
+              .map((row) => {
+                const result = {};
+                headers.forEach((header, index) => {
+                  result[header] = String(row[index] ?? "");
+                });
+                return result;
+              });
+
+            state.data[key] = { headers, rows };
+            importedRows += rows.length;
+          });
+
+          saveData();
+          state.view = "1. Itinerario";
+          render();
+          alert(`Importati ${importedRows} elementi.`);
+        } catch (error) {
+          alert(`Errore Excel: ${error.message}`);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function resetData() {
+      if (!confirm("Ripristinare tutti i dati originali?")) return;
+      state.data = clone(DEFAULT_DATA);
+      saveData();
+      render();
+      showToast("♻️ Dati ripristinati");
+    }
+
+    /* ================================================================
+       7. Avvio app e interazioni globali
+       ================================================================ */
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      });
+    }
+
+    window.addEventListener("scroll", () => {
+      document.getElementById("topbar").classList.toggle("scrolled", window.scrollY > 30);
+    }, { passive: true });
+
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+      if (state.settings.theme === "auto") applyTheme();
+    });
+
+    loadState();
+    renderPattern();
+    renderTabs();
+    render();
+  </script>
 </body>
 </html>
