@@ -2,10 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#090a0d">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -15,10 +12,14 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
+    /* ================================================================
+       1. Tema nero
+       ================================================================ */
+
     :root {
       --bg: #090a0d;
       --surface: #12151b;
-      --surface-strong: #171a21;
+      --surface-solid: #12151b;
       --surface-soft: #1d2028;
       --text: #f7f7f5;
       --muted: #9498a3;
@@ -67,6 +68,10 @@
     .state-preparing { --state-color: #8d939e; --state-bg: #282c34; --state-text: #d1d4db; }
     .state-booked { --state-color: #5b96d9; --state-bg: #172c48; --state-text: #abd0ff; }
 
+    /* ================================================================
+       2. Reset e layout
+       ================================================================ */
+
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
@@ -81,7 +86,8 @@
     body {
       margin: 0;
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        sans-serif;
       overscroll-behavior-y: none;
       -webkit-text-size-adjust: 100%;
     }
@@ -111,6 +117,29 @@
       isolation: isolate;
     }
 
+    #main {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      width: 100%;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 12px 16px calc(148px + var(--safe-bottom));
+    }
+
+    .view-fade {
+      animation: viewFade 0.22s ease;
+    }
+
+    @keyframes viewFade {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ================================================================
+       3. Sfondo
+       ================================================================ */
+
     #backgroundLayer {
       position: fixed;
       inset: 0;
@@ -126,6 +155,10 @@
       opacity: 0.025;
       pointer-events: none !important;
     }
+
+    /* ================================================================
+       4. Header
+       ================================================================ */
 
     #topbar {
       position: sticky;
@@ -181,11 +214,11 @@
       transition: opacity 0.22s ease, max-height 0.22s ease;
     }
 
-    #topbar.scrolled .page-title {
+    .topbar.scrolled .page-title {
       font-size: 19px;
     }
 
-    #topbar.scrolled .page-subtitle {
+    .topbar.scrolled .page-subtitle {
       max-height: 0;
       margin-top: 0;
       opacity: 0;
@@ -203,24 +236,9 @@
       text-align: center;
     }
 
-    #main {
-      position: relative;
-      z-index: 2;
-      flex: 1;
-      width: 100%;
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 12px 16px calc(148px + var(--safe-bottom));
-    }
-
-    .view-fade {
-      animation: viewFade 0.22s ease;
-    }
-
-    @keyframes viewFade {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    /* ================================================================
+       5. Dashboard e card
+       ================================================================ */
 
     .dashboard-card,
     .card,
@@ -241,210 +259,38 @@
       box-shadow: var(--shadow);
     }
 
-    .dashboard-kicker {
-      color: var(--accent);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-
-    .dashboard-title {
-      margin: 4px 0 0;
-      font-size: 22px;
-      font-weight: 850;
-    }
-
-    .dashboard-subtitle {
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 13px;
-    }
-
-    .dashboard-metric {
-      padding: 11px;
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      background: var(--surface-soft);
-    }
-
-    .dashboard-metric-label {
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .dashboard-metric-value {
-      margin-top: 3px;
-      font-size: 14px;
-      font-weight: 850;
-    }
-
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin: 12px 0 5px;
-    }
-
-    .stat-box {
-      padding: 12px 6px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      text-align: center;
-      box-shadow: var(--shadow);
-    }
-
-    .stat-label {
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-    }
-
-    .stat-value {
-      margin-top: 4px;
-      font-size: 15px;
-      font-weight: 800;
-      line-height: 1.2;
-    }
-
-    .progress-card {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin: 12px 0 5px;
-      padding: 14px;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-    }
-
-    .progress-ring {
-      flex: 0 0 auto;
-      transform: rotate(-90deg);
-    }
-
-    .progress-ring-background {
-      fill: none;
-      stroke: var(--border);
-      stroke-width: 8;
-    }
-
-    .progress-ring-value {
-      fill: none;
-      stroke: var(--accent);
-      stroke-width: 8;
-      stroke-linecap: round;
-    }
-
-    .progress-ring-label {
-      fill: var(--text);
-      font-size: 13px;
-      font-weight: 800;
-    }
-
+    .dashboard-kicker { color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .dashboard-title { margin: 4px 0 0; font-size: 22px; font-weight: 850; }
+    .dashboard-subtitle { margin-top: 4px; color: var(--muted); font-size: 13px; }
+    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 13px; }
+    .dashboard-metric { padding: 11px; border: 1px solid var(--border); border-radius: 13px; background: var(--surface-soft); }
+    .dashboard-metric-label { color: var(--muted); font-size: 11px; font-weight: 700; }
+    .dashboard-metric-value { margin-top: 3px; font-size: 14px; font-weight: 850; }
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0 5px; }
+    .stat-box { padding: 12px 6px; border: 1px solid var(--border); border-radius: 16px; text-align: center; box-shadow: var(--shadow); }
+    .stat-label { color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+    .stat-value { margin-top: 4px; font-size: 15px; font-weight: 800; line-height: 1.2; }
+    .progress-card { display: flex; align-items: center; gap: 14px; margin: 12px 0 5px; padding: 14px; border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); }
+    .progress-ring { flex: 0 0 auto; transform: rotate(-90deg); }
+    .progress-ring-background { fill: none; stroke: var(--border); stroke-width: 8; }
+    .progress-ring-value { fill: none; stroke: var(--accent); stroke-width: 8; stroke-linecap: round; }
+    .progress-ring-label { fill: var(--text); font-size: 13px; font-weight: 800; }
     .progress-title { font-size: 13px; font-weight: 800; }
     .progress-subtitle { margin-top: 3px; color: var(--muted); font-size: 12px; font-weight: 600; }
 
-    .filter-row {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      margin: 10px 0 8px;
-      padding: 1px 1px 4px;
-      scrollbar-width: none;
-    }
+    .filter-row { display: flex; gap: 6px; overflow-x: auto; margin: 10px 0 8px; padding: 1px 1px 4px; scrollbar-width: none; }
+    .filter-row::-webkit-scrollbar { display: none; }
+    .filter-chip { flex: 0 0 auto; padding: 7px 11px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); color: var(--muted-strong); font-size: 12px; font-weight: 750; }
+    .filter-chip.active { border-color: var(--accent); background: var(--accent); color: #fff; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 6px; margin: 11px 0 9px; }
+    .toolbar input[type="search"] { flex: 1 1 140px; min-width: 0; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; outline: none; color: var(--text); font-size: 13px; }
+    .dropdown select { max-width: 145px; padding: 10px 26px 10px 11px; border: 1px solid var(--border); border-radius: 10px; outline: none; color: var(--text); font-size: 12px; font-weight: 700; }
 
-    .filter-row::-webkit-scrollbar {
-      display: none;
-    }
-
-    .filter-chip {
-      flex: 0 0 auto;
-      padding: 7px 11px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: var(--surface);
-      color: var(--muted-strong);
-      font-size: 12px;
-      font-weight: 750;
-    }
-
-    .filter-chip.active {
-      border-color: var(--accent);
-      background: var(--accent);
-      color: #fff;
-    }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin: 11px 0 9px;
-    }
-
-    .toolbar input[type="search"] {
-      flex: 1 1 140px;
-      min-width: 0;
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      outline: none;
-      color: var(--text);
-      font-size: 13px;
-    }
-
-    .dropdown select {
-      max-width: 145px;
-      padding: 10px 26px 10px 11px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      outline: none;
-      color: var(--text);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .card {
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 9px;
-      padding: 14px 15px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      cursor: pointer;
-    }
-
-    .card.city-card {
-      border-left: 3px solid var(--city, var(--accent));
-    }
-
-    .card-top,
-    .card-top-left {
-      display: flex;
-      align-items: center;
-    }
-
-    .card-top {
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .card-top-left,
-    .card-title-wrap {
-      min-width: 0;
-    }
-
+    .card { position: relative; overflow: hidden; margin-bottom: 9px; padding: 14px 15px; border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); cursor: pointer; }
+    .card.city-card { border-left: 3px solid var(--city, var(--accent)); }
+    .card-top, .card-top-left { display: flex; align-items: center; }
+    .card-top { justify-content: space-between; gap: 8px; }
+    .card-top-left, .card-title-wrap { min-width: 0; }
     .card-top-left { gap: 8px; }
     .card-title { margin: 0; font-size: 16px; font-weight: 800; line-height: 1.25; overflow-wrap: anywhere; }
     .card-subtitle { margin-top: 2px; color: var(--muted); font-size: 12px; font-weight: 600; }
@@ -456,7 +302,7 @@
     .group-title { display: flex; align-items: center; gap: 7px; margin: 17px 4px 8px; font-size: 13px; font-weight: 800; }
 
     /* ================================================================
-       Navigazione fissa
+       6. Navigazione e modali
        ================================================================ */
 
     #tabbar { position: fixed !important; right: 10px !important; bottom: calc(9px + var(--safe-bottom)) !important; left: 10px !important; z-index: 9999 !important; display: flex !important; gap: 4px; overflow-x: auto; padding: 5px; border: 1px solid var(--border); border-radius: 22px; background: var(--nav); box-shadow: 0 7px 20px rgba(0,0,0,.30); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); scrollbar-width: none; pointer-events: auto !important; transform: translateZ(0); }
@@ -465,10 +311,6 @@
     .tab-button-icon { font-size: 17px; line-height: 1; }
     .tab-button.active { background: var(--accent); color: #fff; }
     .floating-button { position: fixed; right: 16px; bottom: calc(94px + var(--safe-bottom)); z-index: 9998; width: 48px; height: 48px; border: 0; border-radius: 15px; background: var(--accent); color: #fff; font-size: 23px; box-shadow: 0 6px 16px var(--accent-dark); }
-
-    /* ================================================================
-       Impostazioni e modali
-       ================================================================ */
 
     .settings-section { margin-bottom: 24px; }
     .settings-heading { margin: 0 0 6px; color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
@@ -524,7 +366,7 @@
 
   <script>
     /* ================================================================
-       Configurazione
+       Versione senza sezione Mappa
        ================================================================ */
 
     const DATA_KEY = "giappone-data";
@@ -541,7 +383,7 @@
     ];
 
     const TABS = [
-      "1. Itinerario", "mappa", "6. Attrazioni", "8. Cibo e Ristoranti",
+      "1. Itinerario", "6. Attrazioni", "8. Cibo e Ristoranti",
       "2. Hotel e Alloggi", "3. Trasporti", "9. Shopping", "4. App",
       "5. Valigia", "7. Guida", "10. Emergenze", "11. Budget", "settings"
     ];
@@ -554,13 +396,16 @@
     };
 
     const FIELD_ICONS = {
-      "Città": "📍", "Categoria": "🏷️", "Note": "📝", "Note e Suggerimenti": "📝",
-      "Note per il Giappone": "🎒", "Note / Categoria": "📝", "Note / Conferma": "📝",
+      "Città": "📍", "Categoria": "🏷️", "Note": "📝",
+      "Note e Suggerimenti": "📝", "Note per il Giappone": "🎒",
+      "Note / Categoria": "📝", "Note / Conferma": "📝",
       "Costo Stimato": "💰", "Durata": "⏱️", "Mezzo / Vettore": "🚆",
-      "Nome Hotel / Ryokan": "🏨", "Quartiere": "🧭", "Articolo Mirato / Note": "🛍️",
-      "Dettagli Operativi": "📋", "Numero / Riferimento": "☎️", "Funzione Principale": "⚙️",
-      "Urgenza Configurazione": "⏳", "Urgenza": "⏳", "Spesa Effettiva Revolut": "💸",
-      "Differenza": "📊", "Budget Previsto (Yen)": "💴", "Pernottamento": "🏨",
+      "Nome Hotel / Ryokan": "🏨", "Quartiere": "🧭",
+      "Articolo Mirato / Note": "🛍️", "Dettagli Operativi": "📋",
+      "Numero / Riferimento": "☎️", "Funzione Principale": "⚙️",
+      "Urgenza Configurazione": "⏳", "Urgenza": "⏳",
+      "Spesa Effettiva Revolut": "💸", "Differenza": "📊",
+      "Budget Previsto (Yen)": "💴", "Pernottamento": "🏨",
       "Spostamento": "🚉", "App": "📱", "Contatto / Servizio": "🚨"
     };
 
@@ -581,16 +426,15 @@
     const state = {
       data: JSON.parse(localStorage.getItem(DATA_KEY) || "{}"),
       settings: JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}"),
-      view: "1. Itinerario", search: "", city: "", sort: "default"
+      view: "1. Itinerario",
+      search: "",
+      city: "",
+      sort: "default"
     };
 
     state.settings.theme = "dark";
     state.settings.accent ||= "torii";
     state.settings.exchangeRate ||= 160;
-
-    /* ================================================================
-       Utility
-       ================================================================ */
 
     function saveData() {
       localStorage.setItem(DATA_KEY, JSON.stringify(state.data));
@@ -679,10 +523,6 @@
       setTimeout(() => URL.revokeObjectURL(url), 3000);
     }
 
-    /* ================================================================
-       Background e navigazione
-       ================================================================ */
-
     function renderBackground() {
       const svg = document.getElementById("backgroundPattern");
       const radius = 46;
@@ -693,16 +533,7 @@
           const offset = row % 2 ? radius * 0.52 : 0;
           const x = column * radius * 1.05 + offset;
           const y = row * radius * 0.55;
-
-          paths += `
-            <path
-              d="M${x - radius} ${y}
-                 a${radius} ${radius} 0 0 1 ${radius * 2} 0"
-              fill="none"
-              stroke="var(--accent)"
-              stroke-width="1.6"
-            />
-          `;
+          paths += `<path d="M${x - radius} ${y}a${radius} ${radius} 0 0 1 ${radius * 2} 0" fill="none" stroke="var(--accent)" stroke-width="1.6"/>`;
         }
       }
 
@@ -718,22 +549,9 @@
         button.className = "tab-button";
         button.type = "button";
         button.dataset.tab = key;
-
-        const icon = key === "mappa"
-          ? "🗺️📍"
-          : key === "settings"
-            ? "⚙️"
-            : ICONS[key];
-
-        const label = key === "mappa"
-          ? "Mappa"
-          : key === "settings"
-            ? "Impostazioni"
-            : META[key].label;
-
         button.innerHTML = `
-          <span class="tab-button-icon">${icon}</span>
-          ${label}
+          <span class="tab-button-icon">${key === "settings" ? "⚙️" : ICONS[key]}</span>
+          ${key === "settings" ? "Impostazioni" : META[key].label}
         `;
 
         button.onclick = () => {
@@ -748,70 +566,6 @@
       });
     }
 
-    function renderBanner() {
-      const banner = document.getElementById("tripBanner");
-      const rows = state.data["1. Itinerario"]?.rows || [];
-
-      if (!rows.length) {
-        banner.hidden = true;
-        return;
-      }
-
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const first = parseDate(rows[0].Data);
-      const last = parseDate(rows[rows.length - 1].Data);
-
-      if (!first || !last) {
-        banner.hidden = true;
-        return;
-      }
-
-      banner.hidden = false;
-
-      if (today < first) {
-        banner.textContent = `🛫 Mancano ${Math.ceil((first - today) / 86400000)} giorni alla partenza`;
-      } else if (today <= last) {
-        const index = Math.max(rows.findIndex((row) => row.Data === todayString()) + 1, 1);
-        banner.textContent = `📍 Sei in viaggio · Giorno ${index} di ${rows.length}`;
-      } else {
-        banner.textContent = "✅ Viaggio concluso · che ricordi! 🎌";
-      }
-    }
-
-    /* ================================================================
-       Rendering contenuti
-       ================================================================ */
-
-    function rowHasContent(key, meta, row) {
-      const title = String(row[meta.title] || row[meta.fallback] || "").trim();
-      if (title) return true;
-
-      if (key === "1. Itinerario") {
-        return Boolean(
-          String(row["Data"] || "").trim() &&
-          String(row["Attività Principali"] || "").trim()
-        );
-      }
-
-      return false;
-    }
-
-    function countMapLinks() {
-      let count = 0;
-
-      SHEETS.forEach((key) => {
-        const meta = META[key];
-        (meta.maps || []).forEach((map) => {
-          count += (state.data[key]?.rows || []).filter((row) => {
-            return rowHasContent(key, meta, row) && isUrl(row[map.field]);
-          }).length;
-        });
-      });
-
-      return count;
-    }
-
     function renderApp() {
       const main = document.getElementById("main");
       const title = document.getElementById("pageTitle");
@@ -823,12 +577,8 @@
       });
 
       main.innerHTML = "";
-      main.classList.remove("view-fade");
-      void main.offsetWidth;
-      main.classList.add("view-fade");
       addButton.hidden = true;
       subtitle.textContent = "";
-      renderBanner();
 
       if (state.view === "settings") {
         title.textContent = "⚙️ Impostazioni";
@@ -836,153 +586,21 @@
         return;
       }
 
-      if (state.view === "mappa") {
-        title.textContent = "🗺️ Mappa del viaggio";
-        subtitle.textContent = "Luoghi validi con link Google Maps";
-        main.appendChild(renderMap());
-        return;
-      }
-
       const meta = META[state.view];
       title.textContent = `${ICONS[state.view]} ${meta.label}`;
-
-      if (state.view === "1. Itinerario") {
-        main.appendChild(renderDashboard());
-        main.appendChild(renderStats());
-      }
-
-      if (state.view === "5. Valigia") {
-        main.appendChild(renderPackingProgress());
-      }
-
-      const filters = renderCityFilters(state.view, meta);
-      if (filters) main.appendChild(filters);
 
       addButton.hidden = false;
       addButton.onclick = () => openEditModal(state.view, null);
 
       const toolbar = renderToolbar(state.view, meta);
       const list = document.createElement("div");
-
-      if (state.view === "1. Itinerario") {
-        list.className = "timeline-list";
-      }
-
       main.append(toolbar, list);
       renderList(state.view, list);
-    }
-
-    function renderDashboard() {
-      const itinerary = state.data["1. Itinerario"]?.rows || [];
-      const packing = state.data["5. Valigia"]?.rows || [];
-      const budget = state.data["11. Budget"]?.rows || [];
-      const planned = budget.reduce((sum, row) => {
-        return sum + (Number(row["Budget Previsto (Yen)"]) || 0);
-      }, 0);
-      const done = packing.filter((row) => {
-        return row["Messo in Valigia?"] === "Fatto";
-      }).length;
-      const first = itinerary[0];
-
-      const element = document.createElement("section");
-      element.className = "dashboard-card";
-      element.innerHTML = `
-        <div class="dashboard-kicker">🎌 Travel planner</div>
-        <h2 class="dashboard-title">Giappone 2026/27</h2>
-        <div class="dashboard-subtitle">Panoramica rapida del viaggio</div>
-        <div class="dashboard-grid">
-          <div class="dashboard-metric"><div class="dashboard-metric-label">📍 Prima tappa</div><div class="dashboard-metric-value">${escapeHtml(first?.Città || "—")}</div></div>
-          <div class="dashboard-metric"><div class="dashboard-metric-label">🧳 Valigia</div><div class="dashboard-metric-value">${done}/${packing.length} pronta</div></div>
-          <div class="dashboard-metric"><div class="dashboard-metric-label">💴 Budget</div><div class="dashboard-metric-value">${planned.toLocaleString("it-IT")} ¥</div></div>
-          <div class="dashboard-metric"><div class="dashboard-metric-label">📍 Maps</div><div class="dashboard-metric-value">${countMapLinks()}</div></div>
-        </div>
-      `;
-
-      return element;
-    }
-
-    function renderStats() {
-      const rows = state.data["1. Itinerario"]?.rows || [];
-      const cities = new Set();
-
-      rows.forEach((row) => {
-        String(row["Città"] || "").split("/").forEach((city) => {
-          const clean = city.trim();
-          if (clean && clean !== "Partenza") cities.add(clean);
-        });
-      });
-
-      const first = rows[0]?.Data || "";
-      const last = rows[rows.length - 1]?.Data || "";
-      document.getElementById("pageSubtitle").textContent = `Giappone ${monthDay(first)} – ${monthDay(last)}`;
-
-      const element = document.createElement("div");
-      element.className = "stats-row";
-      element.innerHTML = `
-        <div class="stat-box"><div class="stat-label">Durata</div><div class="stat-value">${rows.length} giorni</div></div>
-        <div class="stat-box"><div class="stat-label">Tappe</div><div class="stat-value">${cities.size} città</div></div>
-        <div class="stat-box"><div class="stat-label">Periodo</div><div class="stat-value">${monthDay(first)} – ${monthDay(last)}</div></div>
-      `;
-
-      return element;
-    }
-
-    function renderPackingProgress() {
-      const rows = state.data["5. Valigia"]?.rows || [];
-      const done = rows.filter((row) => row["Messo in Valigia?"] === "Fatto").length;
-      const percent = rows.length ? Math.round(done / rows.length * 100) : 0;
-      const radius = 30;
-      const circumference = 2 * Math.PI * radius;
-      const offset = circumference - percent / 100 * circumference;
-      const element = document.createElement("div");
-      element.className = "progress-card";
-      element.innerHTML = `
-        <svg class="progress-ring" width="72" height="72" viewBox="0 0 72 72">
-          <circle class="progress-ring-background" cx="36" cy="36" r="${radius}"></circle>
-          <circle class="progress-ring-value" cx="36" cy="36" r="${radius}" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"></circle>
-          <text class="progress-ring-label" x="36" y="41" text-anchor="middle" transform="rotate(90 36 36)">${percent}%</text>
-        </svg>
-        <div><div class="progress-title">🧳 Preparazione valigia</div><div class="progress-subtitle">${done} di ${rows.length} oggetti pronti</div></div>
-      `;
-
-      return element;
-    }
-
-    function renderCityFilters(key, meta) {
-      if (!meta.city) return null;
-
-      const cities = [
-        "",
-        ...new Set(
-          (state.data[key]?.rows || [])
-            .filter((row) => rowHasContent(key, meta, row))
-            .map((row) => row[meta.city])
-            .filter(Boolean)
-        )
-      ];
-
-      const row = document.createElement("div");
-      row.className = "filter-row";
-
-      cities.forEach((city) => {
-        const button = document.createElement("button");
-        button.className = `filter-chip${state.city === city ? " active" : ""}`;
-        button.type = "button";
-        button.textContent = city || "🌆 Tutte";
-        button.onclick = () => {
-          state.city = city;
-          renderApp();
-        };
-        row.appendChild(button);
-      });
-
-      return row;
     }
 
     function renderToolbar(key, meta) {
       const toolbar = document.createElement("div");
       toolbar.className = "toolbar";
-
       const input = document.createElement("input");
       input.type = "search";
       input.placeholder = `🔎 Cerca in ${meta.label}...`;
@@ -998,17 +616,13 @@
           { value: "default", label: "↕️ Originale" },
           { value: "alpha", label: "🔤 A-Z" }
         ];
-
         if (state.data[key].headers.includes("Urgenza")) {
           options.push({ value: "urgency", label: "⏳ Urgenza" });
         }
-
-        toolbar.appendChild(
-          createSelect(options, state.sort, (value) => {
-            state.sort = value;
-            renderList(key, toolbar.nextElementSibling);
-          })
-        );
+        toolbar.appendChild(createSelect(options, state.sort, (value) => {
+          state.sort = value;
+          renderList(key, toolbar.nextElementSibling);
+        }));
       }
 
       return toolbar;
@@ -1018,7 +632,6 @@
       const wrapper = document.createElement("div");
       wrapper.className = "dropdown";
       const select = document.createElement("select");
-
       options.forEach((option) => {
         const element = document.createElement("option");
         element.value = option.value;
@@ -1026,15 +639,22 @@
         element.selected = option.value === selected;
         select.appendChild(element);
       });
-
       select.onchange = () => onChange(select.value);
       wrapper.appendChild(select);
       return wrapper;
     }
 
+    function rowHasContent(key, meta, row) {
+      const title = String(row[meta.title] || row[meta.fallback] || "").trim();
+      return Boolean(title) || Boolean(
+        key === "1. Itinerario" &&
+        String(row["Data"] || "").trim() &&
+        String(row["Attività Principali"] || "").trim()
+      );
+    }
+
     function renderList(key, container) {
       if (!container) return;
-
       const meta = META[key];
       const query = state.search.toLowerCase().trim();
       let items = (state.data[key]?.rows || [])
@@ -1042,14 +662,9 @@
         .filter(({ row }) => rowHasContent(key, meta, row));
 
       items = items.filter(({ row }) => {
-        const matchesQuery = !query || meta.search.some((field) => {
-          return String(row[field] || "")
-            .toLowerCase()
-            .includes(query);
+        return !query || meta.search.some((field) => {
+          return String(row[field] || "").toLowerCase().includes(query);
         });
-
-        const matchesCity = !meta.city || !state.city || row[meta.city] === state.city;
-        return matchesQuery && matchesCity;
       });
 
       if (state.sort === "alpha") {
@@ -1070,145 +685,13 @@
       container.innerHTML = "";
 
       if (!items.length) {
-        container.innerHTML = `
-          <div class="empty-state">
-            🔍 Nessun elemento trovato.<br>
-            Tocca + per aggiungerne uno.
-          </div>
-        `;
+        container.innerHTML = `<div class="empty-state">🔍 Nessun elemento trovato.<br>Tocca + per aggiungerne uno.</div>`;
         return;
       }
 
       items.forEach(({ row, index }) => {
-        const card = key === "1. Itinerario"
-          ? renderItineraryCard(row, index)
-          : renderDataCard(key, meta, row, index);
-        container.appendChild(card);
+        container.appendChild(renderDataCard(key, meta, row, index));
       });
-    }
-
-    function renderApp() {
-      const main = document.getElementById("main");
-      const title = document.getElementById("pageTitle");
-      const subtitle = document.getElementById("pageSubtitle");
-      const addButton = document.getElementById("addButton");
-
-      document.querySelectorAll(".tab-button").forEach((button) => {
-        button.classList.toggle(button.dataset.tab === state.view);
-      });
-
-      main.innerHTML = "";
-      main.classList.remove("view-fade");
-      void main.offsetWidth;
-      main.classList.add("view-fade");
-      addButton.hidden = true;
-      subtitle.textContent = "";
-      renderBanner();
-
-      if (state.view === "settings") {
-        title.textContent = "⚙️ Impostazioni";
-        main.appendChild(renderSettings());
-        return;
-      }
-
-      if (state.view === "mappa") {
-        title.textContent = "🗺️ Mappa del viaggio";
-        subtitle.textContent = "Luoghi validi con link Google Maps";
-        main.appendChild(renderMap());
-        return;
-      }
-
-      const meta = META[state.view];
-      title.textContent = `${ICONS[state.view]} ${meta.label}`;
-
-      if (state.view === "1. Itinerario") {
-        main.appendChild(renderDashboard());
-        main.appendChild(renderStats());
-      }
-
-      if (state.view === "5. Valigia") {
-        main.appendChild(renderPackingProgress());
-      }
-
-      const filters = renderCityFilters(state.view, meta);
-      if (filters) main.appendChild(filters);
-
-      addButton.hidden = false;
-      addButton.onclick = () => openEditModal(state.view, null);
-
-      const toolbar = renderToolbar(state.view, meta);
-      const list = document.createElement("div");
-
-      if (state.view === "1. Itinerario") {
-        list.className = "timeline-list";
-      }
-
-      main.append(toolbar, list);
-      renderList(state.view, list);
-    }
-
-    /* ================================================================
-       Card
-       ================================================================ */
-
-    function renderItineraryCard(row, index) {
-      const card = document.createElement("article");
-      const today = row.Data === todayString();
-
-      card.className = `card city-card ${cityClass(row["Città"])}${today ? " today" : ""}`;
-      card.onclick = (event) => {
-        if (!event.target.closest("button, a")) openEditModal("1. Itinerario", index);
-      };
-
-      const activities = String(row["Attività Principali"] || "")
-        .split(/,|;/)
-        .map((value) => value.trim())
-        .filter(Boolean)
-        .slice(0, 4);
-
-      const icons = ["☀️", "🏙️", "🌙", "✨"];
-      const activitiesHtml = activities.map((value, itemIndex) => `
-        <div class="bullet">
-          <span class="bullet-icon">${icons[itemIndex % icons.length]}</span>
-          <span>${escapeHtml(value)}</span>
-        </div>
-      `).join("");
-
-      const transferHtml = row["Spostamento"] && row["Spostamento"] !== "-"
-        ? `<div class="bullet muted"><span class="bullet-icon">🚉</span><span>${escapeHtml(row["Spostamento"])}</span></div>`
-        : "";
-
-      const hotel = state.data["2. Hotel e Alloggi"]?.rows
-        .find((item) => item.Data === row.Data);
-      const hotelName = hotel?.["Nome Hotel / Ryokan"] || "";
-
-      card.innerHTML = `
-        <div class="card-top">
-          <div class="card-title-wrap">
-            <h3 class="card-title">${escapeHtml(row["Città"] || "—")}</h3>
-            <div class="card-subtitle">${escapeHtml(shortDate(row.Data))}</div>
-          </div>
-          <span class="badge">${today ? "OGGI" : `G${index + 1}`}</span>
-        </div>
-        <div class="bullet-list">${activitiesHtml}${transferHtml}</div>
-        ${hotelName ? `<div class="card-subtitle">🏨 ${escapeHtml(hotelName)}</div>` : ""}
-        <div class="button-row">
-          <button class="action-button" data-calendar>📅 Calendario</button>
-          <button class="action-button secondary" data-share>📤 Condividi</button>
-        </div>
-      `;
-
-      card.querySelector("[data-calendar]").onclick = (event) => {
-        event.stopPropagation();
-        addCalendar(row);
-      };
-
-      card.querySelector("[data-share]").onclick = (event) => {
-        event.stopPropagation();
-        shareText(`Giappone · ${row.Città}`, `${shortDate(row.Data)}: ${row["Attività Principali"] || ""}`);
-      };
-
-      return card;
     }
 
     function renderDataCard(key, meta, row, index) {
@@ -1227,11 +710,11 @@
           : `<span class="chevron">›</span>`;
 
       const notes = (meta.notes || []).map((field) => row[field]
-        ? `<div class="bullet"><span class="bullet-icon">${iconFor(field)}</span><span>${escapeHtml(row[field])}</span></div>`
+        ? `<div class="bullet"><span>${iconFor(field)}</span><span>${escapeHtml(row[field])}</span></div>`
         : "").join("");
 
       const extra = (meta.extra || []).map((field) => row[field]
-        ? `<div class="bullet muted"><span class="bullet-icon">${iconFor(field)}</span><span>${escapeHtml(field)}: ${escapeHtml(row[field])}</span></div>`
+        ? `<div class="bullet muted"><span>${iconFor(field)}</span><span>${escapeHtml(field)}: ${escapeHtml(row[field])}</span></div>`
         : "").join("");
 
       const maps = (meta.maps || []).map((map) => {
@@ -1251,7 +734,7 @@
           </div>
           ${right}
         </div>
-        ${notes || extra ? `<div class="bullet-list">${notes}${extra}${key === "11. Budget" ? renderEuro(row) : ""}</div>` : ""}
+        ${notes || extra ? `<div class="bullet-list">${notes}${extra}</div>` : ""}
         ${maps || emergency ? `<div class="button-row">${maps}${emergency}</div>` : ""}
         <div class="button-row"><button class="action-button secondary" data-share>📤 Condividi</button></div>
       `;
@@ -1287,25 +770,113 @@
       return `<select class="status-select ${className}" data-status>${STATUSES.map((option) => `<option value="${option}" ${option === current ? "selected" : ""}>${option}</option>`).join("")}</select>`;
     }
 
-    function renderEuro(row) {
-      const value = Number(row["Budget Previsto (Yen)"]);
-      if (Number.isNaN(value)) return "";
-      return `<div class="bullet muted"><span class="bullet-icon">💶</span><span>Previsto: ≈ €${(value / (state.settings.exchangeRate || 160)).toFixed(2)}</span></div>`;
+    /* ================================================================
+       Modali e impostazioni
+       ================================================================ */
+
+    function openEditModal(key, index) {
+      const sheet = state.data[key];
+      const row = index === null ? {} : sheet.rows[index];
+      const meta = META[key];
+      const overlay = document.createElement("div");
+      overlay.className = "modal-overlay";
+      overlay.onclick = (event) => {
+        if (event.target === overlay) closeModal();
+      };
+
+      const modal = document.createElement("div");
+      modal.className = "modal";
+      modal.innerHTML = `
+        <h2 class="modal-title">
+          ${index === null ? "➕ Nuovo" : "✎ Modifica"}
+          · ${ICONS[key]} ${meta.label}
+        </h2>
+        ${sheet.headers.map((field) => renderField(field, row[field], meta)).join("")}
+        <div class="modal-actions">
+          <button class="cancel-button" data-cancel>Annulla</button>
+          <button class="save-button" data-save>Salva</button>
+        </div>
+        ${index === null ? "" : `<div class="modal-actions"><button class="delete-button" data-delete>🗑️ Elimina</button></div>`}
+      `;
+
+      overlay.appendChild(modal);
+      document.getElementById("modalRoot").appendChild(overlay);
+      modal.querySelector("[data-cancel]").onclick = closeModal;
+
+      modal.querySelector("[data-save]").onclick = () => {
+        const updated = {};
+        modal.querySelectorAll("[data-field]").forEach((field) => {
+          updated[field.dataset.field] = field.value;
+        });
+
+        if (index === null) sheet.rows.push(updated);
+        else sheet.rows[index] = updated;
+
+        saveData();
+        closeModal();
+        renderApp();
+        showToast("✅ Salvato");
+      };
+
+      const remove = modal.querySelector("[data-delete]");
+      if (remove) {
+        remove.onclick = () => {
+          sheet.rows.splice(index, 1);
+          saveData();
+          closeModal();
+          renderApp();
+          showToast("🗑️ Eliminato");
+        };
+      }
     }
 
-    /* ================================================================
-       Impostazioni e backup
-       ================================================================ */
+    function renderField(field, value, meta) {
+      const current = value || "";
+      const label = `${iconFor(field)} ${field}`;
+
+      if (meta.status === field) {
+        return `
+          <div class="field">
+            <label class="field-label">${escapeHtml(label)}</label>
+            <select data-field="${escapeHtml(field)}">
+              ${STATUSES.map((option) => `<option value="${option}" ${option === current ? "selected" : ""}>${option}</option>`).join("")}
+            </select>
+          </div>
+        `;
+      }
+
+      const type = /^data$/i.test(field)
+        ? "date"
+        : /link|maps/i.test(field)
+          ? "url"
+          : "text";
+
+      const isLong = /note|dettagli|articolo mirato|attività/i.test(field);
+
+      if (isLong) {
+        return `
+          <div class="field">
+            <label class="field-label">${escapeHtml(label)}</label>
+            <textarea data-field="${escapeHtml(field)}">${escapeHtml(current)}</textarea>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="field">
+          <label class="field-label">${escapeHtml(label)}</label>
+          <input type="${type}" data-field="${escapeHtml(field)}" value="${escapeHtml(current)}">
+        </div>
+      `;
+    }
+
+    function closeModal() {
+      document.getElementById("modalRoot").innerHTML = "";
+    }
 
     function renderSettings() {
       const wrapper = document.createElement("div");
       wrapper.innerHTML = `
-        <section class="settings-section">
-          <h2 class="settings-heading">🎨 Tema</h2>
-          <div class="theme-options">
-            <button class="pill-button" data-theme="dark">🌙 Scuro</button>
-          </div>
-        </section>
         <section class="settings-section">
           <h2 class="settings-heading">🖌️ Colore accento</h2>
           <div class="accent-options">
@@ -1317,38 +888,21 @@
         </section>
         <section class="settings-section">
           <h2 class="settings-heading">💴 Cambio Yen / Euro</h2>
-          <label class="rate-box">
-            <span>1 € =</span>
-            <input id="exchangeRate" type="number" value="${state.settings.exchangeRate}" step="0.5">
-            <span>¥</span>
-          </label>
+          <label class="rate-box"><span>1 € =</span><input id="exchangeRate" type="number" value="${state.settings.exchangeRate}" step="0.5"><span>¥</span></label>
         </section>
         <section class="settings-section">
           <h2 class="settings-heading">💾 Backup</h2>
-          <button class="settings-button" data-action="export-json">💾 Esporta JSON <span>›</span></button>
-          <button class="settings-button" data-action="import-json">📥 Importa JSON <span>›</span></button>
-          <button class="settings-button" data-action="export-xlsx">📤 Esporta Excel <span>›</span></button>
-          <button class="settings-button" data-action="import-xlsx">📊 Importa Excel <span>›</span></button>
+          <button class="settings-button" id="exportJson">💾 Esporta JSON</button>
+          <button class="settings-button" id="importJson">📥 Importa JSON</button>
+          <button class="settings-button" id="exportXlsx">📤 Esporta Excel</button>
+          <button class="settings-button" id="importXlsx">📊 Importa Excel</button>
           <input id="jsonInput" type="file" accept="application/json">
           <input id="xlsxInput" type="file" accept=".xlsx">
         </section>
       `;
 
-      wrapper.querySelectorAll("[data-theme]").forEach((button) => {
-        button.classList.add("active");
-        button.onclick = () => {
-          state.settings.theme = "dark";
-          saveSettings();
-          applyTheme();
-          renderApp();
-        };
-      });
-
       wrapper.querySelectorAll("[data-accent]").forEach((button) => {
-        button.classList.toggle(
-          "active",
-          button.dataset.accent === state.settings.accent
-        );
+        button.classList.toggle(button.dataset.accent === state.settings.accent);
         button.onclick = () => {
           state.settings.accent = button.dataset.accent;
           saveSettings();
@@ -1362,169 +916,134 @@
         if (value > 0) {
           state.settings.exchangeRate = value;
           saveSettings();
-          showToast("💴 Cambio aggiornato");
+          showToast("Cambio aggiornato");
         }
       };
 
-      wrapper.querySelector('[data-action="export-json"]').onclick = () => {
+      wrapper.querySelector("#exportJson").onclick = () => {
         downloadFile(
           JSON.stringify({ data: state.data, settings: state.settings }, null, 2),
           "giappone-backup.json",
           "application/json"
         );
-        showToast("💾 Backup esportato");
+        showToast("Backup esportato");
       };
 
-      wrapper.querySelector('[data-action="import-json"]').onclick = () => {
+      wrapper.querySelector("#importJson").onclick = () => {
         wrapper.querySelector("#jsonInput").click();
       };
 
-      wrapper.querySelector("#jsonInput").onchange = importJson;
-      wrapper.querySelector('[data-action="export-xlsx"]').onclick = exportXlsx;
-      wrapper.querySelector('[data-action="import-xlsx"]').onclick = () => {
+      wrapper.querySelector("#jsonInput").onchange = (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const payload = JSON.parse(reader.result);
+            if (payload.data) state.data = payload.data;
+            if (payload.settings) state.settings = payload.settings;
+            state.settings.theme = "dark";
+            saveData();
+            saveSettings();
+            applyTheme();
+            renderApp();
+            showToast("Backup importato");
+          } catch (error) {
+            alert(`Backup non valido: ${error.message}`);
+          }
+        };
+        reader.readAsText(file);
+      };
+
+      wrapper.querySelector("#exportXlsx").onclick = () => {
+        if (!window.XLSX) {
+          alert("Libreria Excel non disponibile.");
+          return;
+        }
+
+        const workbook = XLSX.utils.book_new();
+        SHEETS.forEach((key) => {
+          const sheet = state.data[key];
+          if (!sheet) return;
+          const values = [
+            sheet.headers,
+            ...sheet.rows.map((row) => {
+              return sheet.headers.map((header) => row[header] || "");
+            })
+          ];
+          XLSX.utils.book_append_sheet(
+            workbook,
+            XLSX.utils.aoa_to_sheet(values),
+            key.slice(0, 31)
+          );
+        });
+        XLSX.writeFile(workbook, "Giappone_Backup.xlsx");
+        showToast("Excel esportato");
+      };
+
+      wrapper.querySelector("#importXlsx").onclick = () => {
         wrapper.querySelector("#xlsxInput").click();
       };
-      wrapper.querySelector("#xlsxInput").onchange = importXlsx;
+
+      wrapper.querySelector("#xlsxInput").onchange = (event) => {
+        const file = event.target.files?.[0];
+        if (!file || !window.XLSX) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const workbook = XLSX.read(new Uint8Array(reader.result), { type: "array", cellDates: false });
+            const imported = {};
+            const missing = [];
+            let total = 0;
+
+            SHEETS.forEach((key) => {
+              const name = workbook.SheetNames.find((item) => item.trim() === key.trim()) || workbook.SheetNames.find((item) => item.replace(/^\d+\.\s*/, "").trim() === key.replace(/^\d+\.\s*/, "").trim());
+              if (!name) {
+                missing.push(key);
+                return;
+              }
+
+              const values = XLSX.utils.sheet_to_json(workbook.Sheets[name], { header: 1, defval: "", raw: false });
+              if (!values.length) {
+                missing.push(key);
+                return;
+              }
+
+              const headers = values[0].map((header) => String(header).trim());
+              const rows = values.slice(1)
+                .filter((row) => row.some((value) => value !== "" && value !== null && value !== undefined))
+                .map((row) => {
+                  const result = {};
+                  headers.forEach((header, index) => {
+                    result[header] = String(row[index] ?? "");
+                  });
+                  return result;
+                });
+
+              imported[key] = { headers, rows };
+              total += rows.length;
+            });
+
+            if (missing.length) {
+              alert("Importazione annullata. Fogli mancanti o vuoti:\n\n" + missing.join("\n"));
+              return;
+            }
+
+            state.data = imported;
+            state.settings.theme = "dark";
+            saveData();
+            saveSettings();
+            state.view = "1. Itinerario";
+            renderApp();
+            showToast(`Importati ${total} elementi`);
+          } catch (error) {
+            alert(`Errore Excel: ${error.message}`);
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      };
 
       return wrapper;
-    }
-
-    function importJson(event) {
-      const file = event.target.files?.[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const payload = JSON.parse(reader.result);
-          if (payload.data) state.data = payload.data;
-          if (payload.settings) state.settings = payload.settings;
-          state.settings.theme = "dark";
-          saveData();
-          saveSettings();
-          applyTheme();
-          renderApp();
-          showToast("✅ Backup importato");
-        } catch (error) {
-          alert(`Backup non valido: ${error.message}`);
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function exportXlsx() {
-      if (!window.XLSX) {
-        alert("Libreria Excel non disponibile.");
-        return;
-      }
-
-      const workbook = XLSX.utils.book_new();
-
-      SHEETS.forEach((key) => {
-        const sheet = state.data[key];
-        if (!sheet) return;
-
-        const values = [
-          sheet.headers,
-          ...sheet.rows.map((row) => {
-            return sheet.headers.map((header) => row[header] || "");
-          })
-        ];
-
-        XLSX.utils.book_append_sheet(
-          workbook,
-          XLSX.utils.aoa_to_sheet(values),
-          key.slice(0, 31)
-        );
-      });
-
-      XLSX.writeFile(workbook, "Giappone_Backup.xlsx");
-      showToast("📤 Excel esportato");
-    }
-
-    function importXlsx(event) {
-      const file = event.target.files?.[0];
-      if (!file || !window.XLSX) return;
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const workbook = XLSX.read(
-            new Uint8Array(reader.result),
-            { type: "array", cellDates: false }
-          );
-
-          const imported = {};
-          const missing = [];
-          let total = 0;
-
-          SHEETS.forEach((key) => {
-            const name = workbook.SheetNames.find((item) => {
-              return item.trim() === key.trim();
-            }) || workbook.SheetNames.find((item) => {
-              return item.replace(/^\d+\.\s*/, "").trim() ===
-                key.replace(/^\d+\.\s*/, "").trim();
-            });
-
-            if (!name) {
-              missing.push(key);
-              return;
-            }
-
-            const values = XLSX.utils.sheet_to_json(
-              workbook.Sheets[name],
-              { header: 1, defval: "", raw: false }
-            );
-
-            if (!values.length) {
-              missing.push(key);
-              return;
-            }
-
-            const headers = values[0].map((header) => {
-              return String(header).trim();
-            });
-
-            const rows = values.slice(1)
-              .filter((row) => {
-                return row.some((value) => {
-                  return value !== "" && value !== null && value !== undefined;
-                });
-              })
-              .map((row) => {
-                const result = {};
-                headers.forEach((header, index) => {
-                  result[header] = String(row[index] ?? "");
-                });
-                return result;
-              });
-
-            imported[key] = { headers, rows };
-            total += rows.length;
-          });
-
-          if (missing.length) {
-            alert(
-              "Importazione annullata per sicurezza. " +
-              "Fogli mancanti o vuoti:\n\n" +
-              missing.join("\n")
-            );
-            return;
-          }
-
-          state.data = imported;
-          state.settings.theme = "dark";
-          saveData();
-          saveSettings();
-          state.view = "1. Itinerario";
-          renderApp();
-          showToast(`✅ Importati ${total} elementi`);
-        } catch (error) {
-          alert(`Errore Excel: ${error.message}`);
-        }
-      };
-
-      reader.readAsArrayBuffer(file);
     }
 
     /* ================================================================
