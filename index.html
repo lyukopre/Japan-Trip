@@ -13,10 +13,7 @@
 
   <title>Giappone 2026/27</title>
   <link rel="manifest" href="manifest.json">
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
-  ></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
     /* ================================================================
@@ -76,32 +73,13 @@
     .city-kawaguchiko { --city: #62a4db; }
     .city-default { --city: var(--accent); }
 
-    .state-ready {
-      --state-color: #36c477;
-      --state-bg: #143824;
-      --state-text: #9af0bc;
-    }
-
-    .state-buy {
-      --state-color: #e99a45;
-      --state-bg: #3a2614;
-      --state-text: #ffd08e;
-    }
-
-    .state-preparing {
-      --state-color: #8d939e;
-      --state-bg: #282c34;
-      --state-text: #d1d4db;
-    }
-
-    .state-booked {
-      --state-color: #5b96d9;
-      --state-bg: #172c48;
-      --state-text: #abd0ff;
-    }
+    .state-ready { --state-color: #36c477; --state-bg: #143824; --state-text: #9af0bc; }
+    .state-buy { --state-color: #e99a45; --state-bg: #3a2614; --state-text: #ffd08e; }
+    .state-preparing { --state-color: #8d939e; --state-bg: #282c34; --state-text: #d1d4db; }
+    .state-booked { --state-color: #5b96d9; --state-bg: #172c48; --state-text: #abd0ff; }
 
     /* ================================================================
-       2. Reset e struttura
+       2. Reset
        ================================================================ */
 
     * {
@@ -159,15 +137,6 @@
       padding: 12px 16px calc(148px + var(--safe-bottom));
     }
 
-    .view-fade {
-      animation: viewFade 0.22s ease;
-    }
-
-    @keyframes viewFade {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
     /* ================================================================
        3. Sfondo
        ================================================================ */
@@ -184,7 +153,7 @@
     #backgroundPattern {
       width: 100%;
       height: 100%;
-      opacity: 0.055;
+      opacity: 0.035;
       pointer-events: none !important;
     }
 
@@ -234,7 +203,6 @@
       font-size: 27px;
       font-weight: 800;
       letter-spacing: -0.03em;
-      transition: font-size 0.22s ease;
     }
 
     .page-subtitle {
@@ -270,7 +238,7 @@
     }
 
     /* ================================================================
-       5. Componenti principali
+       5. Componenti comuni
        ================================================================ */
 
     .dashboard-card,
@@ -505,7 +473,7 @@
     .group-title { display: flex; align-items: center; gap: 7px; margin: 17px 4px 8px; font-size: 13px; font-weight: 800; }
 
     /* ================================================================
-       6. Navigazione fissa
+       Navigazione fissa
        ================================================================ */
 
     #tabbar {
@@ -530,46 +498,13 @@
     }
 
     #tabbar::-webkit-scrollbar { display: none; }
-
-    .tab-button {
-      display: flex;
-      flex: 0 0 auto;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      min-width: 65px;
-      min-height: 44px;
-      padding: 4px 7px;
-      border: 0;
-      border-radius: 16px;
-      background: transparent;
-      color: var(--muted);
-      font-size: 9px;
-      font-weight: 750;
-      pointer-events: auto !important;
-    }
-
+    .tab-button { display: flex; flex: 0 0 auto; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-width: 65px; min-height: 44px; padding: 4px 7px; border: 0; border-radius: 16px; background: transparent; color: var(--muted); font-size: 9px; font-weight: 750; pointer-events: auto !important; }
     .tab-button-icon { font-size: 17px; line-height: 1; }
     .tab-button.active { background: var(--accent); color: #fff; }
-
-    .floating-button {
-      position: fixed;
-      right: 16px;
-      bottom: calc(94px + var(--safe-bottom));
-      z-index: 9998;
-      width: 48px;
-      height: 48px;
-      border: 0;
-      border-radius: 15px;
-      background: var(--accent);
-      color: #fff;
-      font-size: 23px;
-      box-shadow: 0 6px 16px var(--accent-dark);
-    }
+    .floating-button { position: fixed; right: 16px; bottom: calc(94px + var(--safe-bottom)); z-index: 9998; width: 48px; height: 48px; border: 0; border-radius: 15px; background: var(--accent); color: #fff; font-size: 23px; box-shadow: 0 6px 16px var(--accent-dark); }
 
     /* ================================================================
-       7. Impostazioni e modale
+       Impostazioni e modali
        ================================================================ */
 
     .settings-section { margin-bottom: 24px; }
@@ -594,7 +529,7 @@
     .save-button { background: var(--accent); color: #fff; }
     .cancel-button { border: 1px solid var(--border) !important; background: var(--surface-soft); color: var(--text); }
     .delete-button { background: #c94a5a; color: #fff; }
-    .toast { position: fixed; bottom: calc(100px + var(--safe-bottom)); left: 50%; z-index: 100001; max-width: 90vw; padding: 10px 15px; border-radius: 17px; background: var(--text); color: var(--bg); font-size: 12px; font-weight: 700; text-align: center; opacity: 0; transform: translateX(-50%); transition: opacity .25s ease; }
+    .toast { position: fixed; bottom: calc(100px + var(--safe-bottom)); left: 50%; z-index: 100001; max-width: 90vw; padding: 10px 15px; border-radius: 17px; background: var(--text); color: var(--bg); font-size: 12.5px; font-weight: 700; text-align: center; opacity: 0; transform: translateX(-50%); transition: opacity .25s ease; }
     .toast.visible { opacity: 1; }
   </style>
 </head>
@@ -692,7 +627,7 @@
       sort: "default"
     };
 
-    state.settings.theme ||= "dark";
+    state.settings.theme = "dark";
     state.settings.accent ||= "torii";
     state.settings.exchangeRate ||= 160;
 
@@ -733,9 +668,8 @@
     }
 
     function parseDate(value) {
-      const match = String(value || "").match(
-        /^(\d{4})-(\d{2})-(\d{2})/
-      );
+      const match = String(value || "")
+        .match(/^(\d{4})-(\d{2})-(\d{2})/);
       return match
         ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]))
         : null;
@@ -797,7 +731,7 @@
     }
 
     /* ================================================================
-       Background e tabbar
+       Background e navigazione
        ================================================================ */
 
     function renderBackground() {
@@ -902,7 +836,7 @@
     }
 
     /* ================================================================
-       Dashboard, filtri e liste
+       Funzioni contenuti e righe vuote
        ================================================================ */
 
     function rowHasContent(key, meta, row) {
@@ -920,6 +854,69 @@
       }
 
       return false;
+    }
+
+    function renderApp() {
+      const main = document.getElementById("main");
+      const title = document.getElementById("pageTitle");
+      const subtitle = document.getElementById("pageSubtitle");
+      const addButton = document.getElementById("addButton");
+
+      document.querySelectorAll(".tab-button").forEach((button) => {
+        button.classList.toggle(
+          "active",
+          button.dataset.tab === state.view
+        );
+      });
+
+      main.innerHTML = "";
+      main.classList.remove("view-fade");
+      void main.offsetWidth;
+      main.classList.add("view-fade");
+      addButton.hidden = true;
+      subtitle.textContent = "";
+      renderBanner();
+
+      if (state.view === "settings") {
+        title.textContent = "⚙️ Impostazioni";
+        main.appendChild(renderSettings());
+        return;
+      }
+
+      if (state.view === "mappa") {
+        title.textContent = "🗺️ Mappa del viaggio";
+        subtitle.textContent = "Luoghi validi con link Google Maps";
+        main.appendChild(renderMap());
+        return;
+      }
+
+      const meta = META[state.view];
+      title.textContent = `${ICONS[state.view]} ${meta.label}`;
+
+      if (state.view === "1. Itinerario") {
+        main.appendChild(renderDashboard());
+        main.appendChild(renderStats());
+      }
+
+      if (state.view === "5. Valigia") {
+        main.appendChild(renderPackingProgress());
+      }
+
+      const filters = renderCityFilters(state.view, meta);
+      if (filters) main.appendChild(filters);
+
+      addButton.hidden = false;
+      addButton.onclick = () => openEditModal(state.view, null);
+
+      const toolbar = renderToolbar(state.view, meta);
+      const list = document.createElement("div");
+
+      if (state.view === "1. Itinerario") {
+        list.className = "timeline-list";
+      }
+
+      main.append(toolbar, list);
+      renderList(state.view, list);
     }
 
     function countMapLinks() {
@@ -958,27 +955,19 @@
         <div class="dashboard-grid">
           <div class="dashboard-metric">
             <div class="dashboard-metric-label">📍 Prima tappa</div>
-            <div class="dashboard-metric-value">
-              ${escapeHtml(first?.Città || "—")}
-            </div>
+            <div class="dashboard-metric-value">${escapeHtml(first?.Città || "—")}</div>
           </div>
           <div class="dashboard-metric">
             <div class="dashboard-metric-label">🧳 Valigia</div>
-            <div class="dashboard-metric-value">
-              ${done}/${packing.length} pronta
-            </div>
+            <div class="dashboard-metric-value">${done}/${packing.length} pronta</div>
           </div>
           <div class="dashboard-metric">
             <div class="dashboard-metric-label">💴 Budget</div>
-            <div class="dashboard-metric-value">
-              ${planned.toLocaleString("it-IT")} ¥
-            </div>
+            <div class="dashboard-metric-value">${planned.toLocaleString("it-IT")} ¥</div>
           </div>
           <div class="dashboard-metric">
             <div class="dashboard-metric-label">📍 Luoghi Maps</div>
-            <div class="dashboard-metric-value">
-              ${countMapLinks()}
-            </div>
+            <div class="dashboard-metric-value">${countMapLinks()}</div>
           </div>
         </div>
       `;
@@ -1005,20 +994,9 @@
       const element = document.createElement("div");
       element.className = "stats-row";
       element.innerHTML = `
-        <div class="stat-box">
-          <div class="stat-label">Durata</div>
-          <div class="stat-value">${rows.length} giorni</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Tappe</div>
-          <div class="stat-value">${cities.size} città</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Periodo</div>
-          <div class="stat-value">
-            ${monthDay(first)} – ${monthDay(last)}
-          </div>
-        </div>
+        <div class="stat-box"><div class="stat-label">Durata</div><div class="stat-value">${rows.length} giorni</div></div>
+        <div class="stat-box"><div class="stat-label">Tappe</div><div class="stat-value">${cities.size} città</div></div>
+        <div class="stat-box"><div class="stat-label">Periodo</div><div class="stat-value">${monthDay(first)} – ${monthDay(last)}</div></div>
       `;
 
       return element;
@@ -1026,12 +1004,8 @@
 
     function renderPackingProgress() {
       const rows = state.data["5. Valigia"]?.rows || [];
-      const done = rows.filter((row) => {
-        return row["Messo in Valigia?"] === "Fatto";
-      }).length;
-      const percent = rows.length
-        ? Math.round(done / rows.length * 100)
-        : 0;
+      const done = rows.filter((row) => row["Messo in Valigia?"] === "Fatto").length;
+      const percent = rows.length ? Math.round(done / rows.length * 100) : 0;
       const radius = 30;
       const circumference = 2 * Math.PI * radius;
       const offset = circumference - percent / 100 * circumference;
@@ -1044,10 +1018,7 @@
           <circle class="progress-ring-value" cx="36" cy="36" r="${radius}" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"></circle>
           <text class="progress-ring-label" x="36" y="41" text-anchor="middle" transform="rotate(90 36 36)">${percent}%</text>
         </svg>
-        <div>
-          <div class="progress-title">🧳 Preparazione valigia</div>
-          <div class="progress-subtitle">${done} di ${rows.length} oggetti pronti</div>
-        </div>
+        <div><div class="progress-title">🧳 Preparazione valigia</div><div class="progress-subtitle">${done} di ${rows.length} oggetti pronti</div></div>
       `;
 
       return element;
@@ -1153,20 +1124,14 @@
             .includes(query);
         });
 
-        const matchesCity = !meta.city || !state.city ||
-          row[meta.city] === state.city;
-
+        const matchesCity = !meta.city || !state.city || row[meta.city] === state.city;
         return matchesQuery && matchesCity;
       });
 
       if (state.sort === "alpha") {
         items.sort((a, b) => {
-          const aValue = String(
-            a.row[meta.title] || a.row[meta.fallback] || ""
-          );
-          const bValue = String(
-            b.row[meta.title] || b.row[meta.fallback] || ""
-          );
+          const aValue = String(a.row[meta.title] || a.row[meta.fallback] || "");
+          const bValue = String(b.row[meta.title] || b.row[meta.fallback] || "");
           return aValue.localeCompare(bValue);
         });
       }
@@ -1205,10 +1170,7 @@
       const addButton = document.getElementById("addButton");
 
       document.querySelectorAll(".tab-button").forEach((button) => {
-        button.classList.toggle(
-          "active",
-          button.dataset.tab === state.view
-        );
+        button.classList.toggle(button.dataset.tab === state.view);
       });
 
       main.innerHTML = "";
@@ -1269,14 +1231,9 @@
       const card = document.createElement("article");
       const today = row.Data === todayString();
 
-      card.className = `card city-card ${cityClass(row["Città"])}${
-        today ? " today" : ""
-      }`;
-
+      card.className = `card city-card ${cityClass(row["Città"])}${today ? " today" : ""}`;
       card.onclick = (event) => {
-        if (!event.target.closest("button, a")) {
-          openEditModal("1. Itinerario", index);
-        }
+        if (!event.target.closest("button, a")) openEditModal("1. Itinerario", index);
       };
 
       const activities = String(row["Attività Principali"] || "")
@@ -1288,48 +1245,28 @@
       const icons = ["☀️", "🏙️", "🌙", "✨"];
       const activitiesHtml = activities.map((value, itemIndex) => `
         <div class="bullet">
-          <span class="bullet-icon">
-            ${icons[itemIndex % icons.length]}
-          </span>
+          <span class="bullet-icon">${icons[itemIndex % icons.length]}</span>
           <span>${escapeHtml(value)}</span>
         </div>
       `).join("");
 
       const transferHtml = row["Spostamento"] && row["Spostamento"] !== "-"
-        ? `
-          <div class="bullet muted">
-            <span class="bullet-icon">🚉</span>
-            <span>${escapeHtml(row["Spostamento"])}</span>
-          </div>
-        `
+        ? `<div class="bullet muted"><span class="bullet-icon">🚉</span><span>${escapeHtml(row["Spostamento"])}</span></div>`
         : "";
 
       const hotel = state.data["2. Hotel e Alloggi"]?.rows
         .find((item) => item.Data === row.Data);
-
-      const hotelName = hotel?.["Nome Hotel / Ryokan"] ||
-        (row["Pernottamento"] !== "-" ? row["Pernottamento"] : "");
+      const hotelName = hotel?.["Nome Hotel / Ryokan"] || "";
 
       card.innerHTML = `
         <div class="card-top">
-          <div class="card-top-left">
-            <div class="card-title-wrap">
-              <h3 class="card-title">
-                ${escapeHtml(row["Città"] || "—")}
-              </h3>
-              <div class="card-subtitle">
-                ${escapeHtml(shortDate(row.Data))}
-              </div>
-            </div>
+          <div class="card-title-wrap">
+            <h3 class="card-title">${escapeHtml(row["Città"] || "—")}</h3>
+            <div class="card-subtitle">${escapeHtml(shortDate(row.Data))}</div>
           </div>
-          <span class="badge">
-            ${today ? "OGGI" : `G${index + 1}`}
-          </span>
+          <span class="badge">${today ? "OGGI" : `G${index + 1}`}</span>
         </div>
-        <div class="bullet-list">
-          ${activitiesHtml}
-          ${transferHtml}
-        </div>
+        <div class="bullet-list">${activitiesHtml}${transferHtml}</div>
         ${hotelName ? `<div class="card-subtitle">🏨 ${escapeHtml(hotelName)}</div>` : ""}
         <div class="button-row">
           <button class="action-button" data-calendar>📅 Calendario</button>
@@ -1344,10 +1281,7 @@
 
       card.querySelector("[data-share]").onclick = (event) => {
         event.stopPropagation();
-        shareText(
-          `Giappone · ${row.Città}`,
-          `${shortDate(row.Data)}: ${row["Attività Principali"] || ""}`
-        );
+        shareText(`Giappone · ${row.Città}`, `${shortDate(row.Data)}: ${row["Attività Principali"] || ""}`);
       };
 
       return card;
@@ -1355,30 +1289,17 @@
 
     function renderDataCard(key, meta, row, index) {
       const title = row[meta.title] || row[meta.fallback] || "(senza titolo)";
-      const subtitle = (meta.sub || [])
-        .map((field) => row[field])
-        .filter(Boolean)
-        .join(" · ");
-
+      const subtitle = (meta.sub || []).map((field) => row[field]).filter(Boolean).join(" · ");
       const card = document.createElement("article");
-      card.className = `card${
-        meta.city && row[meta.city]
-          ? ` city-card ${cityClass(row[meta.city])}`
-          : ""
-      }`;
-
+      card.className = `card${meta.city && row[meta.city] ? ` city-card ${cityClass(row[meta.city])}` : ""}`;
       card.onclick = (event) => {
-        if (!event.target.closest("button, a, select")) {
-          openEditModal(key, index);
-        }
+        if (!event.target.closest("button, a, select")) openEditModal(key, index);
       };
 
       const right = meta.status
         ? renderStatus(row, meta.status)
         : meta.badge && row[meta.badge]
-          ? `<span class="badge">
-               ${iconFor(meta.badge)} ${escapeHtml(row[meta.badge])}
-             </span>`
+          ? `<span class="badge">${iconFor(meta.badge)} ${escapeHtml(row[meta.badge])}</span>`
           : `<span class="chevron">›</span>`;
 
       const notes = (meta.notes || []).map((field) => row[field]
@@ -1445,7 +1366,6 @@
     function renderEuro(row) {
       const value = Number(row["Budget Previsto (Yen)"]);
       if (Number.isNaN(value)) return "";
-
       return `<div class="bullet muted"><span class="bullet-icon">💶</span><span>Previsto: ≈ €${(value / (state.settings.exchangeRate || 160)).toFixed(2)}</span></div>`;
     }
 
@@ -1479,10 +1399,7 @@
 
             items.push({
               title,
-              subtitle: (meta.sub || [])
-                .map((field) => row[field])
-                .filter(Boolean)
-                .join(" · "),
+              subtitle: (meta.sub || []).map((field) => row[field]).filter(Boolean).join(" · "),
               city: row[meta.city] || row["Città"] || "",
               neighborhood: row["Quartiere"] || row["Città"] || "Senza zona",
               category,
@@ -1530,13 +1447,9 @@
         const query = filterState.query.toLowerCase().trim();
 
         return items.filter((item) => {
-          const searchable = [
-            item.title,
-            item.subtitle,
-            item.city,
-            item.neighborhood,
-            item.category
-          ].join(" ").toLowerCase();
+          const searchable = [item.title, item.subtitle, item.city, item.neighborhood, item.category]
+            .join(" ")
+            .toLowerCase();
 
           return (!filterState.city || item.city === filterState.city) &&
             (!filterState.category || item.category === filterState.category) &&
@@ -1550,18 +1463,9 @@
         const shopping = list.filter((item) => item.category === "Shopping").length;
 
         wrapper.querySelector("#mapCounters").innerHTML = `
-          <div class="map-counter">
-            <div class="map-counter-value">${list.length}</div>
-            <div class="map-counter-label">Luoghi</div>
-          </div>
-          <div class="map-counter">
-            <div class="map-counter-value">${attractions}</div>
-            <div class="map-counter-label">Attrazioni</div>
-          </div>
-          <div class="map-counter">
-            <div class="map-counter-value">${food + shopping}</div>
-            <div class="map-counter-label">Cibo/Shopping</div>
-          </div>
+          <div class="map-counter"><div class="map-counter-value">${list.length}</div><div class="map-counter-label">Luoghi</div></div>
+          <div class="map-counter"><div class="map-counter-value">${attractions}</div><div class="map-counter-label">Attrazioni</div></div>
+          <div class="map-counter"><div class="map-counter-value">${food + shopping}</div><div class="map-counter-label">Cibo/Shopping</div></div>
         `;
       }
 
@@ -1705,6 +1609,369 @@
       renderFilters();
       renderResults();
       return wrapper;
+    }
+
+    /* ================================================================
+       Modali e impostazioni
+       ================================================================ */
+
+    function openEditModal(key, index) {
+      const sheet = state.data[key];
+      const row = index === null ? {} : sheet.rows[index];
+      const meta = META[key];
+      const overlay = document.createElement("div");
+      overlay.className = "modal-overlay";
+      overlay.onclick = (event) => {
+        if (event.target === overlay) closeModal();
+      };
+
+      const modal = document.createElement("div");
+      modal.className = "modal";
+      modal.innerHTML = `
+        <h2 class="modal-title">
+          ${index === null ? "➕ Nuovo" : "✎ Modifica"}
+          · ${ICONS[key]} ${meta.label}
+        </h2>
+        ${sheet.headers.map((field) => renderField(field, row[field], meta)).join("")}
+        <div class="modal-actions">
+          <button class="cancel-button" data-cancel>Annulla</button>
+          <button class="save-button" data-save>Salva</button>
+        </div>
+        ${index === null ? "" : `<div class="modal-actions"><button class="delete-button" data-delete>🗑️ Elimina</button></div>`}
+      `;
+
+      overlay.appendChild(modal);
+      document.getElementById("modalRoot").appendChild(overlay);
+      modal.querySelector("[data-cancel]").onclick = closeModal;
+
+      modal.querySelector("[data-save]").onclick = () => {
+        const updated = {};
+        modal.querySelectorAll("[data-field]").forEach((field) => {
+          updated[field.dataset.field] = field.value;
+        });
+
+        if (index === null) sheet.rows.push(updated);
+        else sheet.rows[index] = updated;
+
+        saveData();
+        closeModal();
+        renderApp();
+        showToast("✅ Salvato");
+      };
+
+      const remove = modal.querySelector("[data-delete]");
+      if (remove) {
+        remove.onclick = () => {
+          sheet.rows.splice(index, 1);
+          saveData();
+          closeModal();
+          renderApp();
+          showToast("🗑️ Eliminato");
+        };
+      }
+    }
+
+    function renderField(field, value, meta) {
+      const current = value || "";
+      const label = `${iconFor(field)} ${field}`;
+
+      if (meta.status === field) {
+        return `
+          <div class="field">
+            <label class="field-label">${escapeHtml(label)}</label>
+            <select data-field="${escapeHtml(field)}">
+              ${STATUSES.map((option) => `
+                <option
+                  value="${option}"
+                  ${option === current ? "selected" : ""}
+                >${option}</option>
+              `).join("")}
+            </select>
+          </div>
+        `;
+      }
+
+      if (field === "Urgenza" || field === "Urgenza Configurazione") {
+        return `
+          <div class="field">
+            <label class="field-label">${escapeHtml(label)}</label>
+            <select data-field="${escapeHtml(field)}">
+              <option>Alta</option>
+              <option>Media</option>
+              <option>Bassa</option>
+            </select>
+          </div>
+        `;
+      }
+
+      const type = /^data$/i.test(field)
+        ? "date"
+        : /link|maps/i.test(field)
+          ? "url"
+          : "text";
+
+      const isLong = /note|dettagli|articolo mirato|attività/i.test(field);
+
+      if (isLong) {
+        return `
+          <div class="field">
+            <label class="field-label">${escapeHtml(label)}</label>
+            <textarea data-field="${escapeHtml(field)}">${escapeHtml(current)}</textarea>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="field">
+          <label class="field-label">${escapeHtml(label)}</label>
+          <input
+            type="${type}"
+            data-field="${escapeHtml(field)}"
+            value="${escapeHtml(current)}"
+            ${type === "url"
+              ? "placeholder=\"https://maps.app.goo.gl/...\""
+              : ""}
+          >
+        </div>
+      `;
+    }
+
+    function closeModal() {
+      document.getElementById("modalRoot").innerHTML = "";
+    }
+
+    function renderSettings() {
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = `
+        <section class="settings-section">
+          <h2 class="settings-heading">🎨 Tema</h2>
+          <div class="theme-options">
+            <button class="pill-button" data-theme="light">☀️ Chiaro</button>
+            <button class="pill-button" data-theme="dark">🌙 Scuro</button>
+            <button class="pill-button" data-theme="auto">🔄 Automatico</button>
+          </div>
+        </section>
+        <section class="settings-section">
+          <h2 class="settings-heading">🖌️ Colore accento</h2>
+          <div class="accent-options">
+            <button class="color-swatch" data-accent="torii" style="background:#d14e62"></button>
+            <button class="color-swatch" data-accent="ao" style="background:#4f83c2"></button>
+            <button class="color-swatch" data-accent="matcha" style="background:#5aa66b"></button>
+            <button class="color-swatch" data-accent="sakura" style="background:#de86a5"></button>
+          </div>
+        </section>
+        <section class="settings-section">
+          <h2 class="settings-heading">💴 Cambio Yen / Euro</h2>
+          <label class="rate-box">
+            <span>1 € =</span>
+            <input id="exchangeRate" type="number" value="${state.settings.exchangeRate}" step="0.5">
+            <span>¥</span>
+          </label>
+        </section>
+        <section class="settings-section">
+          <h2 class="settings-heading">💾 Backup</h2>
+          <button class="settings-button" data-action="export-json">💾 Esporta JSON <span>›</span></button>
+          <button class="settings-button" data-action="import-json">📥 Importa JSON <span>›</span></button>
+          <button class="settings-button" data-action="export-xlsx">📤 Esporta Excel <span>›</span></button>
+          <button class="settings-button" data-action="import-xlsx">📊 Importa Excel <span>›</span></button>
+          <input id="jsonInput" type="file" accept="application/json">
+          <input id="xlsxInput" type="file" accept=".xlsx">
+        </section>
+      `;
+
+      wrapper.querySelectorAll("[data-theme]").forEach((button) => {
+        button.classList.toggle(
+          "active",
+          button.dataset.theme === "dark"
+        );
+        button.onclick = () => {
+          state.settings.theme = "dark";
+          saveSettings();
+          applyTheme();
+          renderApp();
+        };
+      });
+
+      wrapper.querySelectorAll("[data-accent]").forEach((button) => {
+        button.classList.toggle(
+          "active",
+          button.dataset.accent === state.settings.accent
+        );
+        button.onclick = () => {
+          state.settings.accent = button.dataset.accent;
+          saveSettings();
+          applyTheme();
+          renderApp();
+        };
+      });
+
+      wrapper.querySelector("#exchangeRate").onchange = (event) => {
+        const value = Number(event.target.value);
+        if (value > 0) {
+          state.settings.exchangeRate = value;
+          saveSettings();
+          showToast("💴 Cambio aggiornato");
+        }
+      };
+
+      wrapper.querySelector('[data-action="export-json"]').onclick = () => {
+        downloadFile(
+          JSON.stringify({ data: state.data, settings: state.settings }, null, 2),
+          "giappone-backup.json",
+          "application/json"
+        );
+        showToast("💾 Backup esportato");
+      };
+
+      wrapper.querySelector('[data-action="import-json"]').onclick = () => {
+        wrapper.querySelector("#jsonInput").click();
+      };
+
+      wrapper.querySelector("#jsonInput").onchange = importJson;
+      wrapper.querySelector('[data-action="export-xlsx"]').onclick = exportXlsx;
+      wrapper.querySelector('[data-action="import-xlsx"]').onclick = () => {
+        wrapper.querySelector("#xlsxInput").click();
+      };
+      wrapper.querySelector("#xlsxInput").onchange = importXlsx;
+
+      return wrapper;
+    }
+
+    function importJson(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const payload = JSON.parse(reader.result);
+          if (payload.data) state.data = payload.data;
+          if (payload.settings) state.settings = payload.settings;
+          saveData();
+          saveSettings();
+          applyTheme();
+          renderApp();
+          showToast("✅ Backup importato");
+        } catch (error) {
+          alert(`Backup non valido: ${error.message}`);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function exportXlsx() {
+      if (!window.XLSX) {
+        alert("Libreria Excel non disponibile.");
+        return;
+      }
+
+      const workbook = XLSX.utils.book_new();
+
+      SHEETS.forEach((key) => {
+        const sheet = state.data[key];
+        if (!sheet) return;
+
+        const values = [
+          sheet.headers,
+          ...sheet.rows.map((row) => {
+            return sheet.headers.map((header) => row[header] || "");
+          })
+        ];
+
+        XLSX.utils.book_append_sheet(
+          workbook,
+          XLSX.utils.aoa_to_sheet(values),
+          key.slice(0, 31)
+        );
+      });
+
+      XLSX.writeFile(workbook, "Giappone_Backup.xlsx");
+      showToast("📤 Excel esportato");
+    }
+
+    function importXlsx(event) {
+      const file = event.target.files?.[0];
+      if (!file || !window.XLSX) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const workbook = XLSX.read(
+            new Uint8Array(reader.result),
+            { type: "array", cellDates: false }
+          );
+
+          const imported = {};
+          const missing = [];
+          let total = 0;
+
+          SHEETS.forEach((key) => {
+            const name = workbook.SheetNames.find((item) => {
+              return item.trim() === key.trim();
+            }) || workbook.SheetNames.find((item) => {
+              return item.replace(/^\d+\.\s*/, "").trim() ===
+                key.replace(/^\d+\.\s*/, "").trim();
+            });
+
+            if (!name) {
+              missing.push(key);
+              return;
+            }
+
+            const values = XLSX.utils.sheet_to_json(
+              workbook.Sheets[name],
+              { header: 1, defval: "", raw: false }
+            );
+
+            if (!values.length) {
+              missing.push(key);
+              return;
+            }
+
+            const headers = values[0].map((header) => {
+              return String(header).trim();
+            });
+
+            const rows = values.slice(1)
+              .filter((row) => {
+                return row.some((value) => {
+                  return value !== "" &&
+                    value !== null &&
+                    value !== undefined;
+                });
+              })
+              .map((row) => {
+                const result = {};
+                headers.forEach((header, index) => {
+                  result[header] = String(row[index] ?? "");
+                });
+                return result;
+              });
+
+            imported[key] = { headers, rows };
+            total += rows.length;
+          });
+
+          if (missing.length) {
+            alert(
+              "Importazione annullata per sicurezza. " +
+              "Fogli mancanti o vuoti:\n\n" +
+              missing.join("\n")
+            );
+            return;
+          }
+
+          state.data = imported;
+          saveData();
+          state.view = "1. Itinerario";
+          renderApp();
+          showToast(`✅ Importati ${total} elementi`);
+        } catch (error) {
+          alert(`Errore Excel: ${error.message}`);
+        }
+      };
+
+      reader.readAsArrayBuffer(file);
     }
 
     /* ================================================================
