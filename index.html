@@ -2,7 +2,10 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
   <meta name="theme-color" content="#090a0d">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -12,10 +15,6 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
-    /* ================================================================
-       1. Tema nero
-       ================================================================ */
-
     :root {
       --bg: #090a0d;
       --surface: #12151b;
@@ -36,23 +35,9 @@
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
-    html[data-accent="ao"] {
-      --accent: #4f83c2;
-      --accent-dark: #37689e;
-      --accent-soft: #172b45;
-    }
-
-    html[data-accent="matcha"] {
-      --accent: #5aa66b;
-      --accent-dark: #428351;
-      --accent-soft: #17301e;
-    }
-
-    html[data-accent="sakura"] {
-      --accent: #de86a5;
-      --accent-dark: #b65f7e;
-      --accent-soft: #351d28;
-    }
+    html[data-accent="ao"] { --accent: #4f83c2; --accent-dark: #37689e; --accent-soft: #172b45; }
+    html[data-accent="matcha"] { --accent: #5aa66b; --accent-dark: #428351; --accent-soft: #17301e; }
+    html[data-accent="sakura"] { --accent: #de86a5; --accent-dark: #b65f7e; --accent-soft: #351d28; }
 
     .city-osaka { --city: #e28a3d; }
     .city-kyoto { --city: #55a466; }
@@ -68,45 +53,20 @@
     .state-preparing { --state-color: #8d939e; --state-bg: #282c34; --state-text: #d1d4db; }
     .state-booked { --state-color: #5b96d9; --state-bg: #172c48; --state-text: #abd0ff; }
 
-    /* ================================================================
-       2. Reset e layout
-       ================================================================ */
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html,
-    body {
-      min-height: 100%;
-      background: var(--bg);
-    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { min-height: 100%; background: var(--bg); }
 
     body {
       margin: 0;
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       overscroll-behavior-y: none;
       -webkit-text-size-adjust: 100%;
     }
 
-    button,
-    input,
-    select,
-    textarea {
-      font: inherit;
-    }
-
-    button,
-    select {
-      cursor: pointer;
-    }
-
-    a {
-      color: var(--accent);
-    }
+    button, input, select, textarea { font: inherit; }
+    button, select { cursor: pointer; }
+    a { color: var(--accent); }
 
     #app {
       position: relative;
@@ -116,29 +76,6 @@
       min-height: 100dvh;
       isolation: isolate;
     }
-
-    #main {
-      position: relative;
-      z-index: 2;
-      flex: 1;
-      width: 100%;
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 12px 16px calc(148px + var(--safe-bottom));
-    }
-
-    .view-fade {
-      animation: viewFade 0.22s ease;
-    }
-
-    @keyframes viewFade {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ================================================================
-       3. Sfondo
-       ================================================================ */
 
     #backgroundLayer {
       position: fixed;
@@ -156,10 +93,6 @@
       pointer-events: none !important;
     }
 
-    /* ================================================================
-       4. Header
-       ================================================================ */
-
     #topbar {
       position: sticky;
       top: 0;
@@ -170,95 +103,22 @@
       transition: padding 0.22s ease, border-color 0.22s ease;
     }
 
-    #topbar.scrolled {
-      padding-bottom: 6px;
-      border-bottom-color: var(--border);
-    }
+    #topbar.scrolled { padding-bottom: 6px; border-bottom-color: var(--border); }
+    .topbar-row { display: flex; align-items: center; gap: 10px; }
+    .logo { display: grid; place-items: center; width: 30px; height: 30px; flex: 0 0 auto; border-radius: 9px; background: var(--accent); }
+    .logo svg { width: 62%; height: 62%; }
+    .page-title { flex: 1; margin: 0; font-size: 27px; font-weight: 800; letter-spacing: -0.03em; }
+    .page-subtitle { max-height: 24px; margin-top: 3px; padding-left: 40px; overflow: hidden; color: var(--muted); font-size: 13.5px; transition: opacity 0.22s ease, max-height 0.22s ease; }
+    #topbar.scrolled .page-title { font-size: 19px; }
+    #topbar.scrolled .page-subtitle { max-height: 0; margin-top: 0; opacity: 0; }
+    .trip-banner { margin-top: 10px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); color: var(--accent); font-size: 13px; font-weight: 800; text-align: center; }
 
-    .topbar-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    #main { position: relative; z-index: 2; flex: 1; width: 100%; max-width: 640px; margin: 0 auto; padding: 12px 16px calc(148px + var(--safe-bottom)); }
+    .view-fade { animation: viewFade 0.22s ease; }
+    @keyframes viewFade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-    .logo {
-      display: grid;
-      place-items: center;
-      width: 30px;
-      height: 30px;
-      flex: 0 0 auto;
-      border-radius: 9px;
-      background: var(--accent);
-    }
-
-    .logo svg {
-      width: 62%;
-      height: 62%;
-    }
-
-    .page-title {
-      flex: 1;
-      margin: 0;
-      font-size: 27px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-    }
-
-    .page-subtitle {
-      max-height: 24px;
-      margin-top: 3px;
-      padding-left: 40px;
-      overflow: hidden;
-      color: var(--muted);
-      font-size: 13.5px;
-      transition: opacity 0.22s ease, max-height 0.22s ease;
-    }
-
-    .topbar.scrolled .page-title {
-      font-size: 19px;
-    }
-
-    .topbar.scrolled .page-subtitle {
-      max-height: 0;
-      margin-top: 0;
-      opacity: 0;
-    }
-
-    .trip-banner {
-      margin-top: 10px;
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--surface);
-      color: var(--accent);
-      font-size: 13px;
-      font-weight: 800;
-      text-align: center;
-    }
-
-    /* ================================================================
-       5. Dashboard e card
-       ================================================================ */
-
-    .dashboard-card,
-    .card,
-    .stat-box,
-    .progress-card,
-    .toolbar input,
-    .dropdown select,
-    .settings-button,
-    .rate-box {
-      background: var(--surface);
-    }
-
-    .dashboard-card {
-      margin-bottom: 12px;
-      padding: 17px;
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-    }
-
+    .dashboard-card, .card, .stat-box, .progress-card, .toolbar input, .dropdown select, .settings-button, .rate-box { background: var(--surface); }
+    .dashboard-card { margin-bottom: 12px; padding: 17px; border: 1px solid var(--border); border-radius: 22px; box-shadow: var(--shadow); }
     .dashboard-kicker { color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
     .dashboard-title { margin: 4px 0 0; font-size: 22px; font-weight: 850; }
     .dashboard-subtitle { margin-top: 4px; color: var(--muted); font-size: 13px; }
@@ -300,10 +160,6 @@
     .action-button.secondary { background: var(--accent-soft); color: var(--accent); }
     .empty-state { padding: 45px 20px; color: var(--muted); font-size: 13px; line-height: 1.6; text-align: center; }
     .group-title { display: flex; align-items: center; gap: 7px; margin: 17px 4px 8px; font-size: 13px; font-weight: 800; }
-
-    /* ================================================================
-       6. Navigazione e modali
-       ================================================================ */
 
     #tabbar { position: fixed !important; right: 10px !important; bottom: calc(9px + var(--safe-bottom)) !important; left: 10px !important; z-index: 9999 !important; display: flex !important; gap: 4px; overflow-x: auto; padding: 5px; border: 1px solid var(--border); border-radius: 22px; background: var(--nav); box-shadow: 0 7px 20px rgba(0,0,0,.30); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); scrollbar-width: none; pointer-events: auto !important; transform: translateZ(0); }
     #tabbar::-webkit-scrollbar { display: none; }
@@ -366,7 +222,7 @@
 
   <script>
     /* ================================================================
-       Versione senza sezione Mappa
+       Versione finale senza Mappa
        ================================================================ */
 
     const DATA_KEY = "giappone-data";
@@ -435,6 +291,10 @@
     state.settings.theme = "dark";
     state.settings.accent ||= "torii";
     state.settings.exchangeRate ||= 160;
+
+    /* ================================================================
+       Utility
+       ================================================================ */
 
     function saveData() {
       localStorage.setItem(DATA_KEY, JSON.stringify(state.data));
@@ -523,6 +383,10 @@
       setTimeout(() => URL.revokeObjectURL(url), 3000);
     }
 
+    /* ================================================================
+       Navigazione e rendering principale
+       ================================================================ */
+
     function renderBackground() {
       const svg = document.getElementById("backgroundPattern");
       const radius = 46;
@@ -550,10 +414,11 @@
         button.type = "button";
         button.dataset.tab = key;
         button.innerHTML = `
-          <span class="tab-button-icon">${key === "settings" ? "⚙️" : ICONS[key]}</span>
+          <span class="tab-button-icon">
+            ${key === "settings" ? "⚙️" : ICONS[key]}
+          </span>
           ${key === "settings" ? "Impostazioni" : META[key].label}
         `;
-
         button.onclick = () => {
           state.view = key;
           state.search = "";
@@ -561,7 +426,6 @@
           state.sort = "default";
           renderApp();
         };
-
         tabbar.appendChild(button);
       });
     }
@@ -573,7 +437,10 @@
       const addButton = document.getElementById("addButton");
 
       document.querySelectorAll(".tab-button").forEach((button) => {
-        button.classList.toggle(button.dataset.tab === state.view);
+        button.classList.toggle(
+          "active",
+          button.dataset.tab === state.view
+        );
       });
 
       main.innerHTML = "";
@@ -598,9 +465,21 @@
       renderList(state.view, list);
     }
 
+    function rowHasContent(key, meta, row) {
+      const title = String(row[meta.title] || row[meta.fallback] || "").trim();
+      if (title) return true;
+
+      return Boolean(
+        key === "1. Itinerario" &&
+        String(row["Data"] || "").trim() &&
+        String(row["Attività Principali"] || "").trim()
+      );
+    }
+
     function renderToolbar(key, meta) {
       const toolbar = document.createElement("div");
       toolbar.className = "toolbar";
+
       const input = document.createElement("input");
       input.type = "search";
       input.placeholder = `🔎 Cerca in ${meta.label}...`;
@@ -616,9 +495,11 @@
           { value: "default", label: "↕️ Originale" },
           { value: "alpha", label: "🔤 A-Z" }
         ];
+
         if (state.data[key].headers.includes("Urgenza")) {
           options.push({ value: "urgency", label: "⏳ Urgenza" });
         }
+
         toolbar.appendChild(createSelect(options, state.sort, (value) => {
           state.sort = value;
           renderList(key, toolbar.nextElementSibling);
@@ -632,6 +513,7 @@
       const wrapper = document.createElement("div");
       wrapper.className = "dropdown";
       const select = document.createElement("select");
+
       options.forEach((option) => {
         const element = document.createElement("option");
         element.value = option.value;
@@ -639,22 +521,15 @@
         element.selected = option.value === selected;
         select.appendChild(element);
       });
+
       select.onchange = () => onChange(select.value);
       wrapper.appendChild(select);
       return wrapper;
     }
 
-    function rowHasContent(key, meta, row) {
-      const title = String(row[meta.title] || row[meta.fallback] || "").trim();
-      return Boolean(title) || Boolean(
-        key === "1. Itinerario" &&
-        String(row["Data"] || "").trim() &&
-        String(row["Attività Principali"] || "").trim()
-      );
-    }
-
     function renderList(key, container) {
       if (!container) return;
+
       const meta = META[key];
       const query = state.search.toLowerCase().trim();
       let items = (state.data[key]?.rows || [])
@@ -663,7 +538,9 @@
 
       items = items.filter(({ row }) => {
         return !query || meta.search.some((field) => {
-          return String(row[field] || "").toLowerCase().includes(query);
+          return String(row[field] || "")
+            .toLowerCase()
+            .includes(query);
         });
       });
 
@@ -685,7 +562,12 @@
       container.innerHTML = "";
 
       if (!items.length) {
-        container.innerHTML = `<div class="empty-state">🔍 Nessun elemento trovato.<br>Tocca + per aggiungerne uno.</div>`;
+        container.innerHTML = `
+          <div class="empty-state">
+            🔍 Nessun elemento trovato.<br>
+            Tocca + per aggiungerne uno.
+          </div>
+        `;
         return;
       }
 
@@ -694,9 +576,17 @@
       });
     }
 
+    /* ================================================================
+       Card
+       ================================================================ */
+
     function renderDataCard(key, meta, row, index) {
       const title = row[meta.title] || row[meta.fallback] || "(senza titolo)";
-      const subtitle = (meta.sub || []).map((field) => row[field]).filter(Boolean).join(" · ");
+      const subtitle = (meta.sub || [])
+        .map((field) => row[field])
+        .filter(Boolean)
+        .join(" · ");
+
       const card = document.createElement("article");
       card.className = `card${meta.city && row[meta.city] ? ` city-card ${cityClass(row[meta.city])}` : ""}`;
       card.onclick = (event) => {
@@ -888,7 +778,11 @@
         </section>
         <section class="settings-section">
           <h2 class="settings-heading">💴 Cambio Yen / Euro</h2>
-          <label class="rate-box"><span>1 € =</span><input id="exchangeRate" type="number" value="${state.settings.exchangeRate}" step="0.5"><span>¥</span></label>
+          <label class="rate-box">
+            <span>1 € =</span>
+            <input id="exchangeRate" type="number" value="${state.settings.exchangeRate}" step="0.5">
+            <span>¥</span>
+          </label>
         </section>
         <section class="settings-section">
           <h2 class="settings-heading">💾 Backup</h2>
@@ -985,65 +879,82 @@
         wrapper.querySelector("#xlsxInput").click();
       };
 
-      wrapper.querySelector("#xlsxInput").onchange = (event) => {
-        const file = event.target.files?.[0];
-        if (!file || !window.XLSX) return;
-        const reader = new FileReader();
-        reader.onload = () => {
-          try {
-            const workbook = XLSX.read(new Uint8Array(reader.result), { type: "array", cellDates: false });
-            const imported = {};
-            const missing = [];
-            let total = 0;
+      return wrapper;
+    }
 
-            SHEETS.forEach((key) => {
-              const name = workbook.SheetNames.find((item) => item.trim() === key.trim()) || workbook.SheetNames.find((item) => item.replace(/^\d+\.\s*/, "").trim() === key.replace(/^\d+\.\s*/, "").trim());
-              if (!name) {
-                missing.push(key);
-                return;
-              }
+    function renderFieldImportHandlers() {
+      const input = document.getElementById("xlsxInput");
+      if (!input) return;
+      input.onchange = importXlsx;
+    }
 
-              const values = XLSX.utils.sheet_to_json(workbook.Sheets[name], { header: 1, defval: "", raw: false });
-              if (!values.length) {
-                missing.push(key);
-                return;
-              }
+    function importXlsx(event) {
+      const file = event.target.files?.[0];
+      if (!file || !window.XLSX) return;
 
-              const headers = values[0].map((header) => String(header).trim());
-              const rows = values.slice(1)
-                .filter((row) => row.some((value) => value !== "" && value !== null && value !== undefined))
-                .map((row) => {
-                  const result = {};
-                  headers.forEach((header, index) => {
-                    result[header] = String(row[index] ?? "");
-                  });
-                  return result;
-                });
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const workbook = XLSX.read(new Uint8Array(reader.result), {
+            type: "array",
+            cellDates: false
+          });
+          const imported = {};
+          const missing = [];
+          let total = 0;
 
-              imported[key] = { headers, rows };
-              total += rows.length;
-            });
+          SHEETS.forEach((key) => {
+            const name = workbook.SheetNames.find((item) => item.trim() === key.trim()) || workbook.SheetNames.find((item) => item.replace(/^\d+\.\s*/, "").trim() === key.replace(/^\d+\.\s*/, "").trim());
 
-            if (missing.length) {
-              alert("Importazione annullata. Fogli mancanti o vuoti:\n\n" + missing.join("\n"));
+            if (!name) {
+              missing.push(key);
               return;
             }
 
-            state.data = imported;
-            state.settings.theme = "dark";
-            saveData();
-            saveSettings();
-            state.view = "1. Itinerario";
-            renderApp();
-            showToast(`Importati ${total} elementi`);
-          } catch (error) {
-            alert(`Errore Excel: ${error.message}`);
+            const values = XLSX.utils.sheet_to_json(workbook.Sheets[name], {
+              header: 1,
+              defval: "",
+              raw: false
+            });
+
+            if (!values.length) {
+              missing.push(key);
+              return;
+            }
+
+            const headers = values[0].map((header) => String(header).trim());
+            const rows = values.slice(1)
+              .filter((row) => row.some((value) => value !== "" && value !== null && value !== undefined))
+              .map((row) => {
+                const result = {};
+                headers.forEach((header, index) => {
+                  result[header] = String(row[index] ?? "");
+                });
+                return result;
+              });
+
+            imported[key] = { headers, rows };
+            total += rows.length;
+          });
+
+          if (missing.length) {
+            alert("Importazione annullata. Fogli mancanti o vuoti:\n\n" + missing.join("\n"));
+            return;
           }
-        };
-        reader.readAsArrayBuffer(file);
+
+          state.data = imported;
+          state.settings.theme = "dark";
+          saveData();
+          saveSettings();
+          state.view = "1. Itinerario";
+          renderApp();
+          showToast(`Importati ${total} elementi`);
+        } catch (error) {
+          alert(`Errore Excel: ${error.message}`);
+        }
       };
 
-      return wrapper;
+      reader.readAsArrayBuffer(file);
     }
 
     /* ================================================================
