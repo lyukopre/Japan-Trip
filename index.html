@@ -24,7 +24,7 @@
 
   <style>
     /* ================================================================
-       1. Variabili
+       1. Tema e variabili
        ================================================================ */
 
     :root {
@@ -101,59 +101,10 @@
     .city-hiroshima { --city: #7a6bb0; }
     .city-kamakura { --city: #3f9b9b; }
     .city-kawaguchiko { --city: #4f8fc9; }
-    .city-partenza { --city: #8a8478; }
     .city-default { --city: var(--accent); }
 
     /* ================================================================
-       2. Stati tendina valigia
-       ================================================================ */
-
-    .state-ready {
-      --state-color: #2ea86b;
-      --state-bg: #dff5e9;
-      --state-text: #197342;
-    }
-
-    .state-buy {
-      --state-color: #e08a3c;
-      --state-bg: #fff0dc;
-      --state-text: #a95b18;
-    }
-
-    .state-preparing {
-      --state-color: #8b8f99;
-      --state-bg: #e9eaee;
-      --state-text: #5e626d;
-    }
-
-    .state-booked {
-      --state-color: #3f6ea8;
-      --state-bg: #e1ecfb;
-      --state-text: #285b91;
-    }
-
-    html[data-theme="dark"] .state-ready {
-      --state-bg: #173b29;
-      --state-text: #8ce0ae;
-    }
-
-    html[data-theme="dark"] .state-buy {
-      --state-bg: #4a2d16;
-      --state-text: #ffc078;
-    }
-
-    html[data-theme="dark"] .state-preparing {
-      --state-bg: #30333c;
-      --state-text: #c0c4ce;
-    }
-
-    html[data-theme="dark"] .state-booked {
-      --state-bg: #1d3552;
-      --state-text: #9bc4f5;
-    }
-
-    /* ================================================================
-       3. Reset e struttura
+       2. Reset e struttura
        ================================================================ */
 
     * {
@@ -221,7 +172,7 @@
     }
 
     /* ================================================================
-       4. Sfondo non interattivo
+       3. Sfondo decorativo non interattivo
        ================================================================ */
 
     #backgroundLayer {
@@ -255,7 +206,7 @@
     }
 
     /* ================================================================
-       5. Header
+       4. Header
        ================================================================ */
 
     #topbar {
@@ -342,10 +293,119 @@
     }
 
     /* ================================================================
-       6. Card e strutture comuni
+       5. Mappa avanzata
        ================================================================ */
 
-    .dashboard-card,
+    .map-hero {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-large);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .map-hero-kicker {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .map-hero-title {
+      margin: 5px 0 0;
+      font-size: 25px;
+      font-weight: 850;
+      letter-spacing: -.03em;
+    }
+
+    .map-hero-subtitle {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .map-counters {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .map-counter {
+      padding: 11px 7px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: var(--surface-soft);
+      text-align: center;
+    }
+
+    .map-counter-value {
+      font-size: 18px;
+      font-weight: 850;
+    }
+
+    .map-counter-label {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .map-mode-row {
+      display: flex;
+      gap: 8px;
+      margin: 14px 0 10px;
+    }
+
+    .map-mode-button {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .map-mode-button.active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .map-search-row {
+      display: flex;
+      gap: 8px;
+      margin: 10px 0 12px;
+    }
+
+    .map-search-row input {
+      flex: 1;
+      min-width: 0;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      outline: none;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    .map-filter-title {
+      margin: 14px 0 7px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    /* ================================================================
+       6. Card comuni
+       ================================================================ */
+
     .card,
     .stat-box,
     .progress-card,
@@ -358,60 +418,154 @@
       backdrop-filter: blur(10px);
     }
 
-    .dashboard-card {
-      margin-bottom: 14px;
-      padding: 20px;
+    .card {
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 12px;
+      padding: 17px 18px;
       border: 1px solid var(--border);
-      border-radius: 28px;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform .15s ease;
+    }
+
+    .card:active {
+      transform: scale(.985);
+    }
+
+    .card.city-card {
+      border-left: 4px solid var(--city, var(--accent));
+    }
+
+    .card-top,
+    .card-top-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .card-top {
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .card-top-left {
+      min-width: 0;
+      gap: 10px;
+    }
+
+    .card-title-wrap {
+      min-width: 0;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 17.5px;
+      font-weight: 800;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+
+    .card-subtitle {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      padding: 5px 11px;
+      border-radius: 20px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .bullet-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .bullet {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--text);
+      font-size: 14.5px;
+      line-height: 1.45;
+    }
+
+    .bullet-icon {
+      width: 20px;
+      flex: 0 0 auto;
+      margin-top: 1px;
+      text-align: center;
+    }
+
+    .bullet.muted {
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 11px;
+    }
+
+    .action-button {
+      display: inline-flex;
+      align-items: center;
+      flex: 0 0 auto;
+      gap: 6px;
+      padding: 10px 15px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
       box-shadow: var(--shadow);
     }
 
-    .dashboard-kicker {
+    .action-button.small {
+      padding: 8px 13px;
+      font-size: 12.5px;
+    }
+
+    .action-button.secondary {
+      background: var(--accent-soft);
       color: var(--accent);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      box-shadow: none;
     }
 
-    .dashboard-title {
-      margin: 5px 0 0;
-      font-size: 25px;
-      font-weight: 850;
-      letter-spacing: -0.03em;
-    }
-
-    .dashboard-subtitle {
-      margin-top: 5px;
+    .empty-state {
+      padding: 56px 20px;
       color: var(--muted);
       font-size: 14px;
+      line-height: 1.6;
+      text-align: center;
     }
 
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 16px;
+    .group-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 20px 4px 10px;
+      font-size: 14px;
+      font-weight: 800;
     }
 
-    .dashboard-metric {
-      padding: 14px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: var(--surface-soft);
-    }
-
-    .dashboard-metric-label {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .dashboard-metric-value {
-      margin-top: 4px;
-      font-size: 16px;
-      font-weight: 850;
-    }
+    /* ================================================================
+       7. Header e dashboard principali
+       ================================================================ */
 
     .stats-row {
       display: grid;
@@ -432,7 +586,7 @@
       color: var(--muted);
       font-size: 11.5px;
       font-weight: 700;
-      letter-spacing: 0.04em;
+      letter-spacing: .04em;
       text-transform: uppercase;
     }
 
@@ -490,308 +644,64 @@
       font-weight: 600;
     }
 
-    /* ================================================================
-       7. Filtri e lista
-       ================================================================ */
-
-    .filter-row {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      margin: 12px 0 10px;
-      padding: 2px 1px 5px;
-      scrollbar-width: none;
-    }
-
-    .filter-row::-webkit-scrollbar {
-      display: none;
-    }
-
-    .filter-chip {
-      flex: 0 0 auto;
-      padding: 9px 14px;
+    .dashboard-card {
+      margin-bottom: 14px;
+      padding: 20px;
       border: 1px solid var(--border);
-      border-radius: 20px;
+      border-radius: 28px;
       background: var(--surface);
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 750;
       box-shadow: var(--shadow);
     }
 
-    .filter-chip.active {
-      border-color: var(--accent);
-      background: var(--accent);
-      color: #fff;
-    }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 14px 0 12px;
-    }
-
-    .toolbar input[type="search"] {
-      flex: 1 1 140px;
-      min-width: 0;
-      padding: 12px 15px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      outline: none;
-      color: var(--text);
-      font-size: 15px;
-      box-shadow: var(--shadow);
-    }
-
-    .dropdown select {
-      max-width: 155px;
-      padding: 12px 30px 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      outline: none;
-      color: var(--text);
-      font-size: 14px;
-      font-weight: 700;
-      box-shadow: var(--shadow);
-    }
-
-    .timeline-list {
-      position: relative;
-    }
-
-    .timeline-list::before {
-      content: "";
-      position: absolute;
-      top: 22px;
-      bottom: 32px;
-      left: 13px;
-      width: 2px;
-      background: color-mix(in srgb, var(--accent) 30%, transparent);
-      pointer-events: none;
-    }
-
-    .timeline-list .card {
-      margin-left: 8px;
-    }
-
-    .card {
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 12px;
-      padding: 17px 18px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      box-shadow: var(--shadow);
-      cursor: pointer;
-      transition: transform 0.15s ease;
-    }
-
-    .card:active {
-      transform: scale(0.985);
-    }
-
-    .card.city-card {
-      border-left: 4px solid var(--city, var(--accent));
-    }
-
-    .card.today {
-      box-shadow: 0 0 0 2px var(--accent), var(--shadow);
-    }
-
-    .card-top,
-    .card-top-left {
-      display: flex;
-      align-items: center;
-    }
-
-    .card-top {
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .card-top-left {
-      min-width: 0;
-      gap: 10px;
-    }
-
-    .card-title-wrap {
-      min-width: 0;
-    }
-
-    .card-title {
-      margin: 0;
-      font-size: 17.5px;
-      font-weight: 800;
-      line-height: 1.3;
-      overflow-wrap: anywhere;
-    }
-
-    .card-subtitle {
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .day-chip {
-      flex: 0 0 auto;
-      padding: 5px 11px;
-      border-radius: 9px;
-      background: var(--city, var(--accent));
-      color: #fff;
-      font-size: 11.5px;
-      font-weight: 800;
-    }
-
-    .day-chip.today-chip {
-      background: #2ea86b;
-    }
-
-    .date-chevron {
-      display: flex;
-      align-items: center;
-      flex: 0 0 auto;
-      gap: 4px;
-      color: var(--muted);
-      font-size: 12.5px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .chevron {
-      color: var(--muted);
-      font-size: 17px;
-      opacity: 0.55;
-    }
-
-    .badge {
-      flex: 0 0 auto;
-      padding: 5px 11px;
-      border-radius: 20px;
-      background: var(--accent-soft);
+    .dashboard-kicker {
       color: var(--accent);
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 800;
-      white-space: nowrap;
+      letter-spacing: .08em;
+      text-transform: uppercase;
     }
 
-    .bullet-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 12px;
+    .dashboard-title {
+      margin: 5px 0 0;
+      font-size: 25px;
+      font-weight: 850;
+      letter-spacing: -.03em;
     }
 
-    .bullet {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      color: var(--text);
-      font-size: 14.5px;
-      line-height: 1.45;
-    }
-
-    .bullet-icon {
-      width: 20px;
-      flex: 0 0 auto;
-      margin-top: 1px;
-      text-align: center;
-    }
-
-    .bullet.muted {
+    .dashboard-subtitle {
+      margin-top: 5px;
       color: var(--muted);
-      font-size: 13.5px;
+      font-size: 14px;
     }
 
-    .hotel-pill {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-top: 12px;
-      padding: 11px 13px;
+      margin-top: 16px;
+    }
+
+    .dashboard-metric {
+      padding: 14px;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 16px;
       background: var(--surface-soft);
     }
 
-    .hotel-name {
-      min-width: 0;
-      overflow: hidden;
-      color: var(--text);
-      font-size: 13.5px;
-      font-weight: 700;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 11px;
-    }
-
-    .action-button {
-      display: inline-flex;
-      align-items: center;
-      flex: 0 0 auto;
-      gap: 6px;
-      padding: 10px 15px;
-      border: 0;
-      border-radius: 12px;
-      background: var(--accent);
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700;
-      text-decoration: none;
-      box-shadow: var(--shadow);
-    }
-
-    .action-button.small {
-      padding: 8px 13px;
-      font-size: 12.5px;
-    }
-
-    .action-button.secondary {
-      background: var(--accent-soft);
-      color: var(--accent);
-      box-shadow: none;
-    }
-
-    .status-select {
-      max-width: 135px;
-      padding: 8px 27px 8px 13px;
-      border: 0;
-      border-radius: 20px;
-      outline: none;
-      background: var(--state-bg, var(--accent-soft));
-      color: var(--state-text, var(--accent));
-      font-size: 12.5px;
-      font-weight: 800;
-      box-shadow: inset 4px 0 0 var(--state-color, transparent);
-    }
-
-    .empty-state {
-      padding: 56px 20px;
+    .dashboard-metric-label {
       color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
-      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
     }
 
-    .group-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 20px 4px 10px;
-      font-size: 14px;
-      font-weight: 800;
+    .dashboard-metric-value {
+      margin-top: 4px;
+      font-size: 16px;
+      font-weight: 850;
     }
 
     /* ================================================================
-       8. Navigazione flottante realmente fissa
+       8. Floating tabbar realmente fissa
        ================================================================ */
 
     #tabbar {
@@ -808,8 +718,8 @@
       border-radius: 29px;
       background: var(--nav);
       box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.18),
-        0 2px 8px rgba(0, 0, 0, 0.08);
+        0 10px 30px rgba(0, 0, 0, .18),
+        0 2px 8px rgba(0, 0, 0, .08);
       -webkit-backdrop-filter: blur(24px) saturate(180%);
       backdrop-filter: blur(24px) saturate(180%);
       scrollbar-width: none;
@@ -871,7 +781,7 @@
     }
 
     /* ================================================================
-       9. Impostazioni e modali
+       9. Modali e impostazioni
        ================================================================ */
 
     .settings-section {
@@ -973,7 +883,7 @@
       padding: 22px 20px calc(26px + var(--safe-bottom));
       border-radius: 28px 28px 0 0;
       background: var(--surface-solid);
-      box-shadow: 0 -10px 40px rgba(0,0,0,.25);
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, .25);
     }
 
     .modal-title {
@@ -1086,9 +996,11 @@
     </header>
 
     <main id="main"></main>
+
     <button id="addButton" class="floating-button" type="button" hidden>
       +
     </button>
+
     <nav id="tabbar" aria-label="Sezioni app"></nav>
   </div>
 
@@ -1314,26 +1226,28 @@
        2. Utility
        ================================================================ */
 
-    const saveData = () => {
+    function saveData() {
       localStorage.setItem(DATA_KEY, JSON.stringify(state.data));
-    };
+    }
 
-    const saveSettings = () => {
+    function saveSettings() {
       localStorage.setItem(
         SETTINGS_KEY,
         JSON.stringify(state.settings)
       );
-    };
+    }
 
-    const iconFor = (field) => FIELD_ICONS[field] || "•";
+    function iconFor(field) {
+      return FIELD_ICONS[field] || "•";
+    }
 
-    const isUrl = (value) => {
+    function isUrl(value) {
       return /^https?:\/\//i.test(String(value || "").trim());
-    };
+    }
 
-    const isPhone = (value) => {
+    function isPhone(value) {
       return /^[\d+\-\s()]{3,}$/.test(String(value || "").trim());
-    };
+    }
 
     function applyTheme() {
       let theme = state.settings.theme;
@@ -1901,7 +1815,7 @@
     }
 
     /* ================================================================
-       6. Card
+       5. Card
        ================================================================ */
 
     function renderItineraryCard(row, index) {
@@ -2188,7 +2102,7 @@
     }
 
     /* ================================================================
-       6. Mappa, calendario e condivisione
+       6. Mappa e calendario
        ================================================================ */
 
     function renderMap() {
@@ -2717,7 +2631,7 @@
     }
 
     /* ================================================================
-       8. Avvio finale congelato
+       8. Avvio
        ================================================================ */
 
     if ("serviceWorker" in navigator) {
