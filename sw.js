@@ -1,14 +1,16 @@
 /* ================================================================
-   Service worker congelato per il viaggio
+   Service worker compatibile con index.html definitivo
 
-   Questa versione usa una cache stabile e non aggiorna automaticamente
-   l'app durante il viaggio. Dopo il caricamento iniziale, index.html,
-   manifest e libreria Excel vengono mantenuti disponibili offline.
+   Caratteristiche:
+   - cache separata per questa versione dell'app;
+   - fallback offline per index.html, manifest e libreria Excel;
+   - aggiornamento controllato tramite nuovo CACHE_NAME;
+   - nessuna modifica o cancellazione del localStorage dell'app.
    ================================================================ */
 
-const CACHE_NAME = "giappone-trip-final-1";
+const CACHE_NAME = "giappone-index2-final-1";
 
-const APP_FILES = [
+const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.json",
@@ -19,7 +21,7 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_FILES))
+      .then((cache) => cache.addAll(APP_SHELL))
       .catch(() => {})
   );
 
@@ -43,17 +45,30 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
+  const requestUrl = new URL(event.request.url);
+  const isAppShellRequest =
+    requestUrl.pathname.endsWith("/index.html") ||
+    requestUrl.pathname.endsWith("/manifest.json") ||
+    requestUrl.pathname.endsWith("/sw.js") ||
+    requestUrl.hostname === "cdn.jsdelivr.net";
+
+  if (!isAppShellRequest) return;
+
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request).then((response) => {
-        if (!response || !response.ok) return response;
+      if (cachedResponse) return cachedResponse;
 
-        const copy = response.clone();
+      return fetch(event.request).then((networkResponse) => {
+        if (!networkResponse || !networkResponse.ok) {
+          return networkResponse;
+        }
+
+        const responseCopy = networkResponse.clone();
         caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, copy).catch(() => {});
+          cache.put(event.request, responseCopy).catch(() => {});
         });
 
-        return response;
+        return networkResponse;
       });
     })
   );
