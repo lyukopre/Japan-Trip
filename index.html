@@ -2,763 +2,536 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#111318">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta
-    name="apple-mobile-web-app-status-bar-style"
-    content="black"
-  >
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Giappone">
-
   <title>Giappone 2026/27</title>
-
   <link rel="manifest" href="manifest.json">
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
-  ></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
-    /* ================================================================
-       1. Tema e variabili
-       ================================================================ */
-
     :root {
-      --bg: #f3f1ec;
-      --surface: rgba(255, 255, 255, 0.95);
-      --surface-solid: #ffffff;
-      --surface-soft: rgba(250, 248, 244, 0.96);
-      --text: #1c1a18;
-      --muted: #77716a;
-      --border: rgba(222, 216, 205, 0.95);
-      --accent: #c94a5a;
-      --accent-soft: #fae9eb;
-      --gold: #c9a24a;
-      --header: rgba(243, 241, 236, 0.96);
-      --nav: rgba(255, 255, 255, 0.98);
-      --shadow: 0 2px 12px rgba(28, 20, 10, 0.10);
-      --safe-top: env(safe-area-inset-top, 0px);
-      --safe-bottom: env(safe-area-inset-bottom, 0px);
-      --radius-large: 28px;
-      --radius-medium: 20px;
-      --radius-small: 12px;
+      --bg:#f3f1ec;
+      --surface:rgba(255,255,255,.95);
+      --surface-solid:#fff;
+      --surface-soft:rgba(250,248,244,.96);
+      --text:#1c1a18;
+      --muted:#77716a;
+      --border:rgba(222,216,205,.95);
+      --accent:#c94a5a;
+      --accent-soft:#fae9eb;
+      --gold:#c9a24a;
+      --header:rgba(243,241,236,.96);
+      --nav:rgba(255,255,255,.98);
+      --shadow:0 2px 12px rgba(28,20,10,.10);
+      --safe-top:env(safe-area-inset-top,0px);
+      --safe-bottom:env(safe-area-inset-bottom,0px);
     }
 
     html[data-theme="dark"] {
-      --bg: #111318;
-      --surface: rgba(27, 30, 38, 0.97);
-      --surface-solid: #1b1e26;
-      --surface-soft: rgba(34, 37, 46, 0.98);
-      --text: #f2f0ec;
-      --muted: #96939a;
-      --border: rgba(55, 58, 68, 0.96);
-      --accent-soft: #35232a;
-      --header: rgba(17, 19, 24, 0.98);
-      --nav: rgba(17, 19, 24, 0.99);
-      --shadow: 0 2px 14px rgba(0, 0, 0, 0.42);
+      --bg:#111318;
+      --surface:rgba(27,30,38,.97);
+      --surface-solid:#1b1e26;
+      --surface-soft:rgba(34,37,46,.98);
+      --text:#f2f0ec;
+      --muted:#96939a;
+      --border:rgba(55,58,68,.96);
+      --accent-soft:#35232a;
+      --header:rgba(17,19,24,.98);
+      --nav:rgba(17,19,24,.99);
+      --shadow:0 2px 14px rgba(0,0,0,.42);
     }
 
-    html[data-accent="ao"] {
-      --accent: #3f6ea8;
-      --accent-soft: #e8eef8;
-    }
+    html[data-accent="ao"] { --accent:#3f6ea8; --accent-soft:#e8eef8; }
+    html[data-accent="torii"] { --accent:#c94a5a; --accent-soft:#fae9eb; }
+    html[data-accent="matcha"] { --accent:#4f8a5e; --accent-soft:#e8f2e9; }
+    html[data-accent="sakura"] { --accent:#d97ea0; --accent-soft:#f9e9f0; }
 
-    html[data-accent="torii"] {
-      --accent: #c94a5a;
-      --accent-soft: #fae9eb;
-    }
+    html[data-theme="dark"][data-accent="ao"] { --accent-soft:#1a293b; }
+    html[data-theme="dark"][data-accent="matcha"] { --accent-soft:#192d1e; }
+    html[data-theme="dark"][data-accent="sakura"] { --accent-soft:#30212a; }
 
-    html[data-accent="matcha"] {
-      --accent: #4f8a5e;
-      --accent-soft: #e8f2e9;
-    }
-
-    html[data-accent="sakura"] {
-      --accent: #d97ea0;
-      --accent-soft: #f9e9f0;
-    }
-
-    html[data-theme="dark"][data-accent="ao"] {
-      --accent-soft: #1a293b;
-    }
-
-    html[data-theme="dark"][data-accent="matcha"] {
-      --accent-soft: #192d1e;
-    }
-
-    html[data-theme="dark"][data-accent="sakura"] {
-      --accent-soft: #30212a;
-    }
-
-    .city-osaka { --city: #e08a3c; }
-    .city-kyoto { --city: #4f8a5e; }
-    .city-tokyo { --city: #2c4a6e; }
-    .city-takayama { --city: #b5623f; }
-    .city-hiroshima { --city: #7a6bb0; }
-    .city-kamakura { --city: #3f9b9b; }
-    .city-kawaguchiko { --city: #4f8fc9; }
-    .city-default { --city: var(--accent); }
-
-    /* ================================================================
-       2. Reset e struttura
-       ================================================================ */
+    .city-osaka { --city:#e08a3c; }
+    .city-kyoto { --city:#4f8a5e; }
+    .city-tokyo { --city:#2c4a6e; }
+    .city-takayama { --city:#b5623f; }
+    .city-hiroshima { --city:#7a6bb0; }
+    .city-kamakura { --city:#3f9b9b; }
+    .city-kawaguchiko { --city:#4f8fc9; }
+    .city-default { --city:var(--accent); }
 
     * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent;
     }
 
     html,
     body {
-      min-height: 100%;
+      min-height:100%;
     }
 
     body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        sans-serif;
-      overscroll-behavior-y: none;
-      -webkit-text-size-adjust: 100%;
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      overscroll-behavior-y:none;
+      -webkit-text-size-adjust:100%;
     }
 
     button,
     input,
     select,
     textarea {
-      font: inherit;
+      font:inherit;
     }
 
     button,
     select {
-      cursor: pointer;
+      cursor:pointer;
     }
 
     a {
-      color: var(--accent);
+      color:var(--accent);
     }
 
     #app {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 100dvh;
-      isolation: isolate;
+      position:relative;
+      z-index:1;
+      display:flex;
+      flex-direction:column;
+      min-height:100dvh;
+      isolation:isolate;
     }
-
-    #main {
-      position: relative;
-      z-index: 2;
-      flex: 1;
-      width: 100%;
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 12px 16px calc(148px + var(--safe-bottom));
-    }
-
-    .view-fade {
-      animation: viewFade 0.25s ease;
-    }
-
-    @keyframes viewFade {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ================================================================
-       3. Sfondo decorativo non interattivo
-       ================================================================ */
 
     #backgroundLayer {
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      overflow: hidden;
-      pointer-events: none !important;
+      position:fixed;
+      inset:0;
+      z-index:-1;
+      overflow:hidden;
+      pointer-events:none !important;
       background:
         radial-gradient(
           circle at 88% 8%,
-          color-mix(in srgb, var(--accent) 13%, transparent),
+          color-mix(in srgb,var(--accent) 13%,transparent),
           transparent 30%
         ),
         radial-gradient(
           circle at 8% 38%,
-          color-mix(in srgb, var(--gold) 9%, transparent),
+          color-mix(in srgb,var(--gold) 9%,transparent),
           transparent 27%
         );
     }
 
     #backgroundPattern {
-      width: 100%;
-      height: 100%;
-      opacity: 0.10;
-      pointer-events: none !important;
+      width:100%;
+      height:100%;
+      opacity:.10;
+      pointer-events:none !important;
     }
 
     html[data-theme="dark"] #backgroundPattern {
-      opacity: 0.16;
+      opacity:.16;
     }
 
-    /* ================================================================
-       4. Header
-       ================================================================ */
-
     #topbar {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      padding: max(14px, calc(var(--safe-top) + 10px)) 18px 10px;
-      border-bottom: 1px solid transparent;
-      background: var(--header);
-      -webkit-backdrop-filter: blur(18px);
-      backdrop-filter: blur(18px);
-      transition: 0.25s ease;
+      position:sticky;
+      top:0;
+      z-index:20;
+      padding:max(14px,calc(var(--safe-top) + 10px)) 18px 10px;
+      border-bottom:1px solid transparent;
+      background:var(--header);
+      -webkit-backdrop-filter:blur(18px);
+      backdrop-filter:blur(18px);
+      transition:.25s ease;
     }
 
     #topbar.scrolled {
-      padding-bottom: 6px;
-      border-bottom-color: var(--border);
+      padding-bottom:6px;
+      border-bottom-color:var(--border);
     }
 
     .topbar-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      display:flex;
+      align-items:center;
+      gap:10px;
     }
 
     .logo {
-      display: grid;
-      place-items: center;
-      width: 30px;
-      height: 30px;
-      flex: 0 0 auto;
-      border-radius: 9px;
-      background: var(--accent);
+      display:grid;
+      place-items:center;
+      width:30px;
+      height:30px;
+      flex:0 0 auto;
+      border-radius:9px;
+      background:var(--accent);
     }
 
     .logo svg {
-      width: 62%;
-      height: 62%;
-    }
-
-    #topbar.scrolled .logo {
-      width: 24px;
-      height: 24px;
+      width:62%;
+      height:62%;
     }
 
     .page-title {
-      flex: 1;
-      margin: 0;
-      font-size: 27px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      transition: 0.25s ease;
-    }
-
-    #topbar.scrolled .page-title {
-      font-size: 19px;
+      flex:1;
+      margin:0;
+      font-size:27px;
+      font-weight:800;
+      letter-spacing:-.03em;
     }
 
     .page-subtitle {
-      max-height: 24px;
-      margin-top: 3px;
-      padding-left: 40px;
-      overflow: hidden;
-      color: var(--muted);
-      font-size: 13.5px;
-      transition: 0.25s ease;
+      max-height:24px;
+      margin-top:3px;
+      padding-left:40px;
+      overflow:hidden;
+      color:var(--muted);
+      font-size:13.5px;
+      transition:.25s ease;
     }
 
-    #topbar.scrolled .page-subtitle {
-      max-height: 0;
-      margin-top: 0;
-      opacity: 0;
+    .topbar.scrolled .page-title {
+      font-size:19px;
+    }
+
+    .topbar.scrolled .page-subtitle {
+      max-height:0;
+      margin-top:0;
+      opacity:0;
     }
 
     .trip-banner {
-      margin-top: 10px;
-      padding: 11px 15px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, var(--accent-soft), transparent);
-      color: var(--accent);
-      font-size: 13px;
-      font-weight: 800;
-      text-align: center;
+      margin-top:10px;
+      padding:11px 15px;
+      border-radius:16px;
+      background:linear-gradient(135deg,var(--accent-soft),transparent);
+      color:var(--accent);
+      font-size:13px;
+      font-weight:800;
+      text-align:center;
+    }
+
+    #main {
+      position:relative;
+      z-index:2;
+      flex:1;
+      width:100%;
+      max-width:640px;
+      margin:0 auto;
+      padding:12px 16px calc(148px + var(--safe-bottom));
+    }
+
+    .view-fade {
+      animation:viewFade .25s ease;
+    }
+
+    @keyframes viewFade {
+      from { opacity:0; transform:translateY(6px); }
+      to { opacity:1; transform:translateY(0); }
     }
 
     /* ================================================================
-       5. Mappa avanzata
+       Mappa avanzata
        ================================================================ */
 
     .map-hero {
-      padding: 20px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-large);
-      background: var(--surface);
-      box-shadow: var(--shadow);
+      padding:20px;
+      border:1px solid var(--border);
+      border-radius:28px;
+      background:var(--surface);
+      box-shadow:var(--shadow);
     }
 
     .map-hero-kicker {
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
+      color:var(--accent);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
     }
 
     .map-hero-title {
-      margin: 5px 0 0;
-      font-size: 25px;
-      font-weight: 850;
-      letter-spacing: -.03em;
+      margin:5px 0 0;
+      font-size:25px;
+      font-weight:850;
+      letter-spacing:-.03em;
     }
 
     .map-hero-subtitle {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 14px;
+      margin-top:5px;
+      color:var(--muted);
+      font-size:14px;
     }
 
     .map-counters {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 16px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      margin-top:16px;
     }
 
     .map-counter {
-      padding: 11px 7px;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      background: var(--surface-soft);
-      text-align: center;
+      padding:11px 7px;
+      border:1px solid var(--border);
+      border-radius:15px;
+      background:var(--surface-soft);
+      text-align:center;
     }
 
     .map-counter-value {
-      font-size: 18px;
-      font-weight: 850;
+      font-size:18px;
+      font-weight:850;
     }
 
     .map-counter-label {
-      margin-top: 2px;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 700;
+      margin-top:2px;
+      color:var(--muted);
+      font-size:11px;
+      font-weight:700;
     }
 
     .map-mode-row {
-      display: flex;
-      gap: 8px;
-      margin: 14px 0 10px;
+      display:flex;
+      gap:8px;
+      margin:14px 0 10px;
     }
 
     .map-mode-button {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--surface);
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 800;
+      flex:1;
+      padding:10px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:var(--surface);
+      color:var(--muted);
+      font-size:13px;
+      font-weight:800;
     }
 
     .map-mode-button.active {
-      border-color: var(--accent);
-      background: var(--accent);
-      color: #fff;
+      border-color:var(--accent);
+      background:var(--accent);
+      color:#fff;
     }
 
     .map-search-row {
-      display: flex;
-      gap: 8px;
-      margin: 10px 0 12px;
+      display:flex;
+      gap:8px;
+      margin:10px 0 12px;
     }
 
     .map-search-row input {
-      flex: 1;
-      min-width: 0;
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      outline: none;
-      background: var(--surface);
-      color: var(--text);
-      font-size: 15px;
+      flex:1;
+      min-width:0;
+      padding:12px 14px;
+      border:1px solid var(--border);
+      border-radius:13px;
+      outline:none;
+      background:var(--surface);
+      color:var(--text);
+      font-size:15px;
     }
 
     .map-filter-title {
-      margin: 14px 0 7px;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: .06em;
-      text-transform: uppercase;
+      margin:14px 0 7px;
+      color:var(--muted);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+
+    .map-filter-row {
+      display:flex;
+      gap:8px;
+      overflow-x:auto;
+      padding:2px 1px 5px;
+      scrollbar-width:none;
+    }
+
+    .map-filter-row::-webkit-scrollbar {
+      display:none;
+    }
+
+    .map-filter-chip {
+      flex:0 0 auto;
+      padding:9px 14px;
+      border:1px solid var(--border);
+      border-radius:20px;
+      background:var(--surface);
+      color:var(--muted);
+      font-size:13px;
+      font-weight:750;
+      box-shadow:var(--shadow);
+    }
+
+    .map-filter-chip.active {
+      border-color:var(--accent);
+      background:var(--accent);
+      color:#fff;
     }
 
     /* ================================================================
-       6. Card comuni
+       Card comuni
        ================================================================ */
 
-    .card,
-    .stat-box,
-    .progress-card,
-    .toolbar input,
-    .dropdown select,
-    .settings-button,
-    .rate-box {
-      background: var(--surface);
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
-    }
-
     .card {
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 12px;
-      padding: 17px 18px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      box-shadow: var(--shadow);
-      cursor: pointer;
-      transition: transform .15s ease;
-    }
-
-    .card:active {
-      transform: scale(.985);
+      position:relative;
+      overflow:hidden;
+      margin-bottom:12px;
+      padding:17px 18px;
+      border:1px solid var(--border);
+      border-radius:20px;
+      background:var(--surface);
+      box-shadow:var(--shadow);
+      cursor:pointer;
+      -webkit-backdrop-filter:blur(10px);
+      backdrop-filter:blur(10px);
     }
 
     .card.city-card {
-      border-left: 4px solid var(--city, var(--accent));
+      border-left:4px solid var(--city,var(--accent));
     }
 
     .card-top,
     .card-top-left {
-      display: flex;
-      align-items: center;
+      display:flex;
+      align-items:center;
     }
 
     .card-top {
-      justify-content: space-between;
-      gap: 10px;
+      justify-content:space-between;
+      gap:10px;
     }
 
     .card-top-left {
-      min-width: 0;
-      gap: 10px;
+      min-width:0;
+      gap:10px;
     }
 
     .card-title-wrap {
-      min-width: 0;
+      min-width:0;
     }
 
     .card-title {
-      margin: 0;
-      font-size: 17.5px;
-      font-weight: 800;
-      line-height: 1.3;
-      overflow-wrap: anywhere;
+      margin:0;
+      font-size:17.5px;
+      font-weight:800;
+      line-height:1.3;
+      overflow-wrap:anywhere;
     }
 
     .card-subtitle {
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .badge {
-      flex: 0 0 auto;
-      padding: 5px 11px;
-      border-radius: 20px;
-      background: var(--accent-soft);
-      color: var(--accent);
-      font-size: 11px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .bullet-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .bullet {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      color: var(--text);
-      font-size: 14.5px;
-      line-height: 1.45;
-    }
-
-    .bullet-icon {
-      width: 20px;
-      flex: 0 0 auto;
-      margin-top: 1px;
-      text-align: center;
-    }
-
-    .bullet.muted {
-      color: var(--muted);
-      font-size: 13.5px;
+      margin-top:3px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:600;
     }
 
     .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 11px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:11px;
     }
 
     .action-button {
-      display: inline-flex;
-      align-items: center;
-      flex: 0 0 auto;
-      gap: 6px;
-      padding: 10px 15px;
-      border: 0;
-      border-radius: 12px;
-      background: var(--accent);
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700;
-      text-decoration: none;
-      box-shadow: var(--shadow);
-    }
-
-    .action-button.small {
-      padding: 8px 13px;
-      font-size: 12.5px;
+      display:inline-flex;
+      align-items:center;
+      flex:0 0 auto;
+      gap:6px;
+      padding:10px 15px;
+      border:0;
+      border-radius:12px;
+      background:var(--accent);
+      color:#fff;
+      font-size:13px;
+      font-weight:700;
+      text-decoration:none;
+      box-shadow:var(--shadow);
     }
 
     .action-button.secondary {
-      background: var(--accent-soft);
-      color: var(--accent);
-      box-shadow: none;
+      background:var(--accent-soft);
+      color:var(--accent);
+      box-shadow:none;
     }
 
     .empty-state {
-      padding: 56px 20px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
-      text-align: center;
+      padding:56px 20px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+      text-align:center;
     }
 
     .group-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 20px 4px 10px;
-      font-size: 14px;
-      font-weight: 800;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin:20px 4px 10px;
+      font-size:14px;
+      font-weight:800;
     }
 
     /* ================================================================
-       7. Header e dashboard principali
-       ================================================================ */
-
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin: 14px 0 6px;
-    }
-
-    .stat-box {
-      padding: 15px 8px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      text-align: center;
-      box-shadow: var(--shadow);
-    }
-
-    .stat-label {
-      color: var(--muted);
-      font-size: 11.5px;
-      font-weight: 700;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-    }
-
-    .stat-value {
-      margin-top: 5px;
-      font-size: 17px;
-      font-weight: 800;
-      line-height: 1.2;
-    }
-
-    .progress-card {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin: 14px 0 6px;
-      padding: 16px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      box-shadow: var(--shadow);
-    }
-
-    .progress-ring {
-      flex: 0 0 auto;
-      transform: rotate(-90deg);
-    }
-
-    .progress-ring-background {
-      fill: none;
-      stroke: var(--border);
-      stroke-width: 8;
-    }
-
-    .progress-ring-value {
-      fill: none;
-      stroke: var(--accent);
-      stroke-width: 8;
-      stroke-linecap: round;
-    }
-
-    .progress-ring-label {
-      fill: var(--text);
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .progress-title {
-      font-size: 14px;
-      font-weight: 800;
-    }
-
-    .progress-subtitle {
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 12.5px;
-      font-weight: 600;
-    }
-
-    .dashboard-card {
-      margin-bottom: 14px;
-      padding: 20px;
-      border: 1px solid var(--border);
-      border-radius: 28px;
-      background: var(--surface);
-      box-shadow: var(--shadow);
-    }
-
-    .dashboard-kicker {
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-
-    .dashboard-title {
-      margin: 5px 0 0;
-      font-size: 25px;
-      font-weight: 850;
-      letter-spacing: -.03em;
-    }
-
-    .dashboard-subtitle {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .dashboard-metric {
-      padding: 14px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: var(--surface-soft);
-    }
-
-    .dashboard-metric-label {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .dashboard-metric-value {
-      margin-top: 4px;
-      font-size: 16px;
-      font-weight: 850;
-    }
-
-    /* ================================================================
-       8. Floating tabbar realmente fissa
+       Tabbar e pulsante
        ================================================================ */
 
     #tabbar {
-      position: fixed !important;
-      right: 14px !important;
-      bottom: calc(12px + var(--safe-bottom)) !important;
-      left: 14px !important;
-      z-index: 9999 !important;
-      display: flex !important;
-      gap: 6px;
-      overflow-x: auto;
-      padding: 7px;
-      border: 1px solid var(--border);
-      border-radius: 29px;
-      background: var(--nav);
-      box-shadow:
-        0 10px 30px rgba(0, 0, 0, .18),
-        0 2px 8px rgba(0, 0, 0, .08);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      backdrop-filter: blur(24px) saturate(180%);
-      scrollbar-width: none;
-      pointer-events: auto !important;
-      transform: translateZ(0);
+      position:fixed !important;
+      right:14px !important;
+      bottom:calc(12px + var(--safe-bottom)) !important;
+      left:14px !important;
+      z-index:9999 !important;
+      display:flex !important;
+      gap:6px;
+      overflow-x:auto;
+      padding:7px;
+      border:1px solid var(--border);
+      border-radius:29px;
+      background:var(--nav);
+      box-shadow:0 10px 30px rgba(0,0,0,.18),0 2px 8px rgba(0,0,0,.08);
+      -webkit-backdrop-filter:blur(24px) saturate(180%);
+      backdrop-filter:blur(24px) saturate(180%);
+      scrollbar-width:none;
+      pointer-events:auto !important;
+      transform:translateZ(0);
     }
 
     #tabbar::-webkit-scrollbar {
-      display: none;
+      display:none;
     }
 
     .tab-button {
-      display: flex;
-      flex: 0 0 auto;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      min-width: 76px;
-      min-height: 52px;
-      padding: 6px 10px;
-      border: 0;
-      border-radius: 21px;
-      background: transparent;
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 750;
-      pointer-events: auto !important;
+      display:flex;
+      flex:0 0 auto;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:2px;
+      min-width:76px;
+      min-height:52px;
+      padding:6px 10px;
+      border:0;
+      border-radius:21px;
+      background:transparent;
+      color:var(--muted);
+      font-size:10px;
+      font-weight:750;
+      pointer-events:auto !important;
     }
 
     .tab-button-icon {
-      font-size: 20px;
-      line-height: 1;
+      font-size:20px;
+      line-height:1;
     }
 
     .tab-button.active {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 4px 12px color-mix(
+      background:var(--accent);
+      color:#fff;
+      box-shadow:0 4px 12px color-mix(
         in srgb,
         var(--accent) 35%,
         transparent
@@ -766,202 +539,202 @@
     }
 
     .floating-button {
-      position: fixed;
-      right: 18px;
-      bottom: calc(106px + var(--safe-bottom));
-      z-index: 9998;
-      width: 54px;
-      height: 54px;
-      border: 0;
-      border-radius: 18px;
-      background: var(--accent);
-      color: #fff;
-      font-size: 26px;
-      box-shadow: 0 8px 20px -4px var(--accent);
+      position:fixed;
+      right:18px;
+      bottom:calc(106px + var(--safe-bottom));
+      z-index:9998;
+      width:54px;
+      height:54px;
+      border:0;
+      border-radius:18px;
+      background:var(--accent);
+      color:#fff;
+      font-size:26px;
+      box-shadow:0 8px 20px -4px var(--accent);
     }
 
     /* ================================================================
-       9. Modali e impostazioni
+       Modali e impostazioni
        ================================================================ */
 
     .settings-section {
-      margin-bottom: 26px;
+      margin-bottom:26px;
     }
 
     .settings-heading {
-      margin: 0 0 6px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: .05em;
-      text-transform: uppercase;
+      margin:0 0 6px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:.05em;
+      text-transform:uppercase;
     }
 
     .theme-options,
     .accent-options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
     }
 
     .pill-button {
-      padding: 11px 17px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      background: var(--surface);
-      color: var(--text);
-      font-size: 14px;
-      font-weight: 700;
-      box-shadow: var(--shadow);
+      padding:11px 17px;
+      border:1px solid var(--border);
+      border-radius:20px;
+      background:var(--surface);
+      color:var(--text);
+      font-size:14px;
+      font-weight:700;
+      box-shadow:var(--shadow);
     }
 
     .pill-button.active {
-      border-color: var(--accent);
-      background: var(--accent);
-      color: #fff;
+      border-color:var(--accent);
+      background:var(--accent);
+      color:#fff;
     }
 
     .color-swatch {
-      width: 42px;
-      height: 42px;
-      border: 3px solid transparent;
-      border-radius: 50%;
-      box-shadow: var(--shadow);
+      width:42px;
+      height:42px;
+      border:3px solid transparent;
+      border-radius:50%;
+      box-shadow:var(--shadow);
     }
 
     .color-swatch.active {
-      border-color: var(--text);
+      border-color:var(--text);
     }
 
     .settings-button,
     .rate-box {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      gap: 10px;
-      margin-top: 8px;
-      padding: 15px 16px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--surface);
-      color: var(--text);
-      font-size: 15px;
-      font-weight: 700;
-      text-align: left;
-      box-shadow: var(--shadow);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      width:100%;
+      gap:10px;
+      margin-top:8px;
+      padding:15px 16px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:var(--surface);
+      color:var(--text);
+      font-size:15px;
+      font-weight:700;
+      text-align:left;
+      box-shadow:var(--shadow);
     }
 
     .rate-box input {
-      width: 90px;
-      padding: 9px 10px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: var(--surface-soft);
-      color: var(--text);
-      font-size: 15px;
-      text-align: right;
+      width:90px;
+      padding:9px 10px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      background:var(--surface-soft);
+      color:var(--text);
+      font-size:15px;
+      text-align:right;
     }
 
     input[type="file"] {
-      display: none;
+      display:none;
     }
 
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 100000;
-      display: flex;
-      align-items: flex-end;
-      background: rgba(20, 15, 10, .5);
+      position:fixed;
+      inset:0;
+      z-index:100000;
+      display:flex;
+      align-items:flex-end;
+      background:rgba(20,15,10,.5);
     }
 
     .modal {
-      width: 100%;
-      max-height: 88vh;
-      overflow-y: auto;
-      padding: 22px 20px calc(26px + var(--safe-bottom));
-      border-radius: 28px 28px 0 0;
-      background: var(--surface-solid);
-      box-shadow: 0 -10px 40px rgba(0, 0, 0, .25);
+      width:100%;
+      max-height:88vh;
+      overflow-y:auto;
+      padding:22px 20px calc(26px + var(--safe-bottom));
+      border-radius:28px 28px 0 0;
+      background:var(--surface-solid);
+      box-shadow:0 -10px 40px rgba(0,0,0,.25);
     }
 
     .modal-title {
-      margin: 0 0 16px;
-      font-size: 19px;
-      font-weight: 800;
+      margin:0 0 16px;
+      font-size:19px;
+      font-weight:800;
     }
 
     .field {
-      margin-bottom: 13px;
+      margin-bottom:13px;
     }
 
     .field-label {
-      display: block;
-      margin-bottom: 5px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
+      display:block;
+      margin-bottom:5px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
     }
 
     .field input,
     .field select,
     .field textarea {
-      width: 100%;
-      padding: 12px 13px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      outline: none;
-      background: var(--surface-soft);
-      color: var(--text);
-      font-size: 16px;
+      width:100%;
+      padding:12px 13px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      outline:none;
+      background:var(--surface-soft);
+      color:var(--text);
+      font-size:16px;
     }
 
     .field textarea {
-      min-height: 64px;
-      resize: vertical;
+      min-height:64px;
+      resize:vertical;
     }
 
     .modal-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 18px;
+      display:flex;
+      gap:10px;
+      margin-top:18px;
     }
 
     .modal-actions button {
-      flex: 1;
-      padding: 14px;
-      border: 0;
-      border-radius: 16px;
-      font-size: 15px;
-      font-weight: 800;
+      flex:1;
+      padding:14px;
+      border:0;
+      border-radius:16px;
+      font-size:15px;
+      font-weight:800;
     }
 
-    .save-button { background: var(--accent); color: #fff; }
-    .cancel-button { border: 1px solid var(--border) !important; background: var(--surface-soft); color: var(--text); }
-    .delete-button { background: #c94a5a; color: #fff; }
+    .save-button { background:var(--accent); color:#fff; }
+    .cancel-button { border:1px solid var(--border) !important; background:var(--surface-soft); color:var(--text); }
+    .delete-button { background:#c94a5a; color:#fff; }
 
     .toast {
-      position: fixed;
-      bottom: calc(112px + var(--safe-bottom));
-      left: 50%;
-      z-index: 100001;
-      max-width: 90vw;
-      padding: 12px 18px;
-      border-radius: 20px;
-      background: var(--text);
-      color: var(--bg);
-      font-size: 13px;
-      font-weight: 700;
-      text-align: center;
-      box-shadow: 0 8px 24px rgba(0,0,0,.3);
-      opacity: 0;
-      transform: translateX(-50%);
-      transition: opacity .3s ease;
+      position:fixed;
+      bottom:calc(112px + var(--safe-bottom));
+      left:50%;
+      z-index:100001;
+      max-width:90vw;
+      padding:12px 18px;
+      border-radius:20px;
+      background:var(--text);
+      color:var(--bg);
+      font-size:13px;
+      font-weight:700;
+      text-align:center;
+      box-shadow:0 8px 24px rgba(0,0,0,.3);
+      opacity:0;
+      transform:translateX(-50%);
+      transition:opacity .3s ease;
     }
 
     .toast.visible {
-      opacity: 1;
+      opacity:1;
     }
   </style>
 </head>
@@ -1009,7 +782,7 @@
 
   <script>
     /* ================================================================
-       1. Stato e configurazione
+       1. Configurazione e stato
        ================================================================ */
 
     const DATA_KEY = "giappone-data";
@@ -1779,8 +1552,8 @@
       }
 
       if (state.view === "mappa") {
-        title.textContent = "🗺️ Mappa rapida";
-        subtitle.textContent = "Luoghi con link Google Maps";
+        title.textContent = "🗺️ Mappa del viaggio";
+        subtitle.textContent = "Filtra, raggruppa e apri i luoghi in Maps";
         main.appendChild(renderMap());
         return;
       }
@@ -1815,7 +1588,7 @@
     }
 
     /* ================================================================
-       5. Card
+       5. Card itinerario e dati
        ================================================================ */
 
     function renderItineraryCard(row, index) {
@@ -2102,75 +1875,291 @@
     }
 
     /* ================================================================
-       6. Mappa e calendario
+       6. Mappa avanzata
        ================================================================ */
 
-    function renderMap() {
-      const wrapper = document.createElement("div");
-      let found = false;
+    function collectMapItems() {
+      const items = [];
 
       SHEETS.forEach((key) => {
         const meta = META[key];
         if (!meta.maps) return;
 
-        const links = [];
-
         (state.data[key]?.rows || []).forEach((row) => {
           meta.maps.forEach((map) => {
             if (!isUrl(row[map.field])) return;
-            found = true;
-            links.push({
+
+            const category = key === "6. Attrazioni"
+              ? "Attrazioni"
+              : key === "8. Cibo e Ristoranti"
+                ? "Cibo"
+                : key === "9. Shopping"
+                  ? "Shopping"
+                  : key === "2. Hotel e Alloggi"
+                    ? "Alloggi"
+                    : "Trasporti";
+
+            const neighborhood = row["Quartiere"] ||
+              row["Città"] ||
+              "Senza zona";
+
+            items.push({
+              key,
               title: row[meta.title] || row[meta.fallback] || "—",
               subtitle: (meta.sub || [])
                 .map((field) => row[field])
                 .filter(Boolean)
                 .join(" · "),
+              city: row[meta.city] || row["Città"] || "",
+              neighborhood,
+              category,
               url: row[map.field],
-              city: meta.city ? row[meta.city] : ""
+              raw: row
             });
           });
         });
-
-        if (!links.length) return;
-
-        const heading = document.createElement("div");
-        heading.className = "group-title";
-        heading.innerHTML = `${ICONS[key]} ${meta.label}`;
-        wrapper.appendChild(heading);
-
-        links.forEach((item) => {
-          const card = document.createElement("article");
-          card.className = `card${item.city
-            ? ` city-card ${cityClass(item.city)}`
-            : ""}`;
-          card.innerHTML = `
-            <h3 class="card-title">${escapeHtml(item.title)}</h3>
-            ${item.subtitle
-              ? `<div class="card-subtitle">
-                   ${escapeHtml(item.subtitle)}
-                 </div>`
-              : ""}
-            <div class="button-row">
-              <a
-                class="action-button"
-                href="${item.url}"
-                target="_blank"
-                rel="noopener"
-              >📍 Apri in Maps</a>
-            </div>
-          `;
-          wrapper.appendChild(card);
-        });
       });
 
-      if (!found) {
-        wrapper.innerHTML = `
-          <div class="empty-state">
-            📍 Nessun link Google Maps inserito.
+      return items;
+    }
+
+    function renderMap() {
+      const wrapper = document.createElement("div");
+      const items = collectMapItems();
+      const cities = ["", ...new Set(items.map((item) => item.city).filter(Boolean))];
+      const categories = ["", ...new Set(items.map((item) => item.category))];
+
+      wrapper.innerHTML = `
+        <section class="map-hero">
+          <div class="map-hero-kicker">📍 Travel map</div>
+          <h2 class="map-hero-title">Mappa del viaggio</h2>
+          <div class="map-hero-subtitle">
+            Filtra, raggruppa e apri i luoghi in Google Maps.
+          </div>
+          <div class="map-counters" id="mapCounters"></div>
+          <div class="map-mode-row">
+            <button class="map-mode-button active" data-map-mode="list">
+              📋 Elenco
+            </button>
+            <button class="map-mode-button" data-map-mode="zones">
+              🧭 Zone
+            </button>
+          </div>
+          <div class="map-search-row">
+            <input
+              id="mapSearch"
+              type="search"
+              placeholder="🔎 Cerca luogo o quartiere..."
+            >
+            <button class="action-button small" id="mapOpenSearch">
+              🌐 Maps
+            </button>
+          </div>
+          <div class="map-filter-title">Città</div>
+          <div class="map-filter-row" id="mapCities"></div>
+          <div class="map-filter-title">Categoria</div>
+          <div class="map-filter-row" id="mapCategories"></div>
+        </section>
+        <section id="mapResults"></section>
+      `;
+
+      const filterState = {
+        city: "",
+        category: "",
+        query: "",
+        mode: "list"
+      };
+
+      const results = wrapper.querySelector("#mapResults");
+
+      function filteredItems() {
+        const query = filterState.query.toLowerCase().trim();
+        return items.filter((item) => {
+          const text = [
+            item.title,
+            item.subtitle,
+            item.city,
+            item.neighborhood,
+            item.category
+          ].join(" ").toLowerCase();
+
+          return (!filterState.city || item.city === filterState.city) &&
+            (!filterState.category || item.category === filterState.category) &&
+            (!query || text.includes(query));
+        });
+      }
+
+      function updateCounters(list) {
+        const categoriesCount = {
+          Attrazioni: list.filter((item) => item.category === "Attrazioni").length,
+          Cibo: list.filter((item) => item.category === "Cibo").length,
+          Shopping: list.filter((item) => item.category === "Shopping").length
+        };
+
+        wrapper.querySelector("#mapCounters").innerHTML = `
+          <div class="map-counter">
+            <div class="map-counter-value">${list.length}</div>
+            <div class="map-counter-label">Luoghi</div>
+          </div>
+          <div class="map-counter">
+            <div class="map-counter-value">${categoriesCount.Attrazioni}</div>
+            <div class="map-counter-label">Attrazioni</div>
+          </div>
+          <div class="map-counter">
+            <div class="map-counter-value">
+              ${categoriesCount.Cibo + categoriesCount.Shopping}
+            </div>
+            <div class="map-counter-label">Cibo/Shopping</div>
           </div>
         `;
       }
 
+      function renderMapFilters() {
+        const cityBox = wrapper.querySelector("#mapCities");
+        const categoryBox = wrapper.querySelector("#mapCategories");
+        cityBox.innerHTML = "";
+        categoryBox.innerHTML = "";
+
+        cities.forEach((city) => {
+          const button = document.createElement("button");
+          button.className = `map-filter-chip${
+            filterState.city === city ? " active" : ""
+          }`;
+          button.textContent = city || "🌆 Tutte";
+          button.onclick = () => {
+            filterState.city = city;
+            renderMapFilters();
+            renderMapResults();
+          };
+          cityBox.appendChild(button);
+        });
+
+        categories.forEach((category) => {
+          const button = document.createElement("button");
+          button.className = `map-filter-chip${
+            filterState.category === category ? " active" : ""
+          }`;
+          button.textContent = category || "✨ Tutte";
+          button.onclick = () => {
+            filterState.category = category;
+            renderMapFilters();
+            renderMapResults();
+          };
+          categoryBox.appendChild(button);
+        });
+      }
+
+      function renderMapResults() {
+        const list = filteredItems();
+        updateCounters(list);
+        results.innerHTML = "";
+
+        if (!list.length) {
+          results.innerHTML = `
+            <div class="empty-state">
+              🔍 Nessun luogo corrisponde ai filtri selezionati.
+            </div>
+          `;
+          return;
+        }
+
+        if (filterState.mode === "zones") {
+          const groups = {};
+
+          list.forEach((item) => {
+            const group = item.neighborhood || "Senza zona";
+            if (!groups[group]) groups[group] = [];
+            groups[group].push(item);
+          });
+
+          Object.entries(groups).forEach(([zone, zoneItems]) => {
+            const heading = document.createElement("div");
+            heading.className = "group-title";
+            heading.textContent = `🧭 ${zone}`;
+            results.appendChild(heading);
+            zoneItems.forEach((item) => {
+              results.appendChild(renderMapCard(item));
+            });
+          });
+        } else {
+          list.forEach((item) => {
+            results.appendChild(renderMapCard(item));
+          });
+        }
+      }
+
+      function renderMapCard(item) {
+        const card = document.createElement("article");
+        card.className = `card city-card ${cityClass(item.city)}`;
+        card.innerHTML = `
+          <div class="card-top">
+            <div class="card-title-wrap">
+              <h3 class="card-title">${escapeHtml(item.title)}</h3>
+              <div class="card-subtitle">
+                ${escapeHtml(item.city || "")}
+                ${item.subtitle ? ` · ${escapeHtml(item.subtitle)}` : ""}
+              </div>
+            </div>
+            <span class="badge">${escapeHtml(item.category)}</span>
+          </div>
+          <div class="button-row">
+            <a
+              class="action-button"
+              href="${item.url}"
+              target="_blank"
+              rel="noopener"
+            >📍 Apri in Maps</a>
+            <button class="action-button secondary" data-share>
+              📤 Condividi
+            </button>
+          </div>
+        `;
+
+        card.querySelector("[data-share]").onclick = (event) => {
+          event.stopPropagation();
+          shareText(
+            item.title,
+            `${item.title} · ${item.city} · ${item.category}\n${item.url}`
+          );
+        };
+
+        return card;
+      }
+
+      wrapper.querySelector("#mapSearch").oninput = (event) => {
+        filterState.query = event.target.value;
+        renderMapResults();
+      };
+
+      wrapper.querySelector("#mapOpenSearch").onclick = () => {
+        const parts = [
+          filterState.category,
+          filterState.city,
+          filterState.query,
+          "Giappone"
+        ].filter(Boolean);
+        const query = encodeURIComponent(parts.join(" "));
+        window.open(
+          `https://www.google.com/maps/search/?api=1&query=${query}`,
+          "_blank"
+        );
+      };
+
+      wrapper.querySelectorAll("[data-map-mode]").forEach((button) => {
+        button.onclick = () => {
+          filterState.mode = button.dataset.mapMode;
+          wrapper.querySelectorAll("[data-map-mode]").forEach((item) => {
+            item.classList.toggle(
+              "active",
+              item.dataset.mapMode === filterState.mode
+            );
+          });
+          renderMapResults();
+        };
+      });
+
+      renderMapFilters();
+      renderMapResults();
       return wrapper;
     }
 
@@ -2221,7 +2210,7 @@
     }
 
     /* ================================================================
-       7. Modali e impostazioni
+       7. Modali, impostazioni e import/export
        ================================================================ */
 
     function openEditModal(key, index) {
