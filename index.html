@@ -24,7 +24,7 @@
 
   <style>
     /* ================================================================
-       1. Variabili e temi
+       1. Variabili tema
        ================================================================ */
 
     :root {
@@ -104,11 +104,9 @@
     .city-partenza { --city: #8a8478; }
     .city-default { --city: var(--accent); }
 
-    /* Stati visivi */
     .state-ready { --state-color: #2ea86b; }
     .state-buy { --state-color: #e08a3c; }
     .state-preparing { --state-color: #8b8f99; }
-    .state-skipped { --state-color: #c94a5a; }
     .state-booked { --state-color: #3f6ea8; }
 
     /* ================================================================
@@ -175,18 +173,12 @@
     }
 
     @keyframes viewFade {
-      from {
-        opacity: 0;
-        transform: translateY(6px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* ================================================================
-       3. Sfondo decorativo
+       3. Sfondo non interattivo
        ================================================================ */
 
     #backgroundLayer {
@@ -307,7 +299,7 @@
     }
 
     /* ================================================================
-       5. Dashboard e metriche
+       5. Dashboard e card
        ================================================================ */
 
     .dashboard-card,
@@ -435,7 +427,6 @@
       stroke: var(--accent);
       stroke-width: 8;
       stroke-linecap: round;
-      transition: stroke-dashoffset 0.4s ease;
     }
 
     .progress-ring-label {
@@ -457,7 +448,7 @@
     }
 
     /* ================================================================
-       6. Filtri e toolbar
+       6. Filtri, toolbar e timeline
        ================================================================ */
 
     .filter-row {
@@ -521,10 +512,6 @@
       font-weight: 700;
       box-shadow: var(--shadow);
     }
-
-    /* ================================================================
-       7. Card, timeline e stati
-       ================================================================ */
 
     .timeline-list {
       position: relative;
@@ -761,7 +748,7 @@
     }
 
     /* ================================================================
-       8. Tabbar flottante e pulsante aggiunta
+       7. Tabbar flottante e pulsante aggiunta
        ================================================================ */
 
     .floating-button {
@@ -834,46 +821,211 @@
     }
 
     /* ================================================================
-       9. Modali e impostazioni
+       8. Impostazioni e modali
        ================================================================ */
 
-    .settings-section { margin-bottom: 26px; }
-    .settings-heading { margin: 0 0 6px; color: var(--muted); font-size: 13px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
-    .theme-options, .accent-options { display: flex; flex-wrap: wrap; gap: 10px; }
-    .pill-button { padding: 11px 17px; border: 1px solid var(--border); border-radius: 20px; background: var(--surface); color: var(--text); font-size: 14px; font-weight: 700; box-shadow: var(--shadow); }
-    .pill-button.active { border-color: var(--accent); background: var(--accent); color: #fff; }
-    .color-swatch { width: 42px; height: 42px; border: 3px solid transparent; border-radius: 50%; box-shadow: var(--shadow); }
-    .color-swatch.active { border-color: var(--text); }
-    .settings-button, .rate-box { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px; margin-top: 8px; padding: 15px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text); font-size: 15px; font-weight: 700; text-align: left; box-shadow: var(--shadow); }
-    .rate-box input { width: 90px; padding: 9px 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-soft); color: var(--text); font-size: 15px; text-align: right; }
-    input[type="file"] { display: none; }
-    .modal-overlay { position: fixed; inset: 0; z-index: 100; display: flex; align-items: flex-end; background: rgba(20,15,10,.5); }
-    .modal { width: 100%; max-height: 88vh; overflow-y: auto; padding: 22px 20px calc(26px + var(--safe-bottom)); border-radius: 28px 28px 0 0; background: var(--surface-solid); box-shadow: 0 -10px 40px rgba(0,0,0,.25); }
-    .modal-title { margin: 0 0 16px; font-size: 19px; font-weight: 800; }
-    .field { margin-bottom: 13px; }
-    .field-label { display: block; margin-bottom: 5px; color: var(--muted); font-size: 12px; font-weight: 700; }
-    .field input, .field select, .field textarea { width: 100%; padding: 12px 13px; border: 1px solid var(--border); border-radius: 12px; outline: none; background: var(--surface-soft); color: var(--text); font-size: 16px; }
-    .field textarea { min-height: 64px; resize: vertical; }
-    .modal-actions { display: flex; gap: 10px; margin-top: 18px; }
-    .modal-actions button { flex: 1; padding: 14px; border: 0; border-radius: 16px; font-size: 15px; font-weight: 800; }
+    .settings-section {
+      margin-bottom: 26px;
+    }
+
+    .settings-heading {
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .theme-options,
+    .accent-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .pill-button {
+      padding: 11px 17px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: var(--shadow);
+    }
+
+    .pill-button.active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .color-swatch {
+      width: 42px;
+      height: 42px;
+      border: 3px solid transparent;
+      border-radius: 50%;
+      box-shadow: var(--shadow);
+    }
+
+    .color-swatch.active {
+      border-color: var(--text);
+    }
+
+    .settings-button,
+    .rate-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 10px;
+      margin-top: 8px;
+      padding: 15px 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 700;
+      text-align: left;
+      box-shadow: var(--shadow);
+    }
+
+    .rate-box input {
+      width: 90px;
+      padding: 9px 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-soft);
+      color: var(--text);
+      font-size: 15px;
+      text-align: right;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: flex-end;
+      background: rgba(20,15,10,.5);
+    }
+
+    .modal {
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 22px 20px calc(26px + var(--safe-bottom));
+      border-radius: 28px 28px 0 0;
+      background: var(--surface-solid);
+      box-shadow: 0 -10px 40px rgba(0,0,0,.25);
+    }
+
+    .modal-title {
+      margin: 0 0 16px;
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .field {
+      margin-bottom: 13px;
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      background: var(--surface-soft);
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .field textarea {
+      min-height: 64px;
+      resize: vertical;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      padding: 14px;
+      border: 0;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
     .save-button { background: var(--accent); color: #fff; }
     .cancel-button { border: 1px solid var(--border) !important; background: var(--surface-soft); color: var(--text); }
     .delete-button { background: #c94a5a; color: #fff; }
-    .toast { position: fixed; bottom: calc(112px + var(--safe-bottom)); left: 50%; z-index: 110; max-width: 90vw; padding: 12px 18px; border-radius: 20px; background: var(--text); color: var(--bg); font-size: 13px; font-weight: 700; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,.3); opacity: 0; transform: translateX(-50%); transition: opacity .3s ease; }
-    .toast.visible { opacity: 1; }
+
+    .toast {
+      position: fixed;
+      bottom: calc(112px + var(--safe-bottom));
+      left: 50%;
+      z-index: 110;
+      max-width: 90vw;
+      padding: 12px 18px;
+      border-radius: 20px;
+      background: var(--text);
+      color: var(--bg);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,.3);
+      opacity: 0;
+      transform: translateX(-50%);
+      transition: opacity .3s ease;
+    }
+
+    .toast.visible {
+      opacity: 1;
+    }
   </style>
 </head>
 
 <body>
   <div id="app">
     <div id="backgroundLayer" aria-hidden="true">
-      <svg id="backgroundPattern" viewBox="0 0 520 520" preserveAspectRatio="xMidYMid slice"></svg>
+      <svg
+        id="backgroundPattern"
+        viewBox="0 0 520 520"
+        preserveAspectRatio="xMidYMid slice"
+      ></svg>
     </div>
 
     <header id="topbar">
       <div class="topbar-row">
         <div class="logo">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#fff"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
             <path d="M3 9h18M6 9V6c0-1 1-2 2-2h8c1 0 2 1 2 2v3M6 9v11M18 9v11" />
           </svg>
         </div>
@@ -884,7 +1036,9 @@
     </header>
 
     <main id="main"></main>
-    <button id="addButton" class="floating-button" type="button" hidden>+</button>
+    <button id="addButton" class="floating-button" type="button" hidden>
+      +
+    </button>
     <nav id="tabbar" aria-label="Sezioni app"></nav>
   </div>
 
@@ -893,26 +1047,54 @@
 
   <script>
     /* ================================================================
-       1. Configurazione
+       1. Configurazione e stato
        ================================================================ */
 
     const DATA_KEY = "giappone-data";
     const SETTINGS_KEY = "giappone-settings";
-    const STATUSES = ["Da preparare", "Da comprare", "In valigia", "Fatto"];
+    const STATUSES = [
+      "Da preparare",
+      "Da comprare",
+      "In valigia",
+      "Fatto"
+    ];
     const URGENCY_ORDER = { Alta: 0, Media: 1, Bassa: 2 };
-    const MONTHS = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"];
-    const WEEKDAYS = ["dom", "lun", "mar", "mer", "gio", "ven", "sab"];
+    const MONTHS = [
+      "gen", "feb", "mar", "apr", "mag", "giu",
+      "lug", "ago", "set", "ott", "nov", "dic"
+    ];
+    const WEEKDAYS = [
+      "dom", "lun", "mar", "mer", "gio", "ven", "sab"
+    ];
 
     const SHEETS = [
-      "1. Itinerario", "2. Hotel e Alloggi", "3. Trasporti", "4. App", "5. Valigia",
-      "6. Attrazioni", "7. Guida", "8. Cibo e Ristoranti", "9. Shopping",
-      "10. Emergenze", "11. Budget"
+      "1. Itinerario",
+      "2. Hotel e Alloggi",
+      "3. Trasporti",
+      "4. App",
+      "5. Valigia",
+      "6. Attrazioni",
+      "7. Guida",
+      "8. Cibo e Ristoranti",
+      "9. Shopping",
+      "10. Emergenze",
+      "11. Budget"
     ];
 
     const TABS = [
-      "1. Itinerario", "mappa", "6. Attrazioni", "8. Cibo e Ristoranti",
-      "2. Hotel e Alloggi", "3. Trasporti", "9. Shopping", "4. App",
-      "5. Valigia", "7. Guida", "10. Emergenze", "11. Budget", "settings"
+      "1. Itinerario",
+      "mappa",
+      "6. Attrazioni",
+      "8. Cibo e Ristoranti",
+      "2. Hotel e Alloggi",
+      "3. Trasporti",
+      "9. Shopping",
+      "4. App",
+      "5. Valigia",
+      "7. Guida",
+      "10. Emergenze",
+      "11. Budget",
+      "settings"
     ];
 
     const ICONS = {
@@ -930,18 +1112,31 @@
     };
 
     const FIELD_ICONS = {
-      "Città": "📍", "Categoria": "🏷️", "Note": "📝",
-      "Note e Suggerimenti": "📝", "Note per il Giappone": "🎒",
-      "Note / Categoria": "📝", "Note / Conferma": "📝",
-      "Costo Stimato": "💰", "Durata": "⏱️",
-      "Mezzo / Vettore": "🚆", "Nome Hotel / Ryokan": "🏨",
-      "Quartiere": "🧭", "Articolo Mirato / Note": "🛍️",
-      "Dettagli Operativi": "📋", "Numero / Riferimento": "☎️",
-      "Funzione Principale": "⚙️", "Urgenza Configurazione": "⏳",
-      "Urgenza": "⏳", "Spesa Effettiva Revolut": "💸",
-      "Differenza": "📊", "Budget Previsto (Yen)": "💴",
-      "Pernottamento": "🏨", "Spostamento": "🚉",
-      "App": "📱", "Contatto / Servizio": "🚨"
+      "Città": "📍",
+      "Categoria": "🏷️",
+      "Note": "📝",
+      "Note e Suggerimenti": "📝",
+      "Note per il Giappone": "🎒",
+      "Note / Categoria": "📝",
+      "Note / Conferma": "📝",
+      "Costo Stimato": "💰",
+      "Durata": "⏱️",
+      "Mezzo / Vettore": "🚆",
+      "Nome Hotel / Ryokan": "🏨",
+      "Quartiere": "🧭",
+      "Articolo Mirato / Note": "🛍️",
+      "Dettagli Operativi": "📋",
+      "Numero / Riferimento": "☎️",
+      "Funzione Principale": "⚙️",
+      "Urgenza Configurazione": "⏳",
+      "Urgenza": "⏳",
+      "Spesa Effettiva Revolut": "💸",
+      "Differenza": "📊",
+      "Budget Previsto (Yen)": "💴",
+      "Pernottamento": "🏨",
+      "Spostamento": "🚉",
+      "App": "📱",
+      "Contatto / Servizio": "🚨"
     };
 
     const META = {
@@ -1044,10 +1239,6 @@
       }
     };
 
-    /* ================================================================
-       2. Stato e funzioni base
-       ================================================================ */
-
     const state = {
       data: JSON.parse(localStorage.getItem(DATA_KEY) || "{}"),
       settings: JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}"),
@@ -1060,6 +1251,10 @@
     state.settings.theme ||= "auto";
     state.settings.accent ||= "torii";
     state.settings.exchangeRate ||= 160;
+
+    /* ================================================================
+       2. Utility
+       ================================================================ */
 
     const saveData = () => {
       localStorage.setItem(DATA_KEY, JSON.stringify(state.data));
@@ -1086,8 +1281,7 @@
       let theme = state.settings.theme;
 
       if (theme === "auto") {
-        theme = matchMedia("(prefers-color-scheme: dark)")
-          .matches
+        theme = matchMedia("(prefers-color-scheme: dark)").matches
           ? "dark"
           : "light";
       }
@@ -1180,7 +1374,7 @@
     }
 
     /* ================================================================
-       3. Sfondo
+       3. Sfondo e navigazione
        ================================================================ */
 
     function renderBackground() {
@@ -1208,10 +1402,6 @@
 
       svg.innerHTML = paths;
     }
-
-    /* ================================================================
-       4. Barra di navigazione
-       ================================================================ */
 
     function renderTabs() {
       const tabbar = document.getElementById("tabbar");
@@ -1263,7 +1453,6 @@
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-
       const first = parseDate(rows[0].Data);
       const last = parseDate(rows[rows.length - 1].Data);
 
@@ -1290,7 +1479,7 @@
     }
 
     /* ================================================================
-       5. Dashboard e liste
+       4. Dashboard e rendering liste
        ================================================================ */
 
     function countMapLinks() {
@@ -1462,10 +1651,10 @@
 
       cities.forEach((city) => {
         const button = document.createElement("button");
-        button.type = "button";
         button.className = `filter-chip${
           state.city === city ? " active" : ""
         }`;
+        button.type = "button";
         button.textContent = city || "🌆 Tutte";
         button.onclick = () => {
           state.city = city;
@@ -1654,7 +1843,7 @@
     }
 
     /* ================================================================
-       6. Card e contenuti
+       5. Card
        ================================================================ */
 
     function renderItineraryCard(row, index) {
@@ -1927,6 +2116,7 @@
     function renderEuro(row) {
       const value = Number(row["Budget Previsto (Yen)"]);
       if (Number.isNaN(value)) return "";
+
       return `
         <div class="bullet muted">
           <span class="bullet-icon">💶</span>
@@ -1940,7 +2130,7 @@
     }
 
     /* ================================================================
-       7. Mappa, calendario e condivisione
+       6. Mappa e calendario
        ================================================================ */
 
     function renderMap() {
@@ -1952,6 +2142,7 @@
         if (!meta.maps) return;
 
         const links = [];
+
         (state.data[key]?.rows || []).forEach((row) => {
           meta.maps.forEach((map) => {
             if (!isUrl(row[map.field])) return;
@@ -2058,7 +2249,7 @@
     }
 
     /* ================================================================
-       8. Modifica e impostazioni
+       7. Modali e impostazioni
        ================================================================ */
 
     function openEditModal(key, index) {
@@ -2182,9 +2373,7 @@
             <label class="field-label">
               ${escapeHtml(label)}
             </label>
-            <textarea data-field="${escapeHtml(field)}">
-              ${escapeHtml(current)}
-            </textarea>
+            <textarea data-field="${escapeHtml(field)}">${escapeHtml(current)}</textarea>
           </div>
         `;
       }
@@ -2231,26 +2420,10 @@
         <section class="settings-section">
           <h2 class="settings-heading">🖌️ Colore accento</h2>
           <div class="accent-options">
-            <button
-              class="color-swatch"
-              data-accent="torii"
-              style="background:#c94a5a"
-            ></button>
-            <button
-              class="color-swatch"
-              data-accent="ao"
-              style="background:#3f6ea8"
-            ></button>
-            <button
-              class="color-swatch"
-              data-accent="matcha"
-              style="background:#4f8a5e"
-            ></button>
-            <button
-              class="color-swatch"
-              data-accent="sakura"
-              style="background:#d97ea0"
-            ></button>
+            <button class="color-swatch" data-accent="torii" style="background:#c94a5a"></button>
+            <button class="color-swatch" data-accent="ao" style="background:#3f6ea8"></button>
+            <button class="color-swatch" data-accent="matcha" style="background:#4f8a5e"></button>
+            <button class="color-swatch" data-accent="sakura" style="background:#d97ea0"></button>
           </div>
         </section>
 
@@ -2381,12 +2554,14 @@
       SHEETS.forEach((key) => {
         const sheet = state.data[key];
         if (!sheet) return;
+
         const values = [
           sheet.headers,
           ...sheet.rows.map((row) => {
             return sheet.headers.map((header) => row[header] || "");
           })
         ];
+
         XLSX.utils.book_append_sheet(
           workbook,
           XLSX.utils.aoa_to_sheet(values),
@@ -2409,6 +2584,7 @@
             new Uint8Array(reader.result),
             { type: "array", cellDates: false }
           );
+
           const imported = {};
           const missing = [];
           let total = 0;
@@ -2483,7 +2659,7 @@
     }
 
     /* ================================================================
-       7. Avvio
+       9. Avvio e modalità offline
        ================================================================ */
 
     if ("serviceWorker" in navigator) {
