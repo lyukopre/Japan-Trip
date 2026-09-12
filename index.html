@@ -24,22 +24,22 @@
 
   <style>
     /* ================================================================
-       1. Variabili tema
+       1. Variabili
        ================================================================ */
 
     :root {
       --bg: #f3f1ec;
-      --surface: rgba(255, 255, 255, 0.92);
+      --surface: rgba(255, 255, 255, 0.95);
       --surface-solid: #ffffff;
-      --surface-soft: rgba(250, 248, 244, 0.94);
+      --surface-soft: rgba(250, 248, 244, 0.96);
       --text: #1c1a18;
       --muted: #77716a;
       --border: rgba(222, 216, 205, 0.95);
       --accent: #c94a5a;
       --accent-soft: #fae9eb;
       --gold: #c9a24a;
-      --header: rgba(243, 241, 236, 0.95);
-      --nav: rgba(255, 255, 255, 0.95);
+      --header: rgba(243, 241, 236, 0.96);
+      --nav: rgba(255, 255, 255, 0.98);
       --shadow: 0 2px 12px rgba(28, 20, 10, 0.10);
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -50,15 +50,15 @@
 
     html[data-theme="dark"] {
       --bg: #111318;
-      --surface: rgba(27, 30, 38, 0.95);
+      --surface: rgba(27, 30, 38, 0.97);
       --surface-solid: #1b1e26;
-      --surface-soft: rgba(34, 37, 46, 0.96);
+      --surface-soft: rgba(34, 37, 46, 0.98);
       --text: #f2f0ec;
       --muted: #96939a;
-      --border: rgba(55, 58, 68, 0.95);
+      --border: rgba(55, 58, 68, 0.96);
       --accent-soft: #35232a;
-      --header: rgba(17, 19, 24, 0.96);
-      --nav: rgba(17, 19, 24, 0.97);
+      --header: rgba(17, 19, 24, 0.98);
+      --nav: rgba(17, 19, 24, 0.99);
       --shadow: 0 2px 14px rgba(0, 0, 0, 0.42);
     }
 
@@ -104,13 +104,56 @@
     .city-partenza { --city: #8a8478; }
     .city-default { --city: var(--accent); }
 
-    .state-ready { --state-color: #2ea86b; }
-    .state-buy { --state-color: #e08a3c; }
-    .state-preparing { --state-color: #8b8f99; }
-    .state-booked { --state-color: #3f6ea8; }
+    /* ================================================================
+       2. Stati tendina valigia
+       ================================================================ */
+
+    .state-ready {
+      --state-color: #2ea86b;
+      --state-bg: #dff5e9;
+      --state-text: #197342;
+    }
+
+    .state-buy {
+      --state-color: #e08a3c;
+      --state-bg: #fff0dc;
+      --state-text: #a95b18;
+    }
+
+    .state-preparing {
+      --state-color: #8b8f99;
+      --state-bg: #e9eaee;
+      --state-text: #5e626d;
+    }
+
+    .state-booked {
+      --state-color: #3f6ea8;
+      --state-bg: #e1ecfb;
+      --state-text: #285b91;
+    }
+
+    html[data-theme="dark"] .state-ready {
+      --state-bg: #173b29;
+      --state-text: #8ce0ae;
+    }
+
+    html[data-theme="dark"] .state-buy {
+      --state-bg: #4a2d16;
+      --state-text: #ffc078;
+    }
+
+    html[data-theme="dark"] .state-preparing {
+      --state-bg: #30333c;
+      --state-text: #c0c4ce;
+    }
+
+    html[data-theme="dark"] .state-booked {
+      --state-bg: #1d3552;
+      --state-text: #9bc4f5;
+    }
 
     /* ================================================================
-       2. Reset e struttura
+       3. Reset e struttura
        ================================================================ */
 
     * {
@@ -165,7 +208,7 @@
       width: 100%;
       max-width: 640px;
       margin: 0 auto;
-      padding: 12px 16px calc(132px + var(--safe-bottom));
+      padding: 12px 16px calc(148px + var(--safe-bottom));
     }
 
     .view-fade {
@@ -178,7 +221,7 @@
     }
 
     /* ================================================================
-       3. Sfondo non interattivo
+       4. Sfondo non interattivo
        ================================================================ */
 
     #backgroundLayer {
@@ -203,16 +246,16 @@
     #backgroundPattern {
       width: 100%;
       height: 100%;
-      opacity: 0.12;
+      opacity: 0.10;
       pointer-events: none !important;
     }
 
     html[data-theme="dark"] #backgroundPattern {
-      opacity: 0.18;
+      opacity: 0.16;
     }
 
     /* ================================================================
-       4. Header
+       5. Header
        ================================================================ */
 
     #topbar {
@@ -299,7 +342,7 @@
     }
 
     /* ================================================================
-       5. Dashboard e card
+       6. Card e strutture comuni
        ================================================================ */
 
     .dashboard-card,
@@ -448,7 +491,7 @@
     }
 
     /* ================================================================
-       6. Filtri, toolbar e timeline
+       7. Filtri e lista
        ================================================================ */
 
     .filter-row {
@@ -723,8 +766,8 @@
       border: 0;
       border-radius: 20px;
       outline: none;
-      background: var(--accent-soft);
-      color: var(--accent);
+      background: var(--state-bg, var(--accent-soft));
+      color: var(--state-text, var(--accent));
       font-size: 12.5px;
       font-weight: 800;
       box-shadow: inset 4px 0 0 var(--state-color, transparent);
@@ -748,42 +791,30 @@
     }
 
     /* ================================================================
-       7. Tabbar flottante e pulsante aggiunta
+       8. Navigazione flottante realmente fissa
        ================================================================ */
 
-    .floating-button {
-      position: fixed;
-      right: 18px;
-      bottom: calc(106px + var(--safe-bottom));
-      z-index: 40;
-      width: 54px;
-      height: 54px;
-      border: 0;
-      border-radius: 18px;
-      background: var(--accent);
-      color: #fff;
-      font-size: 26px;
-      box-shadow: 0 8px 20px -4px var(--accent);
-    }
-
     #tabbar {
-      position: fixed;
-      right: 14px;
-      bottom: calc(12px + var(--safe-bottom));
-      left: 14px;
-      z-index: 50;
-      display: flex;
+      position: fixed !important;
+      right: 14px !important;
+      bottom: calc(12px + var(--safe-bottom)) !important;
+      left: 14px !important;
+      z-index: 9999 !important;
+      display: flex !important;
       gap: 6px;
       overflow-x: auto;
       padding: 7px;
       border: 1px solid var(--border);
       border-radius: 29px;
       background: var(--nav);
-      box-shadow: 0 10px 30px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.08);
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.18),
+        0 2px 8px rgba(0, 0, 0, 0.08);
       -webkit-backdrop-filter: blur(24px) saturate(180%);
       backdrop-filter: blur(24px) saturate(180%);
       scrollbar-width: none;
       pointer-events: auto !important;
+      transform: translateZ(0);
     }
 
     #tabbar::-webkit-scrollbar {
@@ -806,7 +837,7 @@
       color: var(--muted);
       font-size: 10px;
       font-weight: 750;
-      pointer-events: auto;
+      pointer-events: auto !important;
     }
 
     .tab-button-icon {
@@ -817,11 +848,30 @@
     .tab-button.active {
       background: var(--accent);
       color: #fff;
-      box-shadow: 0 4px 12px color-mix(in srgb, var(--accent) 35%, transparent);
+      box-shadow: 0 4px 12px color-mix(
+        in srgb,
+        var(--accent) 35%,
+        transparent
+      );
+    }
+
+    .floating-button {
+      position: fixed;
+      right: 18px;
+      bottom: calc(106px + var(--safe-bottom));
+      z-index: 9998;
+      width: 54px;
+      height: 54px;
+      border: 0;
+      border-radius: 18px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 26px;
+      box-shadow: 0 8px 20px -4px var(--accent);
     }
 
     /* ================================================================
-       8. Impostazioni e modali
+       9. Impostazioni e modali
        ================================================================ */
 
     .settings-section {
@@ -910,10 +960,10 @@
     .modal-overlay {
       position: fixed;
       inset: 0;
-      z-index: 100;
+      z-index: 100000;
       display: flex;
       align-items: flex-end;
-      background: rgba(20,15,10,.5);
+      background: rgba(20, 15, 10, .5);
     }
 
     .modal {
@@ -985,7 +1035,7 @@
       position: fixed;
       bottom: calc(112px + var(--safe-bottom));
       left: 50%;
-      z-index: 110;
+      z-index: 100001;
       max-width: 90vw;
       padding: 12px 18px;
       border-radius: 20px;
@@ -1047,22 +1097,30 @@
 
   <script>
     /* ================================================================
-       1. Configurazione e stato
+       1. Stato e configurazione
        ================================================================ */
 
     const DATA_KEY = "giappone-data";
     const SETTINGS_KEY = "giappone-settings";
+
     const STATUSES = [
       "Da preparare",
       "Da comprare",
       "In valigia",
       "Fatto"
     ];
-    const URGENCY_ORDER = { Alta: 0, Media: 1, Bassa: 2 };
+
+    const URGENCY_ORDER = {
+      Alta: 0,
+      Media: 1,
+      Bassa: 2
+    };
+
     const MONTHS = [
       "gen", "feb", "mar", "apr", "mag", "giu",
       "lug", "ago", "set", "ott", "nov", "dic"
     ];
+
     const WEEKDAYS = [
       "dom", "lun", "mar", "mer", "gio", "ven", "sab"
     ];
@@ -1479,7 +1537,7 @@
     }
 
     /* ================================================================
-       4. Dashboard e rendering liste
+       4. Dashboard e liste
        ================================================================ */
 
     function countMapLinks() {
@@ -1843,7 +1901,7 @@
     }
 
     /* ================================================================
-       5. Card
+       6. Card
        ================================================================ */
 
     function renderItineraryCard(row, index) {
@@ -2130,7 +2188,7 @@
     }
 
     /* ================================================================
-       6. Mappa e calendario
+       6. Mappa, calendario e condivisione
        ================================================================ */
 
     function renderMap() {
@@ -2659,7 +2717,7 @@
     }
 
     /* ================================================================
-       9. Avvio e modalità offline
+       8. Avvio finale congelato
        ================================================================ */
 
     if ("serviceWorker" in navigator) {
