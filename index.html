@@ -963,27 +963,30 @@
     }
 
 
-    /* Ricerca e controlli: stile pillola Apple */
-    :root{--pill-bg:#181d28;--pill-border:#3a4252;--pill-active:#d14e63;--pill-text:#b9bdc7;--section-gap:14px}
-    #main{max-width:700px;padding:16px 16px calc(118px + var(--safe-bottom))}
-    .toolbar{display:grid;gap:9px;margin:12px 0 17px}
-    .toolbar>input,.toolbar input[type="search"],.search-toolbar input{width:100%;min-height:46px;padding:0 17px;border:1px solid var(--pill-border)!important;border-radius:999px!important;background:var(--pill-bg)!important;color:var(--text)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 5px 14px rgba(0,0,0,.12);font-size:16px}
-    .toolbar>input:focus,.toolbar input[type="search"]:focus{border-color:var(--accent)!important;box-shadow:0 0 0 4px rgba(209,78,99,.16)!important}
-    .toolbar>.dropdown,.toolbar>select,.day-select{width:100%}
-    .toolbar select,.dropdown select,.day-select{min-height:42px;width:100%;padding:0 16px;border:1px solid var(--pill-border)!important;border-radius:999px!important;background:var(--pill-bg)!important;color:var(--pill-text)!important;font-size:14px}
-    .filter-row{display:flex!important;flex-wrap:nowrap!important;gap:8px;width:100%;margin:0 0 12px;padding:2px 2px 7px;overflow-x:auto!important;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+    /* Layout uniforme e controlli pillola */
+    :root{--ui-max:700px;--ui-gap:14px;--ui-pill-h:40px;--ui-bg:#0b0d12;--ui-surface:#151923;--ui-surface-2:#1b202c;--ui-border:#353d4d;--ui-accent:#d14e63;--ui-text:#f5f3ef;--ui-muted:#a4a7b0}
+    html,body{background:var(--ui-bg)!important;color:var(--ui-text)!important}
+    body{background:linear-gradient(180deg,#0b0d12,#0d0f15 58%,#090b10)!important}
+    #backgroundLayer{opacity:.25!important;background:radial-gradient(circle at 10% 20%,rgba(209,78,99,.06),transparent 26%),radial-gradient(circle at 90% 70%,rgba(226,173,81,.035),transparent 28%)!important}
+    #backgroundPattern{display:none!important}
+    #main{max-width:var(--ui-max);padding:16px 16px calc(120px + var(--safe-bottom));background:transparent!important}
+    #topbar{background:rgba(11,13,18,.97)!important;border-bottom:1px solid #252b38!important}
+    #tabbar{right:10px!important;left:10px!important;bottom:calc(8px + var(--safe-bottom))!important;padding:6px!important;border-radius:22px!important;background:rgba(11,13,18,.98)!important;border-color:var(--ui-border)!important}
+    .toolbar{display:grid;gap:var(--ui-gap);margin:14px 0 18px}
+    .toolbar>input,.toolbar input[type=search],.search-toolbar input{width:100%;min-height:var(--ui-pill-h);padding:0 17px;border:1px solid var(--ui-border)!important;border-radius:999px!important;background:var(--ui-surface-2)!important;color:var(--ui-text)!important;font-size:15px;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+    .toolbar>.dropdown,.toolbar>select,.dropdown,.day-select{width:100%}
+    .toolbar select,.dropdown select,.day-select{width:100%;min-height:var(--ui-pill-h);padding:0 17px;border:1px solid var(--ui-border)!important;border-radius:999px!important;background:var(--ui-surface-2)!important;color:var(--ui-muted)!important;font-size:14px}
+    .filter-row{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:8px;width:100%;margin:0 0 18px;padding:0 2px 5px;overflow-x:auto!important;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch}
     .filter-row::-webkit-scrollbar{display:none}
-    .filter-chip,.filter-row button{flex:0 0 auto!important;min-height:38px;padding:0 15px;border:1px solid var(--pill-border)!important;border-radius:999px!important;background:var(--pill-bg)!important;color:var(--pill-text)!important;font-size:13px;font-weight:750;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.10)}
-    .filter-chip.active,.filter-row button.active{background:var(--pill-active)!important;border-color:var(--pill-active)!important;color:#fff!important;box-shadow:0 6px 15px rgba(209,78,99,.24)}
-    .button-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
-    .action-button,.settings-button,.save-button,.cancel-button{min-height:40px;border-radius:999px!important;padding:0 17px;display:inline-flex;align-items:center;justify-content:center;gap:7px}
-    .card{margin-bottom:var(--section-gap);padding:18px;border-radius:22px}
-    .section-heading,.group-title{margin-top:17px;margin-bottom:10px}
-    .empty-state{margin-top:12px;padding:22px;border-radius:22px;text-align:center}
-    .result-count{margin:0 2px;color:var(--muted);font-size:12px}
-    #tabbar{right:10px!important;left:10px!important;bottom:calc(8px + var(--safe-bottom))!important;border-radius:22px!important;padding:6px!important}
-    .tab-button{min-height:54px;border-radius:17px!important}
-    @media(max-width:430px){.card{padding:16px}.action-button,.settings-button{padding:0 14px;font-size:12px}.filter-chip,.filter-row button{padding:0 13px}}
+    .filter-chip,.filter-row button{flex:0 0 auto!important;height:36px;min-height:36px;padding:0 14px;border:1px solid var(--ui-border)!important;border-radius:999px!important;background:var(--ui-surface-2)!important;color:var(--ui-muted)!important;font-size:12px;font-weight:750;white-space:nowrap;box-shadow:none}
+    .filter-chip.active,.filter-row button.active{background:var(--ui-accent)!important;border-color:var(--ui-accent)!important;color:#fff!important;box-shadow:0 5px 13px rgba(209,78,99,.22)}
+    .card,.itinerary-card,.section-card,.empty-state,.summary-card,.settings-section{margin-bottom:var(--ui-gap);border-radius:20px;background:var(--ui-surface)!important;border:1px solid var(--ui-border)!important;box-shadow:0 7px 20px rgba(0,0,0,.2)}
+    .button-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:var(--ui-gap)}
+    .action-button,.settings-button,.save-button,.cancel-button{height:40px;min-height:40px;padding:0 16px;border-radius:999px!important;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+    .section-heading,.group-title{margin-top:18px;margin-bottom:10px}
+    .floating-button{right:17px;bottom:calc(84px + var(--safe-bottom));width:52px;height:52px;border-radius:18px;background:var(--ui-accent)!important}
+    input:focus,select:focus,textarea:focus{border-color:var(--ui-accent)!important;box-shadow:0 0 0 3px rgba(209,78,99,.17)!important}
+    @media(max-width:430px){.card{padding:16px}.action-button,.settings-button{padding:0 14px;font-size:12px}.filter-chip,.filter-row button{padding:0 12px}}
 
   </style>
 </head>
