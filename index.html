@@ -963,27 +963,27 @@
     }
 
 
-    /* FINAL DARK UI PATCH */
-    :root{color-scheme:dark;--app-bg:#0b0d12;--app-surface:#151923;--app-surface-2:#1b202c;--app-surface-3:#232936;--app-border:#303644;--app-text:#f5f3ef;--app-muted:#a4a7b0;--app-accent:#d14e63}
-    html,body{background:var(--app-bg)!important;color:var(--app-text)!important}
-    body{background:linear-gradient(180deg,#0b0d12 0%,#0d0f15 55%,#090b10 100%)!important}
-    #app{background:transparent!important}
-    #backgroundLayer{background:radial-gradient(circle at 10% 20%,rgba(209,78,99,.06),transparent 26%),radial-gradient(circle at 90% 70%,rgba(226,173,81,.035),transparent 28%)!important;opacity:.35!important}
-    #backgroundPattern{display:none!important}
-    #topbar{background:rgba(11,13,18,.96)!important;border-bottom-color:#252b38!important}
-    #main{background:transparent!important}
-    #tabbar{background:rgba(11,13,18,.98)!important;border-color:var(--app-border)!important}
-    .card,.itinerary-card,.section-card,.empty-state,.summary-card,.settings-section,.modal{background:var(--app-surface)!important;border-color:var(--app-border)!important;color:var(--app-text)!important}
-    .card:hover,.itinerary-card:hover,.section-card:hover{border-color:#465064!important;transform:none!important}
-    input,select,textarea{background:var(--app-surface-2)!important;color:var(--app-text)!important;border-color:#3a4252!important}
-    input::placeholder,textarea::placeholder{color:#8b8f9a!important}
-    .filter-row,.filters,.filter-buttons,.status-filters,.category-filters,.sort-filters{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;white-space:nowrap!important;gap:7px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-    .filter-row::-webkit-scrollbar,.filters::-webkit-scrollbar,.filter-buttons::-webkit-scrollbar,.status-filters::-webkit-scrollbar,.category-filters::-webkit-scrollbar,.sort-filters::-webkit-scrollbar{display:none}
-    .filter-row button,.filters button,.filter-buttons button,.status-filters button,.category-filters button,.sort-filters button,.filter-chip,.chip-button,.pill-button{flex:0 0 auto!important;background:var(--app-surface-2)!important;color:var(--app-muted)!important;border-color:#3b4352!important;border-radius:999px!important;white-space:nowrap!important}
-    .filter-row button.active,.filters button.active,.filter-buttons button.active,.status-filters button.active,.category-filters button.active,.sort-filters button.active,.filter-chip.active,.chip-button.active,.pill-button.active{background:var(--app-accent)!important;color:#fff!important;border-color:var(--app-accent)!important}
-    .tab-button.active{background:var(--app-accent)!important;color:#fff!important}
-    .floating-button{background:var(--app-accent)!important}
-    :focus-visible{outline:3px solid rgba(209,78,99,.58);outline-offset:2px}
+    /* Ricerca e controlli: stile pillola Apple */
+    :root{--pill-bg:#181d28;--pill-border:#3a4252;--pill-active:#d14e63;--pill-text:#b9bdc7;--section-gap:14px}
+    #main{max-width:700px;padding:16px 16px calc(118px + var(--safe-bottom))}
+    .toolbar{display:grid;gap:9px;margin:12px 0 17px}
+    .toolbar>input,.toolbar input[type="search"],.search-toolbar input{width:100%;min-height:46px;padding:0 17px;border:1px solid var(--pill-border)!important;border-radius:999px!important;background:var(--pill-bg)!important;color:var(--text)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 5px 14px rgba(0,0,0,.12);font-size:16px}
+    .toolbar>input:focus,.toolbar input[type="search"]:focus{border-color:var(--accent)!important;box-shadow:0 0 0 4px rgba(209,78,99,.16)!important}
+    .toolbar>.dropdown,.toolbar>select,.day-select{width:100%}
+    .toolbar select,.dropdown select,.day-select{min-height:42px;width:100%;padding:0 16px;border:1px solid var(--pill-border)!important;border-radius:999px!important;background:var(--pill-bg)!important;color:var(--pill-text)!important;font-size:14px}
+    .filter-row{display:flex!important;flex-wrap:nowrap!important;gap:8px;width:100%;margin:0 0 12px;padding:2px 2px 7px;overflow-x:auto!important;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+    .filter-row::-webkit-scrollbar{display:none}
+    .filter-chip,.filter-row button{flex:0 0 auto!important;min-height:38px;padding:0 15px;border:1px solid var(--pill-border)!important;border-radius:999px!important;background:var(--pill-bg)!important;color:var(--pill-text)!important;font-size:13px;font-weight:750;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.10)}
+    .filter-chip.active,.filter-row button.active{background:var(--pill-active)!important;border-color:var(--pill-active)!important;color:#fff!important;box-shadow:0 6px 15px rgba(209,78,99,.24)}
+    .button-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    .action-button,.settings-button,.save-button,.cancel-button{min-height:40px;border-radius:999px!important;padding:0 17px;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+    .card{margin-bottom:var(--section-gap);padding:18px;border-radius:22px}
+    .section-heading,.group-title{margin-top:17px;margin-bottom:10px}
+    .empty-state{margin-top:12px;padding:22px;border-radius:22px;text-align:center}
+    .result-count{margin:0 2px;color:var(--muted);font-size:12px}
+    #tabbar{right:10px!important;left:10px!important;bottom:calc(8px + var(--safe-bottom))!important;border-radius:22px!important;padding:6px!important}
+    .tab-button{min-height:54px;border-radius:17px!important}
+    @media(max-width:430px){.card{padding:16px}.action-button,.settings-button{padding:0 14px;font-size:12px}.filter-chip,.filter-row button{padding:0 13px}}
 
   </style>
 </head>
