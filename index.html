@@ -16,6 +16,8 @@
 
   <title>Giappone 2026/27</title>
 
+  <link rel="manifest" href="manifest.json">
+
   <script
     src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
   ></script>
@@ -961,10 +963,6 @@
     .toast.visible {
       opacity: 1;
     }
-
-
-    .filter-block{display:grid;grid-template-columns:1fr auto;align-items:center;gap:5px;margin:8px 0 10px}.filter-heading{grid-column:1/-1;display:flex;justify-content:space-between;color:var(--muted);font-size:11px;font-weight:800}.filter-reset{min-height:31px;padding:6px 9px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);color:var(--muted-strong);font-size:11px;font-weight:800}.filter-block .filter-row{grid-column:1/-1;margin:0}.search-toolbar{display:flex;align-items:center;gap:7px}.search-toolbar input{flex:1}.day-select{width:100%;margin:7px 0;padding:10px 12px;border:1px solid var(--border);border-radius:13px;background:var(--surface-2);color:var(--text)}.section-label{margin:14px 0 8px;color:var(--muted-strong);font-size:12px;font-weight:850;letter-spacing:.04em;text-transform:uppercase}.more-menu{position:fixed;right:16px;bottom:calc(76px + var(--safe-bottom));z-index:10000;display:grid;gap:4px;min-width:190px;padding:8px;border:1px solid var(--border);border-radius:16px;background:var(--surface-3);box-shadow:0 14px 32px rgba(0,0,0,.45)}.more-menu button{display:flex;align-items:center;gap:9px;padding:10px;border:0;border-radius:10px;background:transparent;color:var(--text);text-align:left}.more-menu button:hover{background:var(--accent-soft)}.budget-panel{margin:12px 0}.budget-card{display:grid;gap:10px;padding:14px;border:1px solid var(--border);border-radius:16px;background:var(--surface)}.budget-meter{height:9px;overflow:hidden;border-radius:99px;background:#2a303c}.budget-meter-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--success),var(--warning),var(--danger))}.budget-note{color:var(--muted-strong);font-size:12px}.budget-summary{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:12px}.budget-summary strong{color:var(--text);font-size:15px}.day-view-section{margin-top:14px}.day-view{display:grid;gap:12px}.day-group{border:1px solid var(--border);border-radius:16px;background:var(--surface);overflow:hidden}.day-header{display:flex;justify-content:space-between;padding:12px 14px;background:var(--surface-3);border-bottom:1px solid var(--border)}.day-title{font-weight:850}.day-meta{color:var(--muted);font-size:11px}.day-items{display:grid;gap:7px;padding:9px}.day-item{display:grid;grid-template-columns:56px 1fr;gap:9px;padding:9px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2)}.day-time{color:var(--accent-hover);font-size:11px;font-weight:850}.day-item-title{font-weight:800}.day-item-sub{margin-top:2px;color:var(--muted);font-size:12px}.alert-panel{margin:12px 0;padding:13px;border:1px solid rgba(219,98,116,.35);border-radius:15px;background:rgba(219,98,116,.1)}.alert-title{color:#f08a98;font-weight:850}.alert-list{margin:7px 0 0;padding-left:18px;color:var(--muted-strong);font-size:12px}.card-details{padding:0 15px 12px;color:var(--muted-strong);font-size:13px}.expand-control{display:flex;justify-content:space-between;width:100%;padding:10px 15px;border:0;border-top:1px solid var(--border);background:transparent;color:var(--muted-strong);font-size:11px;font-weight:850}.expand-control::after{content:"⌄";font-size:16px}.is-expanded .expand-control::after{transform:rotate(180deg)}
-
   </style>
 </head>
 
@@ -1053,11 +1051,20 @@
       "11. Budget"
     ];
 
-    const PRIMARY_TABS = [
-      "1. Itinerario", "mappa", "6. Attrazioni", "8. Cibo e Ristoranti", "2. Hotel e Alloggi"
-    ];
-    const SECONDARY_TABS = [
-      "3. Trasporti", "9. Shopping", "4. App", "5. Valigia", "7. Guida", "10. Emergenze", "11. Budget", "settings"
+    const TABS = [
+      "1. Itinerario",
+      "mappa",
+      "6. Attrazioni",
+      "8. Cibo e Ristoranti",
+      "2. Hotel e Alloggi",
+      "3. Trasporti",
+      "9. Shopping",
+      "4. App",
+      "5. Valigia",
+      "7. Guida",
+      "10. Emergenze",
+      "11. Budget",
+      "settings"
     ];
 
     const ICONS = {
@@ -1371,36 +1378,40 @@
     function renderTabs() {
       const tabbar = document.getElementById("tabbar");
       tabbar.innerHTML = "";
-      const tabs = [...PRIMARY_TABS, "more", "settings"];
-      tabs.forEach((key) => {
+
+      TABS.forEach((key) => {
         const button = document.createElement("button");
         button.className = "tab-button";
         button.type = "button";
         button.dataset.tab = key;
-        const isMore = key === "more";
-        const isSettings = key === "settings";
-        button.innerHTML = `<span class="tab-button-icon">${isMore ? "⋯" : isSettings ? "⚙️" : key === "mappa" ? "🗺️📍" : ICONS[key]}</span><span>${isMore ? "Altro" : isSettings ? "Impostazioni" : META[key].label}</span>`;
-        button.classList.toggle("active", state.view === key || (isMore && SECONDARY_TABS.includes(state.view)));
+
+        const icon = key === "mappa"
+          ? "🗺️📍"
+          : key === "settings"
+            ? "⚙️"
+            : ICONS[key];
+
+        const label = key === "mappa"
+          ? "Mappa"
+          : key === "settings"
+            ? "Impostazioni"
+            : META[key].label;
+
+        button.innerHTML = `
+          <span class="tab-button-icon">${icon}</span>
+          ${label}
+        `;
+
         button.onclick = () => {
-          if (isMore) { openMoreMenu(); return; }
-          state.view = key; resetViewState(); renderApp();
+          state.view = key;
+          state.search = "";
+          state.city = "";
+          state.sort = "default";
+          renderApp();
         };
+
         tabbar.appendChild(button);
       });
-    }
-
-    function resetViewState() {
-      state.search = ""; state.city = ""; state.sort = "default"; state.day = "";
-    }
-
-    function openMoreMenu() {
-      const existing = document.getElementById("moreMenu");
-      if (existing) { existing.remove(); return; }
-      const menu = document.createElement("div");
-      menu.id = "moreMenu"; menu.className = "more-menu";
-      menu.innerHTML = SECONDARY_TABS.map(key => `<button type="button" data-more-tab="${escapeHtml(key)}"><span>${ICONS[key] || "⚙️"}</span>${escapeHtml(key === "settings" ? "Impostazioni" : META[key].label)}</button>`).join("");
-      document.body.appendChild(menu);
-      menu.querySelectorAll("[data-more-tab]").forEach(button => button.onclick = () => { state.view = button.dataset.moreTab; resetViewState(); menu.remove(); renderTabs(); renderApp(); });
     }
 
     function renderBanner() {
@@ -1607,12 +1618,6 @@
         )
       ];
 
-      const wrap = document.createElement("div");
-      wrap.className = "filter-block";
-      const heading = document.createElement("div");
-      heading.className = "filter-heading";
-      heading.innerHTML = `<span>📍 Città</span><span>${filteredCount(key, meta)} risultati</span>`;
-      wrap.appendChild(heading);
       const row = document.createElement("div");
       row.className = "filter-row";
 
@@ -1630,38 +1635,61 @@
         row.appendChild(button);
       });
 
-      const reset = document.createElement("button");
-      reset.type = "button"; reset.className = "filter-reset"; reset.textContent = "Reset";
-      reset.hidden = !state.city;
-      reset.onclick = () => { state.city = ""; renderApp(); };
-      wrap.appendChild(row); wrap.appendChild(reset);
-      return wrap;
-    }
-
-    function filteredCount(key, meta) {
-      const q = String(state.search || "").toLowerCase().trim();
-      return (state.data[key]?.rows || []).filter(row => (!state.city || row[meta.city] === state.city) && (!q || (meta.search || []).some(field => String(row[field] || "").toLowerCase().includes(q)))).length;
+      return row;
     }
 
     function renderToolbar(key, meta) {
-      const toolbar = document.createElement("div"); toolbar.className = "toolbar
-a".trim();
-      const row = document.createElement("div"); row.className = "search-toolbar";
-      const input = document.createElement("input"); input.type = "search"; input.placeholder = `🔎 Cerca in ${meta.label}...`; input.value = state.search;
-      const clear = document.createElement("button"); clear.type="button"; clear.className="search-clear"; clear.textContent="✕"; clear.hidden=!state.search;
-      const count = document.createElement("div"); count.className="result-count";
-      const update = () => { state.search=input.value; clear.hidden=!state.search; count.textContent=`${filteredCount(key,meta)} risultati`; renderList(key,row.parentElement.nextElementSibling); };
-      input.oninput=update; clear.onclick=()=>{input.value=""; state.search=""; clear.hidden=true; count.textContent=`${filteredCount(key,meta)} risultati`; renderList(key,row.parentElement.nextElementSibling)};
-      row.append(input,clear); toolbar.append(row,count);
-      if (key === "1. Itinerario") {
-        const day = document.createElement("select"); day.className="day-select"; day.innerHTML=`<option value="">📅 Tutti i giorni</option>` + [...new Set(rowsFor(key).map(r=>r.Data).filter(Boolean))].map(d=>`<option value="${escapeHtml(d)}">${escapeHtml(shortDate(d))}</option>`).join(""); day.value=state.day; day.onchange=()=>{state.day=day.value;renderApp()}; toolbar.append(day);
-      } else if (key !== "11. Budget") {
-        const options=[{value:"default",label:"↕️ Originale"},{value:"alpha",label:"🔤 A-Z"}]; if(state.data[key]?.headers?.includes("Urgenza"))options.push({value:"urgency",label:"⏳ Urgenza"}); toolbar.append(createSelect(options,state.sort,value=>{state.sort=value;renderList(key,row.parentElement.nextElementSibling)}));
+      const toolbar = document.createElement("div");
+      toolbar.className = "toolbar";
+
+      const input = document.createElement("input");
+      input.type = "search";
+      input.placeholder = `🔎 Cerca in ${meta.label}...`;
+      input.value = state.search;
+      input.oninput = () => {
+        state.search = input.value;
+        renderList(key, toolbar.nextElementSibling);
+      };
+      toolbar.appendChild(input);
+
+      if (key !== "1. Itinerario" && key !== "11. Budget") {
+        const options = [
+          { value: "default", label: "↕️ Originale" },
+          { value: "alpha", label: "🔤 A-Z" }
+        ];
+
+        if ((state.data[key]?.headers || []).includes("Urgenza")) {
+          options.push({ value: "urgency", label: "⏳ Urgenza" });
+        }
+
+        toolbar.appendChild(
+          createSelect(options, state.sort, (value) => {
+            state.sort = value;
+            renderList(key, toolbar.nextElementSibling);
+          })
+        );
       }
+
       return toolbar;
     }
 
-    function rowsFor(key) { return state.data[key]?.rows || []; }
+    function createSelect(options, selected, onChange) {
+      const wrapper = document.createElement("div");
+      wrapper.className = "dropdown";
+      const select = document.createElement("select");
+
+      options.forEach((option) => {
+        const element = document.createElement("option");
+        element.value = option.value;
+        element.textContent = option.label;
+        element.selected = option.value === selected;
+        select.appendChild(element);
+      });
+
+      select.onchange = () => onChange(select.value);
+      wrapper.appendChild(select);
+      return wrapper;
+    }
 
     function renderList(key, container) {
       if (!container) return;
@@ -1678,9 +1706,10 @@ a".trim();
             .includes(query);
         });
 
-        const matchesCity = !meta.city || !state.city || row[meta.city] === state.city;
-        const matchesDay = key !== "1. Itinerario" || !state.day || row.Data === state.day;
-        return matchesQuery && matchesCity && matchesDay;
+        const matchesCity = !meta.city || !state.city ||
+          row[meta.city] === state.city;
+
+        return matchesQuery && matchesCity;
       });
 
       if (state.sort === "alpha") {
@@ -1722,33 +1751,6 @@ a".trim();
       });
     }
 
-
-    function attachExpandable(card, detailsText) {
-      if (!detailsText) return card;
-      const details = document.createElement("div"); details.className="card-details"; details.innerHTML=detailsText;
-      const control = document.createElement("button"); control.type="button"; control.className="expand-control"; control.textContent="Mostra dettagli";
-      control.onclick=(event)=>{event.stopPropagation(); card.classList.toggle("is-expanded"); control.textContent=card.classList.contains("is-expanded")?"Nascondi dettagli":"Mostra dettagli"};
-      card.append(details,control); return card;
-    }
-
-    function renderDayView() {
-      const wrapper=document.createElement("section"); wrapper.className="day-view-section";
-      const grouped={}; rowsFor("1. Itinerario").forEach((row,index)=>{const day=row.Data||"Senza data";(grouped[day] ||= []).push({row,index})});
-      const days=Object.entries(grouped); if(!days.length)return wrapper;
-      wrapper.innerHTML=`<div class="section-label">📅 Vista per giorno</div>`;
-      const list=document.createElement("div"); list.className="day-view";
-      days.filter(([day])=>!state.day||day===state.day).forEach(([day,items])=>{const group=document.createElement("section");group.className="day-group";group.innerHTML=`<header class="day-header"><span class="day-title">${escapeHtml(shortDate(day))}</span><span class="day-meta">${items.length} attività</span></header><div class="day-items"></div>`;const itemsBox=group.querySelector(".day-items");items.forEach(({row})=>{const item=document.createElement("div");item.className="day-item";item.innerHTML=`<div class="day-time">${escapeHtml(row.Ora||"—")}</div><div><div class="day-item-title">${escapeHtml(row["Città"]||"—")}</div><div class="day-item-sub">${escapeHtml(row["Attività Principali"]||row["Spostamento"]||"")}</div></div>`;itemsBox.appendChild(item)});list.appendChild(group)});wrapper.appendChild(list);return wrapper;
-    }
-
-    function renderBudgetPanel() {
-      const wrapper=document.createElement("section"); wrapper.className="budget-panel";
-      const rows=rowsFor("11. Budget"); let planned=0,actual=0; rows.forEach(r=>{planned+=numberValue(r["Budget Previsto (Yen)"]);actual+=numberValue(r["Spesa Effettiva Revolut"])}); const percent=planned?Math.min(100,actual/planned*100):0; const over=planned>0&&actual>planned;
-      wrapper.innerHTML=`<div class="section-label">💴 Controllo budget</div><div class="budget-card"><div class="budget-summary"><span>Speso <strong>${formatYen(actual)}</strong></span><span>Budget <strong>${formatYen(planned)}</strong></span></div><div class="budget-meter"><div class="budget-meter-fill" style="width:${percent}%"></div></div><div class="budget-note">${over?"⚠️ Budget superato":"✅ Budget sotto controllo"}</div></div>`;return wrapper;
-    }
-    function numberValue(value){return Number(String(value??"").replace(/[^0-9.,-]/g,"").replace(/\.(?=.*\.)/g,"").replace(",","."))||0}
-    function formatYen(value){return `${Math.round(value).toLocaleString("it-IT")} ¥`}
-    function renderIssuePanel(){const wrapper=document.createElement("section");wrapper.className="issue-panel";const issues=[];const itinerary=rowsFor("1. Itinerario");const dates=itinerary.map(r=>r.Data).filter(Boolean);const seen=new Set();dates.forEach(d=>{if(seen.has(d))issues.push(`Data duplicata nell'itinerario: ${d}`);seen.add(d)});itinerary.forEach(r=>{if(!r.Città||!r.Data)issues.push("Attività con città o data mancanti")});const budget=rowsFor("11. Budget");const planned=budget.reduce((n,r)=>n+numberValue(r["Budget Previsto (Yen)"]),0),actual=budget.reduce((n,r)=>n+numberValue(r["Spesa Effettiva Revolut"]),0);if(planned&&actual>planned)issues.push("La spesa effettiva supera il budget previsto");if(!issues.length)return wrapper;wrapper.innerHTML=`<div class="alert-panel"><div class="alert-title">⚠️ Controlli da verificare</div><ul class="alert-list">${issues.slice(0,6).map(i=>`<li>${escapeHtml(i)}</li>`).join("")}</ul></div>`;return wrapper}
-
     function renderApp() {
       const main = document.getElementById("main");
       const title = document.getElementById("pageTitle");
@@ -1770,8 +1772,6 @@ a".trim();
       subtitle.textContent = "";
       renderBanner();
 
-      renderTabs();
-
       if (state.view === "settings") {
         title.textContent = "⚙️ Impostazioni";
         main.appendChild(renderSettings());
@@ -1791,13 +1791,6 @@ a".trim();
       if (state.view === "1. Itinerario") {
         main.appendChild(renderDashboard());
         main.appendChild(renderStats());
-        main.appendChild(renderIssuePanel());
-        main.appendChild(renderDayView());
-      }
-
-      if (state.view === "11. Budget") {
-        main.appendChild(renderBudgetPanel());
-        main.appendChild(renderIssuePanel());
       }
 
       if (state.view === "5. Valigia") {
@@ -2065,7 +2058,7 @@ a".trim();
         );
       };
 
-      return attachExpandable(card, [notes, extra].filter(Boolean).join("") || "Dettagli aggiuntivi disponibili nella modifica.");
+      return card;
     }
 
     function renderStatus(row, field) {
@@ -2658,5 +2651,16 @@ a".trim();
     renderTabs();
     renderApp();
   </script>
+  <script>
+    window.addEventListener("error", (event) => {
+      console.error(event.error || event.message);
+      const main = document.getElementById("main");
+      if (main && !main.dataset.runtimeError) {
+        main.dataset.runtimeError = "1";
+        main.innerHTML = '<section style="margin:24px 0;padding:18px;border:1px solid #61313c;border-radius:16px;background:#21161b;color:#f5dce0;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif"><strong>Errore di caricamento</strong><p style="margin:8px 0 0;color:#c9aeb3">Ricarica la pagina. Se il problema persiste, importa nuovamente il backup JSON.</p></section>';
+      }
+    });
+  </script>
+
 </body>
 </html>
