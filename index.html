@@ -963,36 +963,14 @@
     }
 
 
-    /* Uniformità dimensionale definitiva */
-    :root{--ui-max:700px;--ui-gap:14px;--ui-control-h:40px;--ui-bg:#0b0d12;--ui-surface:#151923;--ui-surface-2:#1b202c;--ui-border:#353d4d;--ui-accent:#d14e63;--ui-text:#f5f3ef;--ui-muted:#a4a7b0}
-    html,body{background:var(--ui-bg)!important;color:var(--ui-text)!important}
-    body{background:linear-gradient(180deg,#0b0d12,#0d0f15 58%,#090b10)!important}
-    #backgroundLayer{opacity:.25!important;background:radial-gradient(circle at 10% 20%,rgba(209,78,99,.06),transparent 26%),radial-gradient(circle at 90% 70%,rgba(226,173,81,.035),transparent 28%)!important}
-    #backgroundPattern{display:none!important}
-    #main{width:100%;max-width:var(--ui-max);padding:16px 16px calc(120px + var(--safe-bottom));background:transparent!important}
-    #topbar{background:rgba(11,13,18,.97)!important;border-bottom:1px solid #252b38!important}
-    #tabbar{right:10px!important;left:10px!important;bottom:calc(8px + var(--safe-bottom))!important;padding:6px!important;border-radius:22px!important;background:rgba(11,13,18,.98)!important;border-color:var(--ui-border)!important}
-
-    .toolbar{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--ui-gap);width:100%;margin:14px 0 18px}
-    .toolbar>input,.toolbar input[type=search],.search-toolbar input{width:100%;height:var(--ui-control-h);min-height:var(--ui-control-h);padding:0 17px;border:1px solid var(--ui-border)!important;border-radius:999px!important;background:var(--ui-surface-2)!important;color:var(--ui-text)!important;font-size:15px;box-sizing:border-box}
-    .toolbar>.dropdown,.toolbar>select,.dropdown,.day-select{width:100%;min-width:0}
-    .toolbar select,.dropdown select,.day-select{width:100%;height:var(--ui-control-h);min-height:var(--ui-control-h);padding:0 17px;border:1px solid var(--ui-border)!important;border-radius:999px!important;background:var(--ui-surface-2)!important;color:var(--ui-muted)!important;font-size:14px;box-sizing:border-box}
-
-    .filter-row{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:8px;width:100%;margin:0 0 18px;padding:0 2px 5px;overflow-x:auto!important;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch;box-sizing:border-box}.filter-row::-webkit-scrollbar{display:none}
-    .filter-chip,.filter-row button{flex:0 0 auto!important;height:36px;min-height:36px;padding:0 14px;border:1px solid var(--ui-border)!important;border-radius:999px!important;background:var(--ui-surface-2)!important;color:var(--ui-muted)!important;font-size:12px;font-weight:750;white-space:nowrap;box-sizing:border-box}
-    .filter-chip.active,.filter-row button.active{background:var(--ui-accent)!important;border-color:var(--ui-accent)!important;color:#fff!important}
-
-    .card,.itinerary-card,.section-card,.empty-state,.summary-card,.settings-section{width:100%;max-width:100%;margin:0 0 var(--ui-gap);box-sizing:border-box;border-radius:20px;background:var(--ui-surface)!important;border:1px solid var(--ui-border)!important;box-shadow:0 7px 20px rgba(0,0,0,.2)}
-    .button-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;width:100%;margin-top:var(--ui-gap)}
-    .action-button,.settings-button,.save-button,.cancel-button{height:var(--ui-control-h);min-height:var(--ui-control-h);box-sizing:border-box;padding:0 16px;border-radius:999px!important;display:inline-flex;align-items:center;justify-content:center;gap:7px}
-    .settings-button{width:100%;margin-top:8px}
-    .rate-box{width:100%;min-height:var(--ui-control-h);box-sizing:border-box}
-    .theme-options,.accent-options{display:flex;flex-wrap:wrap;gap:10px;width:100%}
-    .theme-options .pill-button{height:var(--ui-control-h);min-height:var(--ui-control-h)}
-    .section-heading,.group-title{margin-top:18px;margin-bottom:10px}
-    .floating-button{right:17px;bottom:calc(84px + var(--safe-bottom));width:52px;height:52px;border-radius:18px;background:var(--ui-accent)!important}
-    input:focus,select:focus,textarea:focus{border-color:var(--ui-accent)!important;box-shadow:0 0 0 3px rgba(209,78,99,.17)!important}
-    @media(max-width:430px){.card{padding:16px}.action-button,.settings-button{font-size:12px}.filter-chip,.filter-row button{padding:0 12px}}
+    /* Tema scuro unico, colore personalizzabile, layout uniforme */
+    :root{color-scheme:dark;--ui-max:700px;--ui-gap:14px;--ui-control-h:40px;--ui-bg:#0b0d12;--ui-surface:#151923;--ui-surface-2:#1b202c;--ui-border:#353d4d;--ui-accent:#d14e63;--ui-text:#f5f3ef;--ui-muted:#a4a7b0}
+    html,body{background:var(--ui-bg)!important;color:var(--ui-text)!important}body{background:linear-gradient(180deg,#0b0d12,#0d0f15 58%,#090b10)!important}#backgroundLayer{opacity:.24!important;background:radial-gradient(circle at 10% 20%,rgba(209,78,99,.06),transparent 26%),radial-gradient(circle at 90% 70%,rgba(226,173,81,.035),transparent 28%)!important}#backgroundPattern{display:none!important}
+    #main{width:100%;max-width:var(--ui-max);padding:16px 16px calc(120px + var(--safe-bottom));background:transparent!important}#topbar{background:rgba(11,13,18,.97)!important;border-bottom:1px solid #252b38!important}#tabbar{right:10px!important;left:10px!important;bottom:calc(8px + var(--safe-bottom))!important;padding:6px!important;border-radius:22px!important;background:rgba(11,13,18,.98)!important;border-color:var(--ui-border)!important}
+    .toolbar{display:grid;gap:var(--ui-gap);width:100%;margin:14px 0 18px}.toolbar>input,.toolbar input[type=search],.search-toolbar input{width:100%;height:var(--ui-control-h);min-height:var(--ui-control-h);padding:0 17px;border:1px solid var(--ui-border)!important;border-radius:999px!important;background:var(--ui-surface-2)!important;color:var(--ui-text)!important;font-size:15px;box-sizing:border-box}.toolbar>.dropdown,.toolbar>select,.dropdown,.day-select{width:100%;min-width:0}.toolbar select,.dropdown select,.day-select{width:100%;height:var(--ui-control-h);min-height:var(--ui-control-h);padding:0 17px;border:1px solid var(--ui-border)!important;border-radius:999px!important;background:var(--ui-surface-2)!important;color:var(--ui-muted)!important;font-size:14px;box-sizing:border-box}
+    .filter-row{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:8px;width:100%;margin:0 0 18px;padding:0 2px 5px;overflow-x:auto!important;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch}.filter-row::-webkit-scrollbar{display:none}.filter-chip,.filter-row button{flex:0 0 auto!important;height:36px;min-height:36px;padding:0 14px;border:1px solid var(--ui-border)!important;border-radius:999px!important;background:var(--ui-surface-2)!important;color:var(--ui-muted)!important;font-size:12px;font-weight:750;white-space:nowrap;box-sizing:border-box}.filter-chip.active,.filter-row button.active{background:var(--ui-accent)!important;border-color:var(--ui-accent)!important;color:#fff!important}
+    .card,.itinerary-card,.section-card,.empty-state,.summary-card,.settings-section{width:100%;max-width:100%;margin:0 0 var(--ui-gap);box-sizing:border-box;border-radius:20px;background:var(--ui-surface)!important;border:1px solid var(--ui-border)!important;box-shadow:0 7px 20px rgba(0,0,0,.2)}.settings-section{min-height:112px;padding:18px!important}.settings-section .settings-heading{margin:0 0 12px}.settings-button{width:100%;min-height:46px;height:46px;margin-top:9px;box-sizing:border-box;border-radius:999px!important}.theme-options,.accent-options{display:flex;flex-wrap:wrap;align-items:center;gap:10px;width:100%}.theme-options .pill-button{height:40px;min-height:40px}.color-swatch{width:42px;height:42px}.rate-box{width:100%;min-height:46px;height:46px;box-sizing:border-box;border-radius:999px!important}
+    .button-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;width:100%;margin-top:var(--ui-gap)}.action-button,.save-button,.cancel-button{height:40px;min-height:40px;box-sizing:border-box;padding:0 16px;border-radius:999px!important;display:inline-flex;align-items:center;justify-content:center;gap:7px}.floating-button{right:17px;bottom:calc(84px + var(--safe-bottom));width:52px;height:52px;border-radius:18px;background:var(--ui-accent)!important}input:focus,select:focus,textarea:focus{border-color:var(--ui-accent)!important;box-shadow:0 0 0 3px rgba(209,78,99,.17)!important}
 
   </style>
 </head>
@@ -1084,7 +1062,6 @@
 
     const TABS = [
       "1. Itinerario",
-      "mappa",
       "6. Attrazioni",
       "8. Cibo e Ristoranti",
       "2. Hotel e Alloggi",
@@ -1281,13 +1258,9 @@
     }
 
     function applyTheme() {
-      let theme = state.settings.theme;
-
-      if (theme === "auto") {
-        theme = matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
-      }
+      document.documentElement.dataset.theme = "dark";
+      document.documentElement.dataset.accent = state.settings.accent || "torii";
+    }
 
       document.documentElement.dataset.theme = theme;
       document.documentElement.dataset.accent = state.settings.accent;
@@ -1417,7 +1390,7 @@
         button.dataset.tab = key;
 
         const icon = key === "mappa"
-          ? "🗺️📍"
+          ? "⚙️"
           : key === "settings"
             ? "⚙️"
             : ICONS[key];
@@ -1806,13 +1779,6 @@
       if (state.view === "settings") {
         title.textContent = "⚙️ Impostazioni";
         main.appendChild(renderSettings());
-        return;
-      }
-
-      if (state.view === "mappa") {
-        title.textContent = "🗺️ Mappa rapida";
-        subtitle.textContent = "Luoghi con link Google Maps";
-        main.appendChild(renderMap());
         return;
       }
 
@@ -2408,15 +2374,7 @@
         <section class="settings-section">
           <h2 class="settings-heading">🎨 Tema</h2>
           <div class="theme-options">
-            <button class="pill-button" data-theme="light">
-              ☀️ Chiaro
-            </button>
-            <button class="pill-button" data-theme="dark">
-              🌙 Scuro
-            </button>
-            <button class="pill-button" data-theme="auto">
-              🔄 Automatico
-            </button>
+            <button class="pill-button active" type="button">🌙 Scuro</button>
           </div>
         </section>
 
@@ -2463,18 +2421,6 @@
         </section>
       `;
 
-      wrapper.querySelectorAll("[data-theme]").forEach((button) => {
-        button.classList.toggle(
-          "active",
-          button.dataset.theme === state.settings.theme
-        );
-        button.onclick = () => {
-          state.settings.theme = button.dataset.theme;
-          saveSettings();
-          applyTheme();
-          renderApp();
-        };
-      });
 
       wrapper.querySelectorAll("[data-accent]").forEach((button) => {
         button.classList.toggle(
