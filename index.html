@@ -16,8 +16,6 @@
 
   <title>Giappone 2026/27</title>
 
-  <link rel="manifest" href="manifest.json">
-
   <script
     src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
   ></script>
@@ -963,6 +961,17 @@
     .toast.visible {
       opacity: 1;
     }
+
+
+    /* Ripristino sicuro: dark-only, sezioni uniformi */
+    :root{color-scheme:dark;--ui-bg:#0b0d12;--ui-surface:#151923;--ui-surface-2:#1b202c;--ui-border:#353d4d;--ui-accent:#d14e63;--ui-text:#f5f3ef;--ui-muted:#a4a7b0;--ui-gap:14px;--ui-control:42px}
+    html,body{background:var(--ui-bg)!important;color:var(--ui-text)!important}body{background:linear-gradient(180deg,#0b0d12,#0d0f15 58%,#090b10)!important}#backgroundLayer{opacity:.22!important;background:radial-gradient(circle at 10% 20%,rgba(209,78,99,.05),transparent 25%),radial-gradient(circle at 90% 70%,rgba(226,173,81,.03),transparent 28%)!important}#backgroundPattern{display:none!important}
+    #main{width:100%;max-width:700px;padding:16px 16px calc(120px + var(--safe-bottom));background:transparent!important}#topbar{background:rgba(11,13,18,.97)!important;border-bottom:1px solid #252b38!important}#tabbar{right:10px!important;left:10px!important;bottom:calc(8px + var(--safe-bottom))!important;background:rgba(11,13,18,.98)!important;border-color:var(--ui-border)!important}
+    .toolbar{display:grid;gap:var(--ui-gap);width:100%;margin:14px 0 18px}.toolbar>input,.toolbar input[type=search],.search-toolbar input{width:100%;height:var(--ui-control);min-height:var(--ui-control);box-sizing:border-box;border:1px solid var(--ui-border)!important;border-radius:999px!important;background:var(--ui-surface-2)!important;color:var(--ui-text)!important;padding:0 17px}.toolbar>.dropdown,.dropdown,.toolbar select,.dropdown select{width:100%;min-width:0}.toolbar select,.dropdown select{height:var(--ui-control);min-height:var(--ui-control);box-sizing:border-box;border-radius:999px!important;background:var(--ui-surface-2)!important;color:var(--ui-muted)!important;border-color:var(--ui-border)!important;padding:0 17px}
+    .filter-row{display:flex!important;flex-wrap:nowrap!important;gap:8px;width:100%;margin:0 0 18px;padding:0 2px 5px;overflow-x:auto!important;overflow-y:hidden;white-space:nowrap;scrollbar-width:none}.filter-row::-webkit-scrollbar{display:none}.filter-chip,.filter-row button{flex:0 0 auto!important;height:36px;min-height:36px;padding:0 14px;border-radius:999px!important;background:var(--ui-surface-2)!important;color:var(--ui-muted)!important;border:1px solid var(--ui-border)!important}.filter-chip.active,.filter-row button.active{background:var(--ui-accent)!important;color:#fff!important;border-color:var(--ui-accent)!important}
+    .card,.itinerary-card,.section-card,.empty-state,.summary-card,.settings-section{width:100%;max-width:100%;margin:0 0 var(--ui-gap);box-sizing:border-box;border-radius:20px;background:var(--ui-surface)!important;border:1px solid var(--ui-border)!important}.settings-section{min-height:126px;padding:18px!important}.settings-button{width:100%;height:46px;min-height:46px;margin-top:9px;border-radius:999px!important;box-sizing:border-box}.theme-options,.accent-options{display:flex;align-items:center;flex-wrap:wrap;gap:10px}.theme-options{display:none!important}.rate-box{min-height:46px;height:46px;border-radius:999px!important}.button-row{display:flex;flex-wrap:wrap;gap:10px;width:100%;margin-top:var(--ui-gap)}.action-button,.save-button,.cancel-button{height:42px;min-height:42px;border-radius:999px!important;padding:0 16px}.floating-button{bottom:calc(84px + var(--safe-bottom));background:var(--ui-accent)!important}
+    input:focus,select:focus,textarea:focus{border-color:var(--ui-accent)!important;box-shadow:0 0 0 3px rgba(209,78,99,.18)!important}
+
   </style>
 </head>
 
@@ -1053,7 +1062,6 @@
 
     const TABS = [
       "1. Itinerario",
-      "mappa",
       "6. Attrazioni",
       "8. Cibo e Ristoranti",
       "2. Hotel e Alloggi",
@@ -1778,13 +1786,6 @@
         return;
       }
 
-      if (state.view === "mappa") {
-        title.textContent = "🗺️ Mappa rapida";
-        subtitle.textContent = "Luoghi con link Google Maps";
-        main.appendChild(renderMap());
-        return;
-      }
-
       const meta = META[state.view];
       title.textContent = `${ICONS[state.view]} ${meta.label}`;
 
@@ -2374,6 +2375,20 @@
     function renderSettings() {
       const wrapper = document.createElement("div");
       wrapper.innerHTML = `
+        <section class="settings-section">
+          <h2 class="settings-heading">🎨 Tema</h2>
+          <div class="theme-options">
+            <button class="pill-button" data-theme="light">
+              ☀️ Chiaro
+            </button>
+            <button class="pill-button" data-theme="dark">
+              🌙 Scuro
+            </button>
+            <button class="pill-button" data-theme="auto">
+              🔄 Automatico
+            </button>
+          </div>
+        </section>
 
         <section class="settings-section">
           <h2 class="settings-heading">🖌️ Colore accento</h2>
@@ -2620,14 +2635,6 @@
        8. Avvio
        ================================================================ */
 
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("sw.js")
-          .catch(() => {});
-      });
-    }
-
     window.addEventListener("scroll", () => {
       document.getElementById("topbar").classList.toggle(
         "scrolled",
@@ -2640,6 +2647,8 @@
         if (state.settings.theme === "auto") applyTheme();
       });
 
+    if (state.view === "mappa") state.view = "1. Itinerario";
+    state.settings.theme = "dark";
     applyTheme();
     renderBackground();
     renderTabs();
