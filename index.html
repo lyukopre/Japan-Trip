@@ -963,6 +963,16 @@
     .toast.visible {
       opacity: 1;
     }
+
+
+    /* Correzione finale filtri: pillole uniformi e scorrimento orizzontale */
+    .filter-row{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;gap:8px!important;width:100%!important;margin:0 0 16px!important;padding:2px 2px 6px!important;overflow-x:auto!important;overflow-y:hidden!important;white-space:nowrap!important;scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-x!important}
+    .filter-row::-webkit-scrollbar{display:none!important}
+    .filter-row .filter-chip,.filter-row button{display:inline-flex!important;flex:0 0 auto!important;align-items:center!important;justify-content:center!important;width:auto!important;min-width:max-content!important;height:36px!important;min-height:36px!important;padding:0 14px!important;border:1px solid #353d4d!important;border-radius:999px!important;background:#1b202c!important;color:#a4a7b0!important;font-size:12px!important;font-weight:750!important;line-height:1!important;white-space:nowrap!important;box-shadow:none!important}
+    .filter-row .filter-chip.active,.filter-row button.active{background:#d14e63!important;border-color:#d14e63!important;color:#fff!important;box-shadow:0 5px 13px rgba(209,78,99,.22)!important}
+    .toolbar{display:grid!important;gap:14px!important;width:100%!important;margin:14px 0 16px!important}
+    .toolbar>input,.toolbar input[type=search],.toolbar select,.dropdown select{width:100%!important;height:42px!important;min-height:42px!important;box-sizing:border-box!important;border-radius:999px!important}
+
   </style>
 </head>
 
@@ -1957,7 +1967,7 @@
         ? renderStatus(row, meta.status)
         : meta.badge && row[meta.badge]
           ? `<span class="badge">
-               ${iconFor(meta.badge)} ${MONEY_FIELDS.has(meta.badge) ? formatMoney(row[meta.badge]) : escapeHtml(row[meta.badge])}
+               ${iconFor(meta.badge)} ${escapeHtml(row[meta.badge])}
              </span>`
           : `<span class="chevron">›</span>`;
 
@@ -1970,17 +1980,16 @@
         `
         : "").join("");
 
-      const extra = (meta.extra || []).map((field) => {
-        if (!row[field]) return "";
-        const label = field === "Spesa Effettiva Revolut" ? "Spesa effettiva" : field;
-        const value = MONEY_FIELDS.has(field) ? formatMoney(row[field]) : escapeHtml(row[field]);
-        return `
+      const extra = (meta.extra || []).map((field) => row[field]
+        ? `
           <div class="bullet muted">
             <span class="bullet-icon">${iconFor(field)}</span>
-            <span>${escapeHtml(label)}: ${value}</span>
+            <span>
+              ${escapeHtml(field)}: ${escapeHtml(row[field])}
+            </span>
           </div>
-        `;
-      }).join("");
+        `
+        : "").join("");
 
       const maps = (meta.maps || []).map((map) => {
         if (!isUrl(row[map.field])) return "";
@@ -2086,34 +2095,18 @@
       `;
     }
 
-    const MONEY_FIELDS = new Set(["Costo Stimato", "Budget Previsto (Yen)", "Spesa effettiva", "Spesa Effettiva Revolut", "Differenza"]);
-
-    function parseMoneyValues(value) {
-      const text = String(value ?? "").trim();
-      if (!text || text === "-") return [];
-      return (text.match(/\d+(?:[.,]\d+)?/g) || [])
-        .map((part) => Number(part.replace(",", ".")))
-        .filter(Number.isFinite);
-    }
-
-    function formatMoney(value) {
-      const text = String(value ?? "").trim();
-      if (!text || text === "-") return "";
-      const values = parseMoneyValues(text);
-      if (!values.length) return escapeHtml(text);
-      const rate = Number(state.settings.exchangeRate || 160);
-      const yen = values.map((number) => `${number.toLocaleString("it-IT")} ¥`).join(" – ");
-      const euro = values.map((number) => `€${(number / rate).toFixed(2).replace(".", ",")}`).join(" – ");
-      return `${yen} · ≈ ${euro}`;
-    }
-
     function renderEuro(row) {
-      const value = row["Budget Previsto (Yen)"];
-      if (!value) return "";
+      const value = Number(row["Budget Previsto (Yen)"]);
+      if (Number.isNaN(value)) return "";
+
       return `
         <div class="bullet muted">
-          <span class="bullet-icon">💴</span>
-          <span>Previsto: ${formatMoney(value)}</span>
+          <span class="bullet-icon">💶</span>
+          <span>
+            Previsto: ≈ €${(
+              value / (state.settings.exchangeRate || 160)
+            ).toFixed(2)}
+          </span>
         </div>
       `;
     }
