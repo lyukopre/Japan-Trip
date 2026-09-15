@@ -20,7 +20,42 @@
 
   <script
     src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
-  ></script>
+  >
+/* Funzione filtri ordinati e conversione yen/euro */
+const FILTER_ORDER = [
+  { id: "all", label: "Tutti", icon: "▦" },
+  { id: "flight", label: "Voli", icon: "✈️" },
+  { id: "hotel", label: "Hotel", icon: "🛏️" },
+  { id: "transport", label: "Trasporti", icon: "🚆" },
+  { id: "food", label: "Cibo", icon: "🍜" },
+  { id: "activity", label: "Attività", icon: "🎟️" },
+  { id: "shopping", label: "Shopping", icon: "🛍️" }
+];
+
+function renderOrderedFilters(container, selected = "all", onSelect = () => {}) {
+  if (!container) return;
+  container.replaceChildren(...FILTER_ORDER.map((filter) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `filter-chip${filter.id === selected ? " active" : ""}`;
+    button.dataset.filter = filter.id;
+    button.textContent = `${filter.icon} ${filter.label}`;
+    button.addEventListener("click", () => onSelect(filter.id));
+    return button;
+  }));
+}
+
+const MONEY_FIELDS = new Set(["Costo Stimato", "Budget Previsto (Yen)", "Spesa effettiva", "Spesa Effettiva Revolut", "Differenza"]);
+function yenToEuro(value, rate = Number(state?.settings?.exchangeRate) || 160) {
+  const numbers = String(value ?? "").match(/\d+(?:[.,]\d+)?/g) || [];
+  return numbers.map((n) => `€ ${(Number(n.replace(/\./g, "").replace(",", ".")) / rate).toLocaleString("it-IT", {minimumFractionDigits: 2, maximumFractionDigits: 2})}`).join(" – ");
+}
+function renderMoney(value) {
+  const euro = yenToEuro(value);
+  return euro ? `${escapeHtml(String(value))}<small class="money-converted">≈ ${euro}</small>` : escapeHtml(String(value ?? ""));
+}
+
+</script>
 
   <style>
     /* ================================================================
@@ -963,8 +998,13 @@
     .toast.visible {
       opacity: 1;
     }
-  \n    /* Yen -> euro */
-    .money-converted{display:block;margin-top:3px;color:#9da5b5;font-size:.88em}
+  
+/* Filtri ordinati */
+.filter-row{display:flex!important;flex-wrap:nowrap!important;gap:8px!important;overflow-x:auto!important;white-space:nowrap!important;scrollbar-width:none!important;padding:2px 2px 8px!important}
+.filter-row::-webkit-scrollbar{display:none!important}
+.filter-row>*{flex:0 0 auto!important}
+.filter-chip{height:36px!important;padding:0 14px!important;border-radius:999px!important;white-space:nowrap!important}
+.filter-chip.active{background:#d14e63!important;color:#fff!important;border-color:#d14e63!important}
 </style>
 </head>
 
@@ -1959,7 +1999,7 @@
         ? renderStatus(row, meta.status)
         : meta.badge && row[meta.badge]
           ? `<span class="badge">
-               ${iconFor(meta.badge)} ${(MONEY_FIELDS.has(meta.badge) ? renderMoney(row[meta.badge]) : escapeHtml(row[meta.badge]))}
+               ${iconFor(meta.badge)} ${escapeHtml(row[meta.badge])}
              </span>`
           : `<span class="chevron">›</span>`;
 
@@ -1967,7 +2007,7 @@
         ? `
           <div class="bullet">
             <span class="bullet-icon">${iconFor(field)}</span>
-            <span>${(MONEY_FIELDS.has(field) ? renderMoney(row[field]) : escapeHtml(row[field]))}</span>
+            <span>${escapeHtml(row[field])}</span>
           </div>
         `
         : "").join("");
@@ -1977,7 +2017,7 @@
           <div class="bullet muted">
             <span class="bullet-icon">${iconFor(field)}</span>
             <span>
-              ${escapeHtml(field)}: ${(MONEY_FIELDS.has(field) ? renderMoney(row[field]) : escapeHtml(row[field]))}
+              ${escapeHtml(field)}: ${escapeHtml(row[field])}
             </span>
           </div>
         `
@@ -2085,38 +2125,6 @@
           `).join("")}
         </select>
       `;
-    }
-
-
-
-    const MONEY_FIELDS = new Set([
-      "Costo Stimato", "Budget Previsto (Yen)", "Spesa effettiva",
-      "Spesa Effettiva Revolut", "Differenza", "Costo", "Prezzo"
-    ]);
-
-    function getExchangeRate() {
-      const rate = Number(state?.settings?.exchangeRate);
-      return Number.isFinite(rate) && rate > 0 ? rate : 160;
-    }
-
-    function parseMoney(value) {
-      const text = String(value ?? "").trim();
-      if (!text || text === "-") return [];
-      return (text.match(/\d+(?:[.,]\d+)?/g) || [])
-        .map((part) => Number(part.replace(/\./g, "").replace(",", ".")))
-        .filter(Number.isFinite);
-    }
-
-    function formatEuro(value) {
-      const values = parseMoney(value);
-      if (!values.length) return "";
-      return values.map((yen) => `€ ${(yen / getExchangeRate()).toLocaleString("it-IT", {minimumFractionDigits: 2, maximumFractionDigits: 2})}`).join(" – ");
-    }
-
-    function renderMoney(value) {
-      const original = escapeHtml(String(value ?? ""));
-      const euro = formatEuro(value);
-      return euro ? `${original}<span class="money-converted">≈ ${euro}</span>` : original;
     }
 
     function renderEuro(row) {
