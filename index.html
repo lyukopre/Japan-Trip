@@ -15,12 +15,33 @@
   <meta name="apple-mobile-web-app-title" content="Giappone">
 
   <title>Giappone 2026/27</title>
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='42' fill='%23c94a5a'/%3E%3Ccircle cx='90' cy='90' r='58' fill='%23fff'/%3E%3Cpath d='M40 75h100M52 75v58M128 75v58M40 133h100M63 75V53c0-8 6-14 14-14h26c8 0 14 6 14 14v22' fill='none' stroke='%23c94a5a' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M90 105v28M76 119h28' stroke='%23c94a5a' stroke-width='8' stroke-linecap='round'/%3E%3C/svg%3E">
-  <meta name="apple-mobile-web-app-title" content="Japan Trip">
+
+  <link rel="manifest" href="manifest.json">
 
   <script
     src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
-  ></script>
+  >\n/* Yen/euro conversion */
+const YEN_EURO_RATE = 160;
+function yenToEuro(value, rate = YEN_EURO_RATE) {
+  const values = String(value ?? "").match(/\d+(?:[.,]\d+)?/g) || [];
+  return values.map((part) => {
+    const yen = Number(part.replace(/\./g, "").replace(",", "."));
+    return `€ ${(yen / rate).toLocaleString("it-IT", {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+  }).join(" – ");
+}
+\nconst MONEY_FIELD_NAMES = ["costo", "budget", "spesa", "differenza", "yen", "prezzo", "cost"];
+function isMoneyField(value) {
+  const text = String(value ?? "").toLowerCase();
+  return MONEY_FIELD_NAMES.some((name) => text.includes(name));
+}
+
+function renderYenEuro(value) {
+  const original = escapeHtml(String(value ?? ""));
+  const euro = yenToEuro(value);
+  return euro ? `${original}<span class="money-eur">≈ ${euro}</span>` : original;
+}
+
+</script>
 
   <style>
     /* ================================================================
@@ -963,40 +984,9 @@
     .toast.visible {
       opacity: 1;
     }
-
-
-    /* ================================================================
-       Japan Trip UI — dark travel planner
-       ================================================================ */
-    :root{color-scheme:dark;--bg:#0b0d12;--surface:#151923;--surface-2:#181d28;--surface-3:#202632;--text:#f5f3ef;--muted:#a4a7b0;--muted-strong:#c4c6cc;--border:#303644;--accent:#d14e63;--accent-hover:#e15c72;--accent-soft:#33202a;--gold:#e2ad51;--success:#6fb28b;--info:#6d9ed8;--warning:#e0ad5b;--danger:#db6274;--content-width:700px;--nav-h:58px}
-    html,body{min-height:100%;background:var(--bg);color:var(--text)}
-    body{background:radial-gradient(ellipse at 50% -12%,rgba(209,78,99,.12),transparent 45%),linear-gradient(180deg,#0b0d12,#0d0f15 58%,#090b10);font-feature-settings:"tnum" 1}
-    #backgroundLayer{position:fixed;inset:0;z-index:-1;pointer-events:none!important;opacity:.4;background:radial-gradient(circle at 10% 20%,rgba(209,78,99,.09),transparent 25%),radial-gradient(circle at 90% 70%,rgba(226,173,81,.05),transparent 27%)}#backgroundPattern{display:none}
-    #main{max-width:var(--content-width);padding:14px 16px calc(112px + var(--safe-bottom))}
-    #topbar{padding:calc(10px + var(--safe-top)) 16px 10px;background:rgba(11,13,18,.92);border-bottom:1px solid #242936;box-shadow:0 8px 26px rgba(0,0,0,.22);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-    .topbar-row{max-width:var(--content-width);margin:auto}.logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(145deg,#da5368,#a52d45);box-shadow:0 7px 18px rgba(209,78,99,.28)}.page-title{font-size:23px;letter-spacing:-.04em}.page-subtitle{color:#a3a5ae}.trip-banner{margin-top:8px;padding:10px 13px;border:1px solid #4b3b43;border-radius:15px;background:linear-gradient(100deg,#30252b,#171923);color:#e45b70;box-shadow:none}
-    .card,.itinerary-card,.section-card,.empty-state,.summary-card{border:1px solid var(--border);border-radius:18px;background:linear-gradient(145deg,#181c27,#141720);box-shadow:0 8px 24px rgba(0,0,0,.22)}.card:hover,.itinerary-card:hover,.section-card:hover{transform:translateY(-1px);border-color:#465064;box-shadow:0 10px 28px rgba(0,0,0,.28)}
-    input,select,textarea{border:1px solid #3a4252!important;border-radius:14px!important;background:var(--surface-2)!important;color:var(--text)!important}input::placeholder,textarea::placeholder{color:#8b8f9a}input:focus,select:focus,textarea:focus{border-color:var(--accent)!important;box-shadow:0 0 0 3px rgba(209,78,99,.18)!important}
-
-    /* Ricerca e filtri */
-    .filters,.filter-row,.filter-buttons,.status-filters,.category-filters,.sort-filters{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:7px;width:100%;margin:8px 0 12px;padding:2px 1px 6px;overflow-x:auto!important;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x}.filters::-webkit-scrollbar,.filter-row::-webkit-scrollbar,.filter-buttons::-webkit-scrollbar,.status-filters::-webkit-scrollbar,.category-filters::-webkit-scrollbar,.sort-filters::-webkit-scrollbar{display:none}
-    .filters button,.filter-row button,.filter-buttons button,.status-filters button,.category-filters button,.sort-filters button,.filter-chip,.chip-button,.pill-button{display:inline-flex!important;flex:0 0 auto!important;align-items:center;justify-content:center;min-height:32px;padding:7px 11px;border:1px solid #3b4352;border-radius:999px;background:var(--surface-2);color:#b4b6bf;box-shadow:none;white-space:nowrap}.filters button.active,.filter-row button.active,.filter-buttons button.active,.status-filters button.active,.category-filters button.active,.sort-filters button.active,.filter-chip.active,.chip-button.active,.pill-button.active{border-color:var(--accent);background:var(--accent);color:#fff;box-shadow:0 4px 12px rgba(209,78,99,.25)}
-    .filters::after,.filter-row::after,.filter-buttons::after,.status-filters::after,.category-filters::after,.sort-filters::after{content:"";position:sticky;right:0;flex:0 0 18px;height:28px;margin-left:-22px;background:linear-gradient(90deg,transparent,var(--bg));pointer-events:none}
-
-    /* Card compatte e pulsanti coerenti */
-    .badge,.status-badge,.tag{border-radius:999px;font-weight:800}.status-badge[data-status*="Fatto"],.badge[data-status*="Fatto"]{background:rgba(111,178,139,.18);color:#91d0aa}.status-badge[data-status*="Alta"],.badge[data-status*="Alta"]{background:rgba(219,98,116,.18);color:#f08a98}.status-badge[data-status*="Media"],.badge[data-status*="Media"]{background:rgba(224,173,91,.18);color:#f0c878}.status-badge[data-status*="Bassa"],.badge[data-status*="Bassa"]{background:rgba(109,158,216,.18);color:#9ec4f0}
-    .primary-button,.save-button,.map-button{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important}.secondary-button,.cancel-button{background:var(--surface-2)!important;color:var(--muted-strong)!important;border-color:var(--border)!important}
-
-    /* Barra sezioni */
-    #tabbar{right:10px!important;bottom:calc(8px + var(--safe-bottom))!important;left:10px!important;max-width:700px;margin:auto;gap:3px;padding:5px;border:1px solid var(--border);border-radius:20px;background:rgba(11,13,18,.96);box-shadow:0 10px 30px rgba(0,0,0,.38);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}.tab-button{min-width:64px;min-height:var(--nav-h);padding:5px 7px;border-radius:15px;color:#969aa5;font-size:9px}.tab-button-icon{font-size:17px}.tab-button.active{background:var(--accent);color:#fff;box-shadow:0 5px 13px rgba(209,78,99,.28)}
-    .floating-button{right:17px;bottom:calc(82px + var(--safe-bottom));width:52px;height:52px;border-radius:17px;background:var(--accent);box-shadow:0 9px 22px rgba(209,78,99,.32)}
-
-    /* Modali e impostazioni */
-    .modal{background:var(--surface);border:1px solid var(--border)}.modal-overlay{background:rgba(0,0,0,.68)}.settings-section{padding:16px;margin:0 0 14px;border:1px solid var(--border);border-radius:18px;background:var(--surface)}.settings-heading{color:var(--muted-strong);font-size:12px;letter-spacing:.08em}
-    :focus-visible{outline:3px solid rgba(209,78,99,.55);outline-offset:2px}button:active{transform:scale(.97)}
-    @media(min-width:760px){#main{padding-left:24px;padding-right:24px}#topbar{padding-left:24px;padding-right:24px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
-
-  </style>
+  
+.money-eur{display:block;color:#9da5b5;font-size:.86em;margin-top:3px}
+</style>
 </head>
 
 <body>
@@ -1133,7 +1123,7 @@
       "Funzione Principale": "⚙️",
       "Urgenza Configurazione": "⏳",
       "Urgenza": "⏳",
-      "Spesa Effettiva": "💸",
+      "Spesa Effettiva Revolut": "💸",
       "Differenza": "📊",
       "Budget Previsto (Yen)": "💴",
       "Pernottamento": "🏨",
@@ -1237,7 +1227,7 @@
         sub: ["Giorno"],
         badge: "Budget Previsto (Yen)",
         notes: ["Note / Categoria"],
-        extra: ["Spesa Effettiva", "Differenza"],
+        extra: ["Spesa Effettiva Revolut", "Differenza"],
         search: ["Data", "Giorno"]
       }
     };
@@ -1990,7 +1980,7 @@
         ? renderStatus(row, meta.status)
         : meta.badge && row[meta.badge]
           ? `<span class="badge">
-               ${iconFor(meta.badge)} ${escapeHtml(row[meta.badge])}
+               ${iconFor(meta.badge)} ${(isMoneyField(row[meta.badge]) ? renderYenEuro(row[meta.badge]) : escapeHtml(row[meta.badge]))}
              </span>`
           : `<span class="chevron">›</span>`;
 
@@ -1998,7 +1988,7 @@
         ? `
           <div class="bullet">
             <span class="bullet-icon">${iconFor(field)}</span>
-            <span>${escapeHtml(row[field])}</span>
+            <span>${(isMoneyField(row[field]) ? renderYenEuro(row[field]) : escapeHtml(row[field]))}</span>
           </div>
         `
         : "").join("");
@@ -2008,7 +1998,7 @@
           <div class="bullet muted">
             <span class="bullet-icon">${iconFor(field)}</span>
             <span>
-              ${escapeHtml(field)}: ${escapeHtml(row[field])}
+              ${escapeHtml(field)}: ${(isMoneyField(row[field]) ? renderYenEuro(row[field]) : escapeHtml(row[field]))}
             </span>
           </div>
         `
@@ -2666,6 +2656,14 @@
     /* ================================================================
        8. Avvio
        ================================================================ */
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("sw.js")
+          .catch(() => {});
+      });
+    }
 
     window.addEventListener("scroll", () => {
       document.getElementById("topbar").classList.toggle(
