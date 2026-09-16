@@ -21,18 +21,15 @@
   <script
     src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
   >
-    const EURO_RATE = 160;
-    const EURO_FIELDS = new Set(["Costo Stimato", "Budget Previsto (Yen)", "Spesa Effettiva Revolut", "Spesa Effettiva", "Differenza"]);
-    function euroValues(value) {
-      return (String(value ?? "").match(/\d+(?:[.,]\d+)?/g) || []).map((part) => {
-        const yen = Number(part.replace(/\./g, "").replace(",", "."));
-        return `€${(yen / (state.settings.exchangeRate || EURO_RATE)).toLocaleString("it-IT", {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-      }).join(" – ");
-    }
-    function renderEuroValue(field, value) {
+    const MONEY_FIELDS = new Set(["Costo Stimato", "Budget Previsto (Yen)", "Spesa Effettiva Revolut", "Spesa Effettiva", "Differenza"]);
+    function renderMoneyField(field, value) {
       const original = escapeHtml(String(value ?? ""));
-      if (!EURO_FIELDS.has(field)) return original;
-      const euro = euroValues(value);
+      if (!MONEY_FIELDS.has(field)) return original;
+      const rate = Number(state.settings.exchangeRate) || 160;
+      const euro = (String(value ?? "").match(/\d+(?:[.,]\d+)?/g) || []).map((part) => {
+        const yen = Number(part.replace(/\./g, "").replace(",", "."));
+        return `€${(yen / rate).toLocaleString("it-IT", {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+      }).join(" – ");
       return euro ? `${original}<span class="yen-euro-card">≈ ${euro}</span>` : original;
     }
 
@@ -1013,7 +1010,10 @@
     @media(min-width:760px){#main{padding-left:24px;padding-right:24px}#topbar{padding-left:24px;padding-right:24px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
   
-    .yen-euro-card{display:block;color:var(--muted,#aeb6c4);font-size:.86em;margin-top:3px}
+    .toolbar{gap:24px!important;margin:24px 0 30px!important}
+    .toolbar input[type="search"],.toolbar select{min-height:46px!important;height:46px!important;border-radius:999px!important}
+    .dropdown{margin:0!important}
+    .filter-row{margin:0 0 24px!important;padding-bottom:12px!important}
 </style>
 </head>
 
@@ -2008,7 +2008,7 @@
         ? renderStatus(row, meta.status)
         : meta.badge && row[meta.badge]
           ? `<span class="badge">
-               ${iconFor(meta.badge)} ${renderEuroValue(meta.badge, row[meta.badge])}
+               ${iconFor(meta.badge)} ${renderMoneyField(meta.badge, row[meta.badge])}
              </span>`
           : `<span class="chevron">›</span>`;
 
@@ -2026,7 +2026,7 @@
           <div class="bullet muted">
             <span class="bullet-icon">${iconFor(field)}</span>
             <span>
-              ${escapeHtml(field)}: ${renderEuroValue(field, row[field])}
+              ${escapeHtml(field)}: ${renderMoneyField(field, row[field])}
             </span>
           </div>
         `
@@ -2137,13 +2137,17 @@
     }
 
     function renderEuro(row) {
-      const value = row["Budget Previsto (Yen)"];
-      const euros = euroValues(value);
-      if (!euros) return "";
+      const value = Number(row["Budget Previsto (Yen)"]);
+      if (Number.isNaN(value)) return "";
+
       return `
         <div class="bullet muted">
           <span class="bullet-icon">💶</span>
-          <span>Previsto: ≈ ${euros}</span>
+          <span>
+            Previsto: ≈ €${(
+              value / (state.settings.exchangeRate || 160)
+            ).toFixed(2)}
+          </span>
         </div>
       `;
     }
