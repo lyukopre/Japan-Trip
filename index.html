@@ -20,7 +20,46 @@
 
   <script
     src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
-  ></script>
+  >
+    /* Conversione yen/euro integrata nei renderer esistenti. */
+    const MONEY_FIELDS = new Set([
+      "Costo Stimato",
+      "Budget Previsto (Yen)",
+      "Spesa Effettiva Revolut",
+      "Spesa Effettiva",
+      "Differenza"
+    ]);
+
+    function getExchangeRate() {
+      const value = Number(state.settings.exchangeRate);
+      return Number.isFinite(value) && value > 0 ? value : 160;
+    }
+
+    function parseYenValues(value) {
+      return (String(value ?? "").match(/\d+(?:[.,]\d+)?/g) || [])
+        .map((part) => Number(part.replace(/\./g, "").replace(",", ".")))
+        .filter(Number.isFinite);
+    }
+
+    function formatEuro(value) {
+      return parseYenValues(value).map((yen) =>
+        `€${(yen / getExchangeRate()).toLocaleString("it-IT", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })}`
+      ).join(" – ");
+    }
+
+    function renderMoney(field, value) {
+      const original = escapeHtml(value);
+      if (!MONEY_FIELDS.has(field)) return original;
+      const euro = formatEuro(value);
+      return euro
+        ? `${original}<span class="yen-euro-conversion">≈ ${euro}</span>`
+        : original;
+    }
+
+</script>
 
   <style>
     /* ================================================================
@@ -996,7 +1035,9 @@
     :focus-visible{outline:3px solid rgba(209,78,99,.55);outline-offset:2px}button:active{transform:scale(.97)}
     @media(min-width:760px){#main{padding-left:24px;padding-right:24px}#topbar{padding-left:24px;padding-right:24px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
-  </style>
+  
+    .yen-euro-conversion{display:block;color:var(--muted,#aeb6c4);font-size:.86em;margin-top:3px}
+</style>
 </head>
 
 <body>
@@ -1990,7 +2031,7 @@
         ? renderStatus(row, meta.status)
         : meta.badge && row[meta.badge]
           ? `<span class="badge">
-               ${iconFor(meta.badge)} ${escapeHtml(row[meta.badge])}
+               ${iconFor(meta.badge)} ${renderMoney(meta.badge, row[meta.badge])}
              </span>`
           : `<span class="chevron">›</span>`;
 
@@ -2008,7 +2049,7 @@
           <div class="bullet muted">
             <span class="bullet-icon">${iconFor(field)}</span>
             <span>
-              ${escapeHtml(field)}: ${escapeHtml(row[field])}
+              ${escapeHtml(field)}: ${renderMoney(field, row[field])}
             </span>
           </div>
         `
