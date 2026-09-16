@@ -23,14 +23,19 @@
   >
     const MONEY_FIELDS = new Set(["Costo Stimato", "Budget Previsto (Yen)", "Spesa Effettiva Revolut", "Spesa Effettiva", "Differenza"]);
     function renderMoneyField(field, value) {
-      const original = escapeHtml(String(value ?? ""));
+      const text = String(value ?? "");
+      const original = escapeHtml(text);
       if (!MONEY_FIELDS.has(field)) return original;
       const rate = Number(state.settings.exchangeRate) || 160;
-      const euro = (String(value ?? "").match(/\d+(?:[.,]\d+)?/g) || []).map((part) => {
+      const euro = (text.match(/\d+(?:[.,]\d+)?/g) || []).map((part) => {
         const yen = Number(part.replace(/\./g, "").replace(",", "."));
         return `€${(yen / rate).toLocaleString("it-IT", {minimumFractionDigits:2, maximumFractionDigits:2})}`;
       }).join(" – ");
       return euro ? `${original}<span class="yen-euro-card">≈ ${euro}</span>` : original;
+    }
+    function getRowValue(row, ...keys) {
+      for (const key of keys) if (row[key] !== undefined && row[key] !== null && String(row[key]).trim() !== "") return row[key];
+      return "";
     }
 
 </script>
@@ -1010,10 +1015,12 @@
     @media(min-width:760px){#main{padding-left:24px;padding-right:24px}#topbar{padding-left:24px;padding-right:24px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
   
-    .toolbar{gap:24px!important;margin:24px 0 30px!important}
-    .toolbar input[type="search"],.toolbar select{min-height:46px!important;height:46px!important;border-radius:999px!important}
-    .dropdown{margin:0!important}
-    .filter-row{margin:0 0 24px!important;padding-bottom:12px!important}
+    .toolbar{display:flex!important;flex-direction:column!important;gap:28px!important;margin:28px 0 34px!important;padding:0!important}
+    .toolbar input[type="search"],.toolbar select{width:100%!important;height:48px!important;min-height:48px!important;border-radius:999px!important;box-sizing:border-box!important;margin:0!important;padding:0 18px!important}
+    .dropdown{width:100%!important;margin:0!important}
+    .filter-row{margin:0 0 28px!important;padding:2px 2px 14px!important;gap:10px!important}
+    .card,.card-title,.card-subtitle,.bullet,.button-row{margin-bottom:16px}
+    .yen-euro-card{display:block;color:var(--muted,#aeb6c4);font-size:.86em;margin-top:4px}
 </style>
 </head>
 
@@ -2008,7 +2015,7 @@
         ? renderStatus(row, meta.status)
         : meta.badge && row[meta.badge]
           ? `<span class="badge">
-               ${iconFor(meta.badge)} ${renderMoneyField(meta.badge, row[meta.badge])}
+               ${iconFor(meta.badge)} ${renderMoneyField(meta.badge, getRowValue(row, meta.badge))}
              </span>`
           : `<span class="chevron">›</span>`;
 
@@ -2026,7 +2033,7 @@
           <div class="bullet muted">
             <span class="bullet-icon">${iconFor(field)}</span>
             <span>
-              ${escapeHtml(field)}: ${renderMoneyField(field, row[field])}
+              ${escapeHtml(field)}: ${renderMoneyField(field, getRowValue(row, field))}
             </span>
           </div>
         `
