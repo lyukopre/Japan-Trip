@@ -20,26 +20,39 @@
 
   <script
     src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
-  >\n/* Yen/euro conversion */
-const YEN_EURO_RATE = 160;
-function yenToEuro(value, rate = YEN_EURO_RATE) {
-  const values = String(value ?? "").match(/\d+(?:[.,]\d+)?/g) || [];
-  return values.map((part) => {
-    const yen = Number(part.replace(/\./g, "").replace(",", "."));
-    return `€ ${(yen / rate).toLocaleString("it-IT", {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-  }).join(" – ");
-}
-\nconst MONEY_FIELD_NAMES = ["costo", "budget", "spesa", "differenza", "yen", "prezzo", "cost"];
-function isMoneyField(value) {
-  const text = String(value ?? "").toLowerCase();
-  return MONEY_FIELD_NAMES.some((name) => text.includes(name));
-}
+  >
+    const YEN_EURO_RATE = 160;
+    const MONEY_KEYS = ["yen", "costo", "budget", "spesa", "differenza", "prezzo", "cost"];
+    function isMoneyKey(key) { return MONEY_KEYS.some((x) => String(key ?? "").toLowerCase().includes(x)); }
+    function yenToEuro(value) {
+      const numbers = String(value ?? "").match(/\d+(?:[.,]\d+)?/g) || [];
+      return numbers.map((part) => {
+        const yen = Number(part.replace(/\./g, "").replace(",", "."));
+        return `€ ${(yen / YEN_EURO_RATE).toLocaleString("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      }).join(" – ");
+    }
+    function renderMoneyValue(key, value) {
+      const original = escapeHtml(String(value ?? ""));
+      if (!isMoneyKey(key)) return original;
+      const euro = yenToEuro(value);
+      return euro ? `${original}<span class="money-eur">≈ ${euro}</span>` : original;
+    }
 
-function renderYenEuro(value) {
-  const original = escapeHtml(String(value ?? ""));
-  const euro = yenToEuro(value);
-  return euro ? `${original}<span class="money-eur">≈ ${euro}</span>` : original;
-}
+
+    function applyMoneyConversions(root = document) {
+      root.querySelectorAll("[data-field], .bullet, .detail-row, .meta-row, .card-row").forEach((element) => {
+        const key = element.dataset.field || element.dataset.key || element.textContent.split(":")[0];
+        if (!isMoneyKey(key) || element.querySelector(".money-eur")) return;
+        const match = element.textContent.match(/(?:^|:)\s*([0-9][0-9.,]*(?:\s*[–-]\s*[0-9][0-9.,]*)?)/);
+        if (!match) return;
+        const euro = yenToEuro(match[1]);
+        if (!euro) return;
+        const span = document.createElement("span");
+        span.className = "money-eur";
+        span.textContent = `≈ ${euro}`;
+        element.appendChild(span);
+      });
+    }
 
 </script>
 
@@ -1980,7 +1993,7 @@ function renderYenEuro(value) {
         ? renderStatus(row, meta.status)
         : meta.badge && row[meta.badge]
           ? `<span class="badge">
-               ${iconFor(meta.badge)} ${(isMoneyField(row[meta.badge]) ? renderYenEuro(row[meta.badge]) : escapeHtml(row[meta.badge]))}
+               ${iconFor(meta.badge)} ${escapeHtml(row[meta.badge])}
              </span>`
           : `<span class="chevron">›</span>`;
 
@@ -1988,7 +2001,7 @@ function renderYenEuro(value) {
         ? `
           <div class="bullet">
             <span class="bullet-icon">${iconFor(field)}</span>
-            <span>${(isMoneyField(row[field]) ? renderYenEuro(row[field]) : escapeHtml(row[field]))}</span>
+            <span>${escapeHtml(row[field])}</span>
           </div>
         `
         : "").join("");
@@ -1998,7 +2011,7 @@ function renderYenEuro(value) {
           <div class="bullet muted">
             <span class="bullet-icon">${iconFor(field)}</span>
             <span>
-              ${escapeHtml(field)}: ${(isMoneyField(row[field]) ? renderYenEuro(row[field]) : escapeHtml(row[field]))}
+              ${escapeHtml(field)}: ${escapeHtml(row[field])}
             </span>
           </div>
         `
