@@ -22,36 +22,20 @@
     src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
   >
     const YEN_EURO_RATE = 160;
-    const MONEY_KEYS = ["yen", "costo", "budget", "spesa", "differenza", "prezzo", "cost"];
-    function isMoneyKey(key) { return MONEY_KEYS.some((x) => String(key ?? "").toLowerCase().includes(x)); }
     function yenToEuro(value) {
-      const numbers = String(value ?? "").match(/\d+(?:[.,]\d+)?/g) || [];
-      return numbers.map((part) => {
-        const yen = Number(part.replace(/\./g, "").replace(",", "."));
-        return `€ ${(yen / YEN_EURO_RATE).toLocaleString("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      const nums = String(value ?? "").match(/\d+(?:[.,]\d+)?/g) || [];
+      return nums.map((n) => {
+        const yen = Number(n.replace(/\./g, "").replace(",", "."));
+        return `€ ${(yen / YEN_EURO_RATE).toLocaleString("it-IT", {minimumFractionDigits:2, maximumFractionDigits:2})}`;
       }).join(" – ");
     }
-    function renderMoneyValue(key, value) {
-      const original = escapeHtml(String(value ?? ""));
-      if (!isMoneyKey(key)) return original;
-      const euro = yenToEuro(value);
-      return euro ? `${original}<span class="money-eur">≈ ${euro}</span>` : original;
+    function isMoneyLabel(label) {
+      return /(yen|costo|budget|spesa|differenza|prezzo|cost)/i.test(String(label ?? ""));
     }
-
-
-    function applyMoneyConversions(root = document) {
-      root.querySelectorAll("[data-field], .bullet, .detail-row, .meta-row, .card-row").forEach((element) => {
-        const key = element.dataset.field || element.dataset.key || element.textContent.split(":")[0];
-        if (!isMoneyKey(key) || element.querySelector(".money-eur")) return;
-        const match = element.textContent.match(/(?:^|:)\s*([0-9][0-9.,]*(?:\s*[–-]\s*[0-9][0-9.,]*)?)/);
-        if (!match) return;
-        const euro = yenToEuro(match[1]);
-        if (!euro) return;
-        const span = document.createElement("span");
-        span.className = "money-eur";
-        span.textContent = `≈ ${euro}`;
-        element.appendChild(span);
-      });
+    function renderMoney(label, value) {
+      const text = String(value ?? "");
+      const euro = yenToEuro(text);
+      return euro && isMoneyLabel(label) ? `${escapeHtml(text)}<span class="money-eur">≈ ${euro}</span>` : escapeHtml(text);
     }
 
 </script>
@@ -998,7 +982,13 @@
       opacity: 1;
     }
   
-.money-eur{display:block;color:#9da5b5;font-size:.86em;margin-top:3px}
+/* UI controls: pills, spacing, horizontal filter scroll */
+.toolbar{display:flex!important;flex-direction:column!important;gap:16px!important;margin:18px 0 22px!important;width:100%!important}
+.toolbar input[type="search"],.toolbar select{width:100%!important;min-height:44px!important;height:44px!important;box-sizing:border-box!important;border-radius:999px!important;padding:0 18px!important;margin:0!important}
+.filter-row{display:flex!important;flex-wrap:nowrap!important;gap:8px!important;overflow-x:auto!important;overflow-y:hidden!important;white-space:nowrap!important;padding:2px 2px 10px!important;margin:0 0 18px!important;scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important}
+.filter-row::-webkit-scrollbar{display:none!important}.filter-row>*{flex:0 0 auto!important}
+.filter-chip{display:inline-flex!important;align-items:center!important;justify-content:center!important;height:36px!important;min-height:36px!important;padding:0 14px!important;border-radius:999px!important;white-space:nowrap!important}
+.money-eur{display:block!important;color:#aeb6c4!important;font-size:.86em!important;margin-top:3px!important}
 </style>
 </head>
 
@@ -1993,7 +1983,7 @@
         ? renderStatus(row, meta.status)
         : meta.badge && row[meta.badge]
           ? `<span class="badge">
-               ${iconFor(meta.badge)} ${escapeHtml(row[meta.badge])}
+               ${iconFor(meta.badge)} ${renderMoney(meta.badge, row[meta.badge])}
              </span>`
           : `<span class="chevron">›</span>`;
 
@@ -2001,7 +1991,7 @@
         ? `
           <div class="bullet">
             <span class="bullet-icon">${iconFor(field)}</span>
-            <span>${escapeHtml(row[field])}</span>
+            <span>${renderMoney(field, row[field])}</span>
           </div>
         `
         : "").join("");
@@ -2011,7 +2001,7 @@
           <div class="bullet muted">
             <span class="bullet-icon">${iconFor(field)}</span>
             <span>
-              ${escapeHtml(field)}: ${escapeHtml(row[field])}
+              ${escapeHtml(field)}: ${renderMoney(field, row[field])}
             </span>
           </div>
         `
