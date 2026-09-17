@@ -21,21 +21,11 @@
   <script
     src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
   >
-    const MONEY_FIELDS = new Set(["Costo Stimato", "Budget Previsto (Yen)", "Spesa Effettiva Revolut", "Spesa Effettiva", "Differenza"]);
-    function renderMoneyField(field, value) {
-      const text = String(value ?? "");
-      const original = escapeHtml(text);
-      if (!MONEY_FIELDS.has(field)) return original;
-      const rate = Number(state.settings.exchangeRate) || 160;
-      const euro = (text.match(/\d+(?:[.,]\d+)?/g) || []).map((part) => {
-        const yen = Number(part.replace(/\./g, "").replace(",", "."));
-        return `€${(yen / rate).toLocaleString("it-IT", {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-      }).join(" – ");
-      return euro ? `${original}<span class="yen-euro-card">≈ ${euro}</span>` : original;
-    }
-    function getRowValue(row, ...keys) {
-      for (const key of keys) if (row[key] !== undefined && row[key] !== null && String(row[key]).trim() !== "") return row[key];
-      return "";
+    function rowValue(row, key) {
+      if (row[key] !== undefined) return row[key];
+      const target = String(key).trim().toLowerCase();
+      const found = Object.keys(row).find((name) => String(name).trim().toLowerCase() === target);
+      return found ? row[found] : "";
     }
 
 </script>
@@ -1015,12 +1005,9 @@
     @media(min-width:760px){#main{padding-left:24px;padding-right:24px}#topbar{padding-left:24px;padding-right:24px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
   
-    .toolbar{display:flex!important;flex-direction:column!important;gap:28px!important;margin:28px 0 34px!important;padding:0!important}
-    .toolbar input[type="search"],.toolbar select{width:100%!important;height:48px!important;min-height:48px!important;border-radius:999px!important;box-sizing:border-box!important;margin:0!important;padding:0 18px!important}
-    .dropdown{width:100%!important;margin:0!important}
-    .filter-row{margin:0 0 28px!important;padding:2px 2px 14px!important;gap:10px!important}
-    .card,.card-title,.card-subtitle,.bullet,.button-row{margin-bottom:16px}
-    .yen-euro-card{display:block;color:var(--muted,#aeb6c4);font-size:.86em;margin-top:4px}
+    .toolbar{gap:30px!important;margin:30px 0 36px!important}
+    .toolbar input[type="search"],.toolbar select{height:48px!important;min-height:48px!important;border-radius:999px!important}
+    .filter-row{gap:12px!important;margin-bottom:30px!important;padding-bottom:16px!important}
 </style>
 </head>
 
@@ -1759,13 +1746,13 @@
 
       items = items.filter(({ row }) => {
         const matchesQuery = !query || meta.search.some((field) => {
-          return String(row[field] || "")
+          return String(rowValue(row, field) || "")
             .toLowerCase()
             .includes(query);
         });
 
         const matchesCity = !meta.city || !state.city ||
-          row[meta.city] === state.city;
+          rowValue(row, meta.city) === state.city;
 
         return matchesQuery && matchesCity;
       });
@@ -1992,9 +1979,9 @@
     }
 
     function renderDataCard(key, meta, row, index) {
-      const title = row[meta.title] || row[meta.fallback] || "(senza titolo)";
+      const title = rowValue(row, meta.title) || rowValue(row, meta.fallback) || "(senza titolo)";
       const subtitle = (meta.sub || [])
-        .map((field) => row[field])
+        .map((field) => rowValue(row, field))
         .filter(Boolean)
         .join(" · ");
 
@@ -2015,7 +2002,7 @@
         ? renderStatus(row, meta.status)
         : meta.badge && row[meta.badge]
           ? `<span class="badge">
-               ${iconFor(meta.badge)} ${renderMoneyField(meta.badge, getRowValue(row, meta.badge))}
+               ${iconFor(meta.badge)} ${escapeHtml(row[meta.badge])}
              </span>`
           : `<span class="chevron">›</span>`;
 
@@ -2033,7 +2020,7 @@
           <div class="bullet muted">
             <span class="bullet-icon">${iconFor(field)}</span>
             <span>
-              ${escapeHtml(field)}: ${renderMoneyField(field, getRowValue(row, field))}
+              ${escapeHtml(field)}: ${escapeHtml(row[field])}
             </span>
           </div>
         `
@@ -2180,7 +2167,7 @@
             links.push({
               title: row[meta.title] || row[meta.fallback] || "—",
               subtitle: (meta.sub || [])
-                .map((field) => row[field])
+                .map((field) => rowValue(row, field))
                 .filter(Boolean)
                 .join(" · "),
               url: row[map.field],
@@ -2662,6 +2649,16 @@
                 return result;
               });
 
+            if (key === "11. Budget") {
+              rows.forEach((result) => {
+                if (result["Spesa Effettiva"] !== undefined && result["Spesa Effettiva Revolut"] === undefined) {
+                  result["Spesa Effettiva Revolut"] = result["Spesa Effettiva"];
+                }
+              });
+              if (headers.includes("Spesa Effettiva") && !headers.includes("Spesa Effettiva Revolut")) {
+                headers.push("Spesa Effettiva Revolut");
+              }
+            }
             imported[key] = { headers, rows };
             total += rows.length;
           });
@@ -2669,7 +2666,7 @@
           if (missing.length) {
             alert(
               "Importazione annullata per sicurezza. " +
-              "Fogli mancanti o vuoti:\n\n" +
+              "Fogli mancanti:\n\n" +
               missing.join("\n")
             );
             return;
