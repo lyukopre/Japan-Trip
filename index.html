@@ -2642,9 +2642,9 @@
                 return result;
               });
 
-            if (key === "11. Budget" && headers.includes("Spesa Effettiva") && !headers.includes("Spesa Effettiva Revolut")) {
-              headers.push("Spesa Effettiva Revolut");
-              rows.forEach((row) => { row["Spesa Effettiva Revolut"] = row["Spesa Effettiva"]; });
+            if (key === "11. Budget" && headers.includes("Spesa Effettiva") && !headers.includes("Spesa Effettiva")) {
+              headers.push("Spesa Effettiva");
+              rows.forEach((row) => { row["Spesa Effettiva"] = row["Spesa Effettiva"]; });
             }
             imported[key] = { headers, rows };
             total += rows.length;
