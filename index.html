@@ -996,9 +996,13 @@
     :focus-visible{outline:3px solid rgba(209,78,99,.55);outline-offset:2px}button:active{transform:scale(.97)}
     @media(min-width:760px){#main{padding-left:24px;padding-right:24px}#topbar{padding-left:24px;padding-right:24px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
-  </style>
+  
+    .toolbar{display:flex!important;flex-direction:column!important;gap:18px!important;margin:18px 0 24px!important;width:100%!important}
+    .toolbar input[type="search"],.toolbar select{height:44px!important;min-height:44px!important;width:100%!important;border-radius:999px!important;box-sizing:border-box!important;margin:0!important}
+    .dropdown{width:100%!important;margin:0!important}
+    .filter-row{gap:8px!important;margin:0 0 24px!important;padding-bottom:10px!important}
+</style>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 180 180%22%3E%3Crect width=%22180%22 height=%22180%22 rx=%2242%22 fill=%22%23c94a5a%22/%3E%3Ccircle cx=%2290%22 cy=%2290%22 r=%2258%22 fill=%22%23fff%22/%3E%3Cpath d=%22M40 75h100M52 75v58M128 75v58M40 133h100M63 75V53c0-8 6-14 14-14h26c8 0 14 6 14 14v22%22 fill=%22none%22 stroke=%22%23c94a5a%22 stroke-width=%2210%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Cpath d=%22M90 105v28M76 119h28%22 stroke=%22%23c94a5a%22 stroke-width=%228%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
-
 </head>
 
 <body>
@@ -2615,7 +2619,7 @@
             );
 
             if (!values.length) {
-              missing.push(key);
+              imported[key] = { headers: [], rows: [] };
               return;
             }
 
@@ -2639,6 +2643,10 @@
                 return result;
               });
 
+            if (key === "11. Budget" && headers.includes("Spesa Effettiva") && !headers.includes("Spesa Effettiva Revolut")) {
+              headers.push("Spesa Effettiva Revolut");
+              rows.forEach((row) => { row["Spesa Effettiva Revolut"] = row["Spesa Effettiva"]; });
+            }
             imported[key] = { headers, rows };
             total += rows.length;
           });
