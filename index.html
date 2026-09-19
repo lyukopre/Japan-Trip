@@ -20,15 +20,7 @@
 
   <script
     src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
-  >
-    function rowValue(row, key) {
-      if (row[key] !== undefined) return row[key];
-      const target = String(key).trim().toLowerCase();
-      const found = Object.keys(row).find((name) => String(name).trim().toLowerCase() === target);
-      return found ? row[found] : "";
-    }
-
-</script>
+  ></script>
 
   <style>
     /* ================================================================
@@ -1005,9 +997,10 @@
     @media(min-width:760px){#main{padding-left:24px;padding-right:24px}#topbar{padding-left:24px;padding-right:24px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
   
-    .toolbar{gap:30px!important;margin:30px 0 36px!important}
-    .toolbar input[type="search"],.toolbar select{height:48px!important;min-height:48px!important;border-radius:999px!important}
-    .filter-row{gap:12px!important;margin-bottom:30px!important;padding-bottom:16px!important}
+    .toolbar{display:flex!important;flex-direction:column!important;gap:18px!important;margin:18px 0 24px!important;width:100%!important}
+    .toolbar input[type="search"],.toolbar select{height:44px!important;min-height:44px!important;width:100%!important;border-radius:999px!important;box-sizing:border-box!important;margin:0!important}
+    .dropdown{width:100%!important;margin:0!important}
+    .filter-row{gap:8px!important;margin:0 0 24px!important;padding-bottom:10px!important}
 </style>
 </head>
 
@@ -1746,13 +1739,13 @@
 
       items = items.filter(({ row }) => {
         const matchesQuery = !query || meta.search.some((field) => {
-          return String(rowValue(row, field) || "")
+          return String(row[field] || "")
             .toLowerCase()
             .includes(query);
         });
 
         const matchesCity = !meta.city || !state.city ||
-          rowValue(row, meta.city) === state.city;
+          row[meta.city] === state.city;
 
         return matchesQuery && matchesCity;
       });
@@ -1979,9 +1972,9 @@
     }
 
     function renderDataCard(key, meta, row, index) {
-      const title = rowValue(row, meta.title) || rowValue(row, meta.fallback) || "(senza titolo)";
+      const title = row[meta.title] || row[meta.fallback] || "(senza titolo)";
       const subtitle = (meta.sub || [])
-        .map((field) => rowValue(row, field))
+        .map((field) => row[field])
         .filter(Boolean)
         .join(" · ");
 
@@ -2167,7 +2160,7 @@
             links.push({
               title: row[meta.title] || row[meta.fallback] || "—",
               subtitle: (meta.sub || [])
-                .map((field) => rowValue(row, field))
+                .map((field) => row[field])
                 .filter(Boolean)
                 .join(" · "),
               url: row[map.field],
@@ -2625,7 +2618,7 @@
             );
 
             if (!values.length) {
-              missing.push(key);
+              imported[key] = { headers: [], rows: [] };
               return;
             }
 
@@ -2649,15 +2642,9 @@
                 return result;
               });
 
-            if (key === "11. Budget") {
-              rows.forEach((result) => {
-                if (result["Spesa Effettiva"] !== undefined && result["Spesa Effettiva Revolut"] === undefined) {
-                  result["Spesa Effettiva Revolut"] = result["Spesa Effettiva"];
-                }
-              });
-              if (headers.includes("Spesa Effettiva") && !headers.includes("Spesa Effettiva Revolut")) {
-                headers.push("Spesa Effettiva Revolut");
-              }
+            if (key === "11. Budget" && headers.includes("Spesa Effettiva") && !headers.includes("Spesa Effettiva Revolut")) {
+              headers.push("Spesa Effettiva Revolut");
+              rows.forEach((row) => { row["Spesa Effettiva Revolut"] = row["Spesa Effettiva"]; });
             }
             imported[key] = { headers, rows };
             total += rows.length;
@@ -2666,7 +2653,7 @@
           if (missing.length) {
             alert(
               "Importazione annullata per sicurezza. " +
-              "Fogli mancanti:\n\n" +
+              "Fogli mancanti o vuoti:\n\n" +
               missing.join("\n")
             );
             return;
