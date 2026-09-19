@@ -20,24 +20,7 @@
 
   <script
     src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
-  >
-    /* Yen -> euro: applicato esclusivamente ai campi di costo. */
-    const MONEY_FIELDS = new Set(["Costo Stimato", "Budget Previsto (Yen)", "Spesa Effettiva", "Differenza"]);
-    function moneyToEuro(value) {
-      const rate = Number(state.settings.exchangeRate) || 160;
-      return (String(value ?? "").match(/\d+(?:[.,]\d+)?/g) || []).map((part) => {
-        const yen = Number(part.replace(/\./g, "").replace(",", "."));
-        return `€${(yen / rate).toLocaleString("it-IT", {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-      }).join(" – ");
-    }
-    function renderMoneyField(field, value) {
-      const original = escapeHtml(String(value ?? ""));
-      if (!MONEY_FIELDS.has(field)) return original;
-      const euro = moneyToEuro(value);
-      return euro ? `${original}<span class="yen-euro-inline">≈ ${euro}</span>` : original;
-    }
-
-</script>
+  ></script>
 
   <style>
     /* ================================================================
@@ -1014,9 +997,11 @@
     @media(min-width:760px){#main{padding-left:24px;padding-right:24px}#topbar{padding-left:24px;padding-right:24px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
   
-    .yen-euro-inline{display:block;color:var(--muted,#aeb6c4);font-size:.86em;margin-top:3px}
+    .toolbar{display:flex!important;flex-direction:column!important;gap:18px!important;margin:18px 0 24px!important;width:100%!important}
+    .toolbar input[type="search"],.toolbar select{height:44px!important;min-height:44px!important;width:100%!important;border-radius:999px!important;box-sizing:border-box!important;margin:0!important}
+    .dropdown{width:100%!important;margin:0!important}
+    .filter-row{gap:8px!important;margin:0 0 24px!important;padding-bottom:10px!important}
 </style>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%230b0d12%22/%3E%3Cpath d=%22M9 21h46M13 28h38M17 28v25m30-25v25M9 53h46M21 28v25m22-25v25M20 21c0-9 5-14 12-14s12 5 12 14%22 fill=%22none%22 stroke=%22%23d64658%22 stroke-width=%224%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E">
 </head>
 
 <body>
@@ -2010,7 +1995,7 @@
         ? renderStatus(row, meta.status)
         : meta.badge && row[meta.badge]
           ? `<span class="badge">
-               ${iconFor(meta.badge)} ${renderMoneyField(meta.badge, row[meta.badge])}
+               ${iconFor(meta.badge)} ${escapeHtml(row[meta.badge])}
              </span>`
           : `<span class="chevron">›</span>`;
 
@@ -2028,7 +2013,7 @@
           <div class="bullet muted">
             <span class="bullet-icon">${iconFor(field)}</span>
             <span>
-              ${escapeHtml(field)}: ${renderMoneyField(field, row[field])}
+              ${escapeHtml(field)}: ${escapeHtml(row[field])}
             </span>
           </div>
         `
@@ -2633,7 +2618,7 @@
             );
 
             if (!values.length) {
-              missing.push(key);
+              imported[key] = { headers: [], rows: [] };
               return;
             }
 
@@ -2657,6 +2642,10 @@
                 return result;
               });
 
+            if (key === "11. Budget" && headers.includes("Spesa Effettiva") && !headers.includes("Spesa Effettiva Revolut")) {
+              headers.push("Spesa Effettiva Revolut");
+              rows.forEach((row) => { row["Spesa Effettiva Revolut"] = row["Spesa Effettiva"]; });
+            }
             imported[key] = { headers, rows };
             total += rows.length;
           });
